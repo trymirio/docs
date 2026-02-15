@@ -1,93 +1,35 @@
 ---
 title: "Quickstart"
-description: "Get started with Versive locally"
+description: "Make your first API request to Versive"
 ---
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
+To use the Versive API, you need:
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Supabase CLI](https://supabase.com/docs/reference/cli)
-- [Poetry](https://python-poetry.org/) (for Python dependencies)
-- [Node.js](https://nodejs.org/) and [Yarn](https://yarnpkg.com/)
-- [Homebrew](https://brew.sh/) (optional, for installing tools on macOS)
+1.  A Versive account.
+2.  An API Key. You can generate one in your [Organization Settings](https://app.getversive.com/settings).
 
-## Setup Instructions
+## Authentication
 
-### 1. Clone the Repository
+All API requests must be authenticated using a Bearer Token. Include your API key in the `Authorization` header.
 
 ```bash
-git clone https://github.com/trymirio/versive.git
-cd versive
+Authorization: Bearer YOUR_API_KEY
 ```
 
-### 2. Setup Versive DB (Supabase)
+## Making Your First Request
 
-The `versive_db` directory contains the configuration and migrations for the Supabase database.
+Here's how to list your studies using `curl`.
 
-1. Navigate to the `versive_db` directory:
-   ```bash
-   cd versive_db
-   ```
+```bash
+curl -X GET "https://api.getversive.com/api/v1/studies" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
 
-2. Start the local database:
-   ```bash
-   supabase start
-   ```
+You should receive a JSON response with a list of your studies.
 
-3. Run migrations:
-   ```bash
-   supabase migration up --local
-   ```
+## Next Steps
 
-### 3. Setup Versive API (Backend)
-
-The `versive_api` project is a FastAPI backend service.
-
-1. Navigate to the `versive_api` directory:
-   ```bash
-   cd ../versive_api
-   ```
-
-2. Create a virtual environment and activate it:
-   ```bash
-   poetry shell
-   ```
-
-3. Install dependencies:
-   ```bash
-   poetry install
-   ```
-
-4. Run the API server:
-   ```bash
-   uvicorn main:app --reload
-   ```
-
-The API will be available at `http://localhost:8000`.
-
-### 4. Setup Interviewer (Frontend)
-
-The `interviewer` project is a Next.js application.
-
-1. Open a new terminal and navigate to the `interviewer` directory:
-   ```bash
-   cd interviewer
-   ```
-
-2. Install dependencies:
-   ```bash
-   yarn install
-   ```
-
-3. Start the development server:
-   ```bash
-   yarn run dev
-   ```
-
-The application will be available at `http://localhost:3000`.
-
-## Troubleshooting
-
-If you encounter issues, refer to the [README.md](https://github.com/trymirio/versive/blob/main/versive/README.md) in the `versive` directory or check the `versive_db` section for database-specific troubleshooting.
+- Explore the [API Reference](/api-reference/introduction) to see all available endpoints.
+- Check out our [SDKs](/sdks/python) for easier integration.

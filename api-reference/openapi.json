@@ -1,58 +1,1217 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "FastAPI",
+    "version": "0.1.0"
   },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "paths": {
-    "/plants": {
+    "/api/v1/interviews/{id}": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "tags": [
+          "Interviews"
+        ],
+        "summary": "Get Interview By Id",
+        "operationId": "get_interview_by_id_api_v1_interviews__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "title": "Id"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "status": "completed",
+                  "metadata": {},
+                  "created_at": "2024-01-01T00:00:00Z",
+                  "progress": 100,
+                  "conversation_json": [
+                    {
+                      "role": "assistant",
+                      "content": "Hello! I'm the interviewer."
+                    },
+                    {
+                      "role": "user",
+                      "content": "Hi there."
+                    }
+                  ],
+                  "is_mock": false,
+                  "is_archived": false,
+                  "language": "English",
+                  "type": "VERSIVE",
+                  "notes": "Good interview.",
+                  "title": "User Interview 1",
+                  "completed_at": "2024-01-01T00:10:00Z",
+                  "started_at": "2024-01-01T00:00:00Z",
+                  "ended_at": "2024-01-01T00:10:00Z",
+                  "transcript": "...",
+                  "parsed_conversation_json": {},
+                  "recording_id": "rec_123",
+                  "active_time": 600,
+                  "link": "https://app.getversive.com/s/study_id?vid=vid_123",
+                  "vid": "vid_123"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Interviews"
+        ],
+        "summary": "Update Interview",
+        "operationId": "update_interview_api_v1_interviews__id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInterviewReqV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "message": "Interview updated successfully"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/interviews": {
+      "post": {
+        "tags": [
+          "Interviews"
+        ],
+        "summary": "Create Interview",
+        "operationId": "create_interview_api_v1_interviews_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInterviewReqV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "title": "New Interview",
+                  "study_id": "study_123",
+                  "metadata": {},
+                  "link": "https://app.getversive.com/s/study_123?vid=vid_123",
+                  "status": "open",
+                  "created_at": "2024-01-01T00:00:00Z"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Interviews"
+        ],
+        "summary": "Get Interview By Vid",
+        "operationId": "get_interview_by_vid_api_v1_interviews_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Vid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "status": "completed",
+                  "metadata": {},
+                  "created_at": "2024-01-01T00:00:00Z",
+                  "progress": 100,
+                  "conversation_json": [
+                    {
+                      "role": "assistant",
+                      "content": "Hello! I'm the interviewer."
+                    },
+                    {
+                      "role": "user",
+                      "content": "Hi there."
+                    }
+                  ],
+                  "is_mock": false,
+                  "is_archived": false,
+                  "language": "English",
+                  "type": "VERSIVE",
+                  "notes": "Good interview.",
+                  "title": "User Interview 1",
+                  "completed_at": "2024-01-01T00:10:00Z",
+                  "started_at": "2024-01-01T00:00:00Z",
+                  "ended_at": "2024-01-01T00:10:00Z",
+                  "transcript": "...",
+                  "parsed_conversation_json": {},
+                  "recording_id": "rec_123",
+                  "active_time": 600,
+                  "link": "https://app.getversive.com/s/study_id?vid=vid_123",
+                  "vid": "vid_123"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/studies": {
+      "get": {
+        "tags": [
+          "Studies"
+        ],
+        "summary": "Get Studies",
+        "operationId": "get_studies_api_v1_studies_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": [
+                  {
+                    "id": "study_123",
+                    "title": "My Study",
+                    "metadata": {},
+                    "type": "VERSIVE_STUDY",
+                    "mode": "TEXT_AND_VOICE",
+                    "created_at": "2024-01-01T00:00:00Z",
+                    "description": "A study about preferences.",
+                    "config": {
+                      "interviewName": "Interviewer",
+                      "primaryColor": "#0E9489"
+                    },
+                    "welcome_message": {
+                      "title": "Welcome",
+                      "body": "Thanks for participating."
+                    },
+                    "thank_you_message": {
+                      "title": "Thank You",
+                      "body": "Goodbye."
+                    },
+                    "screen_out_message": {
+                      "title": "Screened Out",
+                      "body": "Sorry."
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Studies"
+        ],
+        "summary": "Create Study",
+        "operationId": "create_study_api_v1_studies_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStudyReqV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "id": "study_123",
+                  "title": "My Study",
+                  "metadata": {},
+                  "type": "VERSIVE_STUDY",
+                  "mode": "TEXT_AND_VOICE",
+                  "created_at": "2024-01-01T00:00:00Z",
+                  "description": "A study about preferences.",
+                  "config": {
+                    "interviewName": "Interviewer",
+                    "primaryColor": "#0E9489"
+                  },
+                  "welcome_message": {
+                    "title": "Welcome",
+                    "body": "Thanks for participating."
+                  },
+                  "thank_you_message": {
+                    "title": "Thank You",
+                    "body": "Goodbye."
+                  },
+                  "screen_out_message": {
+                    "title": "Screened Out",
+                    "body": "Sorry."
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/studies/{id}": {
+      "get": {
+        "tags": [
+          "Studies"
+        ],
+        "summary": "Get Study By Id",
+        "operationId": "get_study_by_id_api_v1_studies__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "id": "study_123",
+                  "title": "My Study",
+                  "metadata": {},
+                  "type": "VERSIVE_STUDY",
+                  "mode": "TEXT_AND_VOICE",
+                  "created_at": "2024-01-01T00:00:00Z",
+                  "description": "A study about preferences.",
+                  "config": {
+                    "interviewName": "Interviewer",
+                    "primaryColor": "#0E9489"
+                  },
+                  "welcome_message": {
+                    "title": "Welcome",
+                    "body": "Thanks for participating."
+                  },
+                  "thank_you_message": {
+                    "title": "Thank You",
+                    "body": "Goodbye."
+                  },
+                  "screen_out_message": {
+                    "title": "Screened Out",
+                    "body": "Sorry."
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Studies"
+        ],
+        "summary": "Update Study",
+        "operationId": "update_study_api_v1_studies__id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStudyReqV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "id": "study_123",
+                  "title": "My Study",
+                  "metadata": {},
+                  "type": "VERSIVE_STUDY",
+                  "mode": "TEXT_AND_VOICE",
+                  "created_at": "2024-01-01T00:00:00Z",
+                  "description": "A study about preferences.",
+                  "config": {
+                    "interviewName": "Interviewer",
+                    "primaryColor": "#0E9489"
+                  },
+                  "welcome_message": {
+                    "title": "Welcome",
+                    "body": "Thanks for participating."
+                  },
+                  "thank_you_message": {
+                    "title": "Thank You",
+                    "body": "Goodbye."
+                  },
+                  "screen_out_message": {
+                    "title": "Screened Out",
+                    "body": "Sorry."
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/studies/{study_id}/ai-edit": {
+      "post": {
+        "tags": [
+          "Studies"
+        ],
+        "summary": "Ai Edit Study",
+        "operationId": "ai_edit_study_api_v1_studies__study_id__ai_edit_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Study Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIEditRequestV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AIEditResponseV1"
+                },
+                "example": {
+                  "questions": [
+                    {
+                      "id": "q_new_1",
+                      "content": "What is your experience level?",
+                      "type": "text",
+                      "is_new": true
+                    }
+                  ],
+                  "change_log": {
+                    "summary": "Added a question about experience."
+                  },
+                  "deleted_questions": []
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/studies/{study_id}/agent": {
+      "post": {
+        "tags": [
+          "Studies"
+        ],
+        "summary": "Agent Edit Study",
+        "description": "Execute AI-powered study editing with auto-save.\n\nThis endpoint:\n1. Loads study from database\n2. Executes agent with 20-tool toolpack (add/edit/remove questions, logic, assets, settings)\n3. Automatically saves all mutations to database\n4. Returns updated study state\n\nError handling: Full transaction rollback if any mutation fails.\n\nArgs:\n    study_id: Study ID to edit\n    request: Agent edit request with message, language, and optional documents\n    supabase: Supabase service account client (injected)\n    organization_id: Organization ID from API key (injected)\n\nReturns:\n    AgentEditResponseV1 with updated questions, logic, settings, and change log\n\nRaises:\n    HTTPException: 404 if study not found, 403 if forbidden, 500 if error",
+        "operationId": "agent_edit_study_api_v1_studies__study_id__agent_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Study Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentEditRequestV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentEditResponseV1"
+                },
+                "example": {
+                  "message": "I have updated the study as requested.",
+                  "questions": [
+                    {
+                      "id": "q_123",
+                      "content": "Updated content?",
+                      "type": "text"
+                    }
+                  ],
+                  "logic": [],
+                  "study_settings": {
+                    "primaryColor": "#000000"
+                  },
+                  "changes": [
+                    {
+                      "question_id": "q_123",
+                      "change_type": "edited",
+                      "description": "Changed question text."
+                    }
+                  ],
+                  "deleted_question_ids": []
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/folders": {
+      "get": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Get Folders",
+        "operationId": "get_folders_api_v1_folders_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": [
+                  {
+                    "id": "folder_123",
+                    "name": "My Folder",
+                    "created_at": "2024-01-01T00:00:00Z"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Create Folder",
+        "operationId": "create_folder_api_v1_folders_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFolderReqV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": {
+                  "id": "folder_123",
+                  "name": "My Folder",
+                  "created_at": "2024-01-01T00:00:00Z"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/questions": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "summary": "Get Questions",
+        "operationId": "get_questions_api_v1_questions_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the study to retrieve questions for",
+              "title": "Study Id"
+            },
+            "description": "ID of the study to retrieve questions for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": [
+                  {
+                    "id": "q_123",
+                    "content": "What is your favorite color?",
+                    "type": "text",
+                    "interviewer_notes": "Ask about shade.",
+                    "display_order": 1,
+                    "props": {},
+                    "assets": [],
+                    "logic": [
+                      {
+                        "id": "logic_123",
+                        "study_id": "study_123",
+                        "question_id": "q_123",
+                        "operation": "equals",
+                        "comparison_value": "Blue",
+                        "comparison_value_type": "text",
+                        "next_question_id": "q_125",
+                        "redirect_url": null,
+                        "end_interview": false,
+                        "action_type": "skip_to",
+                        "language": "English"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/questions/batch": {
+      "post": {
+        "tags": [
+          "Questions"
+        ],
+        "summary": "Create Questions Batch",
+        "operationId": "create_questions_batch_api_v1_questions_batch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBatchQuestionsReqV1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBatchQuestionsResponseV1"
+                },
+                "example": {
+                  "created_question_ids": [
+                    "q_123",
+                    "q_124"
+                  ],
+                  "updated_question_ids": [
+                    "q_100"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/questions/{question_id}": {
+      "put": {
+        "tags": [
+          "Questions"
+        ],
+        "summary": "Update Question",
+        "operationId": "update_question_api_v1_questions__question_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuestionReqV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Questions"
+        ],
+        "summary": "Delete Question",
+        "operationId": "delete_question_api_v1_questions__question_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/question-logic": {
+      "get": {
+        "tags": [
+          "Question Logic"
+        ],
+        "summary": "Get Question Logic",
+        "operationId": "get_question_logic_api_v1_question_logic_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "question_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the question to retrieve logic for",
+              "title": "Question Id"
+            },
+            "description": "ID of the question to retrieve logic for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {},
+                "example": [
+                  {
+                    "id": "logic_123",
+                    "study_id": "study_123",
+                    "question_id": "q_123",
+                    "operation": "equals",
+                    "comparison_value": "yes",
+                    "comparison_value_type": "text",
+                    "next_question_id": "q_124",
+                    "redirect_url": null,
+                    "end_interview": false,
+                    "action_type": "skip_to",
+                    "language": "English"
+                  }
+                ]
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
                 }
               }
             }
@@ -60,35 +1219,66 @@
         }
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "tags": [
+          "Question Logic"
+        ],
+        "summary": "Create Question Logic",
+        "operationId": "create_question_logic_api_v1_question_logic_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "requestBody": {
-          "description": "Plant to add to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/CreateQuestionLogicReqV1"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "200": {
-            "description": "plant response",
+          "201": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                "schema": {},
+                "example": {
+                  "id": "logic_123",
+                  "study_id": "study_123",
+                  "question_id": "q_123",
+                  "operation": "equals",
+                  "comparison_value": "yes",
+                  "comparison_value_type": "text",
+                  "next_question_id": "q_124",
+                  "redirect_url": null,
+                  "end_interview": false,
+                  "action_type": "skip_to",
+                  "language": "English"
                 }
               }
             }
           },
-          "400": {
-            "description": "unexpected error",
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
                 }
               }
             }
@@ -96,57 +1286,114 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/api/v1/question-logic/{logic_id}": {
+      "put": {
+        "tags": [
+          "Question Logic"
+        ],
+        "summary": "Update Question Logic",
+        "operationId": "update_question_logic_api_v1_question_logic__logic_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
-            "name": "id",
+            "name": "logic_id",
             "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "title": "Logic Id"
             }
           }
         ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/UpdateQuestionLogicReqV1"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Question Logic"
+        ],
+        "summary": "Delete Question Logic",
+        "operationId": "delete_question_logic_api_v1_question_logic__logic_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "logic_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Logic Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                },
+                "example": {
+                  "detail": [
+                    {
+                      "loc": [
+                        "body",
+                        "title"
+                      ],
+                      "msg": "field required",
+                      "type": "value_error.missing"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -154,61 +1401,707 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "AIEditRequestV1": {
+        "properties": {
+          "current_message": {
+            "type": "string",
+            "title": "Current Message"
+          },
+          "questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_message",
+          "questions",
+          "language"
+        ],
+        "title": "AIEditRequestV1"
+      },
+      "AIEditResponseV1": {
+        "properties": {
+          "questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "change_log": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Change Log"
+          },
+          "deleted_questions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Deleted Questions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "questions",
+          "change_log",
+          "deleted_questions"
+        ],
+        "title": "AIEditResponseV1"
+      },
+      "AgentEditRequestV1": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "AgentEditRequestV1",
+        "description": "Request for public v1 agent endpoint."
+      },
+      "AgentEditResponseV1": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "logic": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Logic"
+          },
+          "study_settings": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Study Settings"
+          },
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionChange"
+            },
+            "type": "array",
+            "title": "Changes"
+          },
+          "deleted_question_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Deleted Question Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "questions",
+          "logic",
+          "changes",
+          "deleted_question_ids"
+        ],
+        "title": "AgentEditResponseV1",
+        "description": "Response from public v1 agent endpoint."
+      },
+      "CreateBatchQuestionsReqV1": {
+        "properties": {
+          "questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Questions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "questions"
+        ],
+        "title": "CreateBatchQuestionsReqV1"
+      },
+      "CreateBatchQuestionsResponseV1": {
+        "properties": {
+          "created_question_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Created Question Ids"
+          },
+          "updated_question_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Updated Question Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created_question_ids",
+          "updated_question_ids"
+        ],
+        "title": "CreateBatchQuestionsResponseV1"
+      },
+      "CreateFolderReqV1": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "access_policy": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "FULL_ACCESS",
+                  "CAN_EDIT",
+                  "CAN_VIEW",
+                  "INVITE_ONLY",
+                  "CAN_EDIT_SURVEY_ONLY"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Policy",
+            "default": "FULL_ACCESS"
+          }
+        },
+        "type": "object",
         "required": [
           "name"
         ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
+        "title": "CreateFolderReqV1"
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "CreateInterviewReqV1": {
+        "properties": {
+          "study_id": {
+            "type": "string",
+            "title": "Study Id"
           },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
               }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+            ],
+            "title": "Metadata"
           },
-          "message": {
-            "type": "string"
+          "language": {
+            "type": "string",
+            "title": "Language",
+            "default": "English"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "study_id"
+        ],
+        "title": "CreateInterviewReqV1"
+      },
+      "CreateQuestionLogicReqV1": {
+        "properties": {
+          "study_id": {
+            "type": "string",
+            "title": "Study Id"
+          },
+          "question_id": {
+            "type": "string",
+            "title": "Question Id"
+          },
+          "operation": {
+            "type": "string",
+            "title": "Operation"
+          },
+          "comparison_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison Value"
+          },
+          "comparison_value_type": {
+            "type": "string",
+            "title": "Comparison Value Type"
+          },
+          "next_question_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Question Id"
+          },
+          "redirect_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Redirect Url"
+          },
+          "end_interview": {
+            "type": "boolean",
+            "title": "End Interview",
+            "default": false
+          },
+          "action_type": {
+            "type": "string",
+            "title": "Action Type"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language",
+            "default": "English"
+          }
+        },
+        "type": "object",
+        "required": [
+          "study_id",
+          "question_id",
+          "operation",
+          "comparison_value_type",
+          "action_type"
+        ],
+        "title": "CreateQuestionLogicReqV1"
+      },
+      "CreateStudyReqV1": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "default": "VERSIVE_STUDY"
+          },
+          "mode": {
+            "type": "string",
+            "title": "Mode",
+            "default": "TEXT_AND_VOICE"
+          },
+          "welcome_message": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Welcome Message"
+          },
+          "thank_you_message": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thank You Message"
+          },
+          "screen_out_message": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Screen Out Message"
+          },
+          "folder_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Folder Id"
+          },
+          "insights": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Insights"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "title": "CreateStudyReqV1"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "QuestionChange": {
+        "properties": {
+          "question_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Id"
+          },
+          "change_type": {
+            "type": "string",
+            "title": "Change Type"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "change_type",
+          "description"
+        ],
+        "title": "QuestionChange",
+        "description": "Individual change for the changes log."
+      },
+      "UpdateInterviewReqV1": {
+        "properties": {
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "title": "UpdateInterviewReqV1"
+      },
+      "UpdateQuestionLogicReqV1": {
+        "properties": {
+          "operation": {
+            "type": "string",
+            "title": "Operation"
+          },
+          "comparison_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison Value",
+            "default": ""
+          },
+          "comparison_value_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison Value Type",
+            "default": ""
+          },
+          "next_question_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Question Id",
+            "default": ""
+          },
+          "redirect_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Redirect Url",
+            "default": ""
+          },
+          "end_interview": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Interview",
+            "default": false
+          },
+          "action_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Type",
+            "default": ""
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language",
+            "default": "English"
+          }
+        },
+        "type": "object",
+        "required": [
+          "operation"
+        ],
+        "title": "UpdateQuestionLogicReqV1"
+      },
+      "UpdateQuestionReqV1": {
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "interviewer_notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interviewer Notes"
+          },
+          "display_order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Order"
+          },
+          "props": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Props"
+          }
+        },
+        "type": "object",
+        "title": "UpdateQuestionReqV1"
+      },
+      "UpdateStudyReqV1": {
+        "properties": {
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config"
+          }
+        },
+        "type": "object",
+        "title": "UpdateStudyReqV1"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
+      "HTTPBearer": {
         "type": "http",
         "scheme": "bearer"
       }

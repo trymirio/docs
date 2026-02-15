@@ -1,4 +1,14 @@
 ---
-title: 'Create Study'
-openapi: 'POST /api/v1/studies'
+title: "Create Study"
+openapi: "POST /api/v1/studies"
 ---
+
+Use this endpoint to create a new study. A study is a container for interviews and configurations.
+
+You can specify:
+- `title`: The name of your study.
+- `description`: A brief description of the study's purpose.
+- `config`: Configuration options like `interviewName`, `primaryColor`, and more.
+- `metadata`: Custom key-value pairs for your internal tracking.
+
+Once created, you can retrieve the study ID to manage questions and interviews.
