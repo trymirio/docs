@@ -1,0 +1,55 @@
+---
+title: "Python SDK"
+description: "Integrate Versive into your Python applications"
+---
+
+## Installation
+
+Install the Versive Python SDK using pip:
+
+```bash
+pip install versive
+```
+
+## Initialization
+
+Initialize the client with your API key:
+
+```python
+from versive import Versive
+
+client = Versive(api_key="YOUR_API_KEY")
+```
+
+## Usage Example
+
+### List Studies
+
+```python
+studies = client.studies.list()
+for study in studies:
+    print(study.get("name"))
+```
+
+### Create an Interview
+
+```python
+interview = client.interviews.create(
+    data={
+        "study_id": "study_123",
+        "respondent_name": "John Doe"
+    }
+)
+print(f"Interview created")
+```
+
+### Update a Study
+
+```python
+client.studies.update(
+    id="study_123",
+    data={
+        "name": "New Study Name"
+    }
+)
+```

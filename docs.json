@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Versive",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -14,109 +14,89 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Introduction",
             "pages": [
               "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "quickstart"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "SDKs",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Client Libraries",
+            "pages": [
+              "sdks/python",
+              "sdks/typescript"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Interviews",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/interviews/get-interview-by-id-api-v1-interviews--id--get",
+              "api-reference/interviews/update-interview-api-v1-interviews--id--put",
+              "api-reference/interviews/create-interview-api-v1-interviews-post",
+              "api-reference/interviews/get-interview-by-vid-api-v1-interviews-get"
+            ]
+          },
+          {
+            "group": "Studies",
+            "pages": [
+              "api-reference/studies/get-studies-api-v1-studies-get",
+              "api-reference/studies/create-study-api-v1-studies-post",
+              "api-reference/studies/get-study-by-id-api-v1-studies--id--get",
+              "api-reference/studies/update-study-api-v1-studies--id--put",
+              "api-reference/studies/ai-edit-study-api-v1-studies--study-id--ai-edit-post",
+              "api-reference/studies/agent-edit-study-api-v1-studies--study-id--agent-post"
+            ]
+          },
+          {
+            "group": "Folders",
+            "pages": [
+              "api-reference/folders/get-folders-api-v1-folders-get",
+              "api-reference/folders/create-folder-api-v1-folders-post"
+            ]
+          },
+          {
+            "group": "Questions",
+            "pages": [
+              "api-reference/questions/get-questions-api-v1-questions-get",
+              "api-reference/questions/create-questions-batch-api-v1-questions-batch-post",
+              "api-reference/questions/update-question-api-v1-questions--question-id--put",
+              "api-reference/questions/delete-question-api-v1-questions--question-id--delete"
+            ]
+          },
+          {
+            "group": "Question Logic",
+            "pages": [
+              "api-reference/question logic/get-question-logic-api-v1-question-logic-get",
+              "api-reference/question logic/create-question-logic-api-v1-question-logic-post",
+              "api-reference/question logic/update-question-logic-api-v1-question-logic--logic-id--put",
+              "api-reference/question logic/delete-question-logic-api-v1-question-logic--logic-id--delete"
             ]
           }
         ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+      "anchors": []
     }
   },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
   }
 }

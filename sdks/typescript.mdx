@@ -1,0 +1,56 @@
+---
+title: "TypeScript SDK"
+description: "Integrate Versive into your JavaScript and TypeScript applications"
+---
+
+## Installation
+
+Install the Versive TypeScript SDK using npm or yarn:
+
+```bash
+npm install @versive/sdk
+# or
+yarn add @versive/sdk
+```
+
+## Initialization
+
+Initialize the client with your API key:
+
+```typescript
+import { VersiveClient } from '@versive/sdk';
+
+const client = new VersiveClient({
+  BASE: "https://api.versive.com",
+  TOKEN: "YOUR_API_KEY"
+});
+```
+
+## Usage Example
+
+### List Studies
+
+```typescript
+const response = await client.studies.getStudiesApiV1StudiesGet();
+console.log(response);
+```
+
+### Create an Interview
+
+```typescript
+const interview = await client.interviews.createInterviewApiV1InterviewsPost({
+  study_id: 'study_123',
+  respondent_name: 'John Doe'
+});
+
+console.log(`Interview created`);
+```
+
+### Update a Study
+
+```typescript
+await client.studies.updateStudyApiV1StudiesIdPut('study_123', {
+  name: 'New Study Name',
+  description: 'Updated description'
+});
+```

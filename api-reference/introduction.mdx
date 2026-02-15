@@ -1,33 +1,22 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Versive API Reference'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Overview
 
-## Welcome
+The Versive API provides programmatic access to the Versive platform features, including interviews, studies, and user management.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+All API endpoints are documented below. You can also view the full [OpenAPI specification](openapi.json).
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+## Base URL
+
+The API is served at `/api/v1`. All endpoints are relative to this path.
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+The Versive API uses Bearer Token authentication. You must include the `Authorization` header in your requests.
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```bash
+Authorization: Bearer <your_token>
 ```
