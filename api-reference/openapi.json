@@ -121,6 +121,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateInterviewReqV1"
+              },
+              "example": {
+                "status": "completed"
               }
             }
           }
@@ -180,6 +183,12 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateInterviewReqV1"
+              },
+              "example": {
+                "study_id": "study_123",
+                "title": "New Interview",
+                "metadata": {},
+                "language": "English"
               }
             }
           }
@@ -375,6 +384,12 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateStudyReqV1"
+              },
+              "example": {
+                "title": "New Study",
+                "description": "A study about...",
+                "type": "VERSIVE_STUDY",
+                "mode": "TEXT_AND_VOICE"
               }
             }
           },
@@ -553,6 +568,11 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateStudyReqV1"
+              },
+              "example": {
+                "config": {
+                  "primaryColor": "#FF0000"
+                }
               }
             }
           }
@@ -645,6 +665,11 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/AIEditRequestV1"
+              },
+              "example": {
+                "current_message": "Add a question about age",
+                "questions": [],
+                "language": "English"
               }
             }
           }
@@ -729,6 +754,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/AgentEditRequestV1"
+              },
+              "example": {
+                "message": "Change the theme to dark mode and add a question about hobbies."
               }
             }
           }
@@ -832,6 +860,10 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateFolderReqV1"
+              },
+              "example": {
+                "name": "My New Folder",
+                "access_policy": "FULL_ACCESS"
               }
             }
           },
@@ -978,6 +1010,26 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateBatchQuestionsReqV1"
+              },
+              "example": {
+                "questions": [
+                  {
+                    "study_id": "study_123",
+                    "content": "Question 1",
+                    "type": "text"
+                  },
+                  {
+                    "study_id": "study_123",
+                    "content": "Question 2",
+                    "type": "choice",
+                    "props": {
+                      "options": [
+                        "A",
+                        "B"
+                      ]
+                    }
+                  }
+                ]
               }
             }
           },
@@ -1062,6 +1114,11 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateQuestionReqV1"
+              },
+              "example": {
+                "content": "Updated content?",
+                "type": "text",
+                "interviewer_notes": "Ask specifically about..."
               }
             }
           }
@@ -1235,6 +1292,15 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateQuestionLogicReqV1"
+              },
+              "example": {
+                "study_id": "study_123",
+                "question_id": "q_123",
+                "operation": "equals",
+                "comparison_value": "yes",
+                "comparison_value_type": "text",
+                "next_question_id": "q_124",
+                "action_type": "skip_to"
               }
             }
           }
@@ -1315,6 +1381,10 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateQuestionLogicReqV1"
+              },
+              "example": {
+                "operation": "not_equals",
+                "comparison_value": "no"
               }
             }
           }
