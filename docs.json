@@ -4,9 +4,9 @@
   "name": "Versive",
   "openapi": "api-reference/openapi.json",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#0D9488",
+    "light": "#14B8A6",
+    "dark": "#0F766E"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -18,7 +18,8 @@
             "group": "Introduction",
             "pages": [
               "index",
-              "quickstart"
+              "quickstart",
+              "webhooks"
             ]
           }
         ]

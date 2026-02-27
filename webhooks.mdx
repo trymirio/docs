@@ -1,0 +1,88 @@
+---
+title: "Webhooks"
+description: "Receive interview completion events in your systems"
+---
+
+## Overview
+
+Versive can send webhooks when interviews are completed.
+
+Webhooks are emitted after interview enrichment, so each event includes transcript data and parsed conversation content.
+
+## Event Types
+
+Currently supported events:
+
+- `interview.completed`
+
+Notes:
+
+- Screened-out interviews are not delivered as webhooks.
+- Webhooks are configured at the organization level.
+
+## Payload
+
+Webhook request bodies use this shape:
+
+```json
+{
+  "event_type": "interview.completed",
+  "interview": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "title": "My Study/study_123/3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "status": "closed",
+    "is_mock": false,
+    "is_archived": false,
+    "created_at": "2024-01-01T00:00:00Z",
+    "started_at": "2024-01-01T00:00:12Z",
+    "ended_at": "2024-01-01T00:09:41Z",
+    "type": "VERSIVE",
+    "metadata": {},
+    "active_time": 569,
+    "recording_url": "https://...",
+    "transcript": "...",
+    "parsed_conversation_json": [
+      {
+        "role": "assistant",
+        "content": "Hello, and thanks for joining."
+      },
+      {
+        "role": "user",
+        "content": "Happy to help."
+      }
+    ],
+    "vid": "vid_123"
+  },
+  "study": {
+    "id": "study_123",
+    "title": "My Study",
+    "metadata": {},
+    "type": "VERSIVE_STUDY",
+    "mode": "TEXT_AND_VOICE",
+    "created_at": "2024-01-01T00:00:00Z"
+  }
+}
+```
+
+Field notes:
+
+- `recording_url` can be `null` if no generated recording is available.
+- `started_at` and `ended_at` are derived from the first and last interview messages when available.
+
+## Delivery and Verification
+
+Versive uses Svix for webhook delivery.
+
+You should verify signatures on every request using Svix headers:
+
+- `svix-id`
+- `svix-timestamp`
+- `svix-signature`
+
+Use your Svix endpoint secret and the official Svix verification libraries.
+
+## Reliability
+
+- Events are sent with a stable event identity to support idempotent handling.
+- Duplicate send attempts are deduplicated.
+- If you need replay support for failed deliveries, contact the Versive team.

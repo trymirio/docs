@@ -4,6 +4,11 @@
     "title": "FastAPI",
     "version": "0.1.0"
   },
+  "servers": [
+    {
+      "url": "https://api.getversive.com"
+    }
+  ],
   "paths": {
     "/api/v1/interviews/{id}": {
       "get": {
