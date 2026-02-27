@@ -63,7 +63,7 @@
                   "parsed_conversation_json": {},
                   "recording_id": "rec_123",
                   "active_time": 600,
-                  "link": "https://app.getversive.com/s/study_id?vid=vid_123",
+                  "link": "https://getversive.com/s/study_id?vid=vid_123",
                   "vid": "vid_123"
                 }
               }
@@ -204,7 +204,7 @@
                   "title": "New Interview",
                   "study_id": "study_123",
                   "metadata": {},
-                  "link": "https://app.getversive.com/s/study_123?vid=vid_123",
+                  "link": "https://getversive.com/s/study_123?vid=vid_123",
                   "status": "open",
                   "created_at": "2024-01-01T00:00:00Z"
                 }
@@ -292,7 +292,7 @@
                   "parsed_conversation_json": {},
                   "recording_id": "rec_123",
                   "active_time": 600,
-                  "link": "https://app.getversive.com/s/study_id?vid=vid_123",
+                  "link": "https://getversive.com/s/study_id?vid=vid_123",
                   "vid": "vid_123"
                 }
               }
