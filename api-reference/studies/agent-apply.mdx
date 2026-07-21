@@ -1,0 +1,29 @@
+---
+title: "Apply agent mutations"
+api: "POST /studies/{study_id}/agent/apply"
+description: "Persist mutations from a previewed agent edit"
+---
+
+Applies a `mutations` list previously returned by [Edit study with AI agent](/api-reference/studies/agent-edit) with `auto_save: false`. All mutations are applied transactionally — if any fail, everything rolls back.
+
+<ParamField path="study_id" type="string" required>
+  The study ID.
+</ParamField>
+<ParamField body="mutations" type="Mutation[]" required>
+  The mutations array from the agent response, unchanged.
+</ParamField>
+
+### Response
+
+Same shape as the agent edit response — the applied `mutations`, resulting `questions` and `logic`, `study_settings`, and any `broken_mentions`.
+
+<RequestExample>
+```bash cURL
+# Save the preview response's mutations array to mutations.json first:
+#   { "mutations": [ ... ] }
+curl -X POST https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/agent/apply \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d @mutations.json
+```
+</RequestExample>

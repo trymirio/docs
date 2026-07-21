@@ -1,0 +1,41 @@
+---
+title: "The AI interviewer"
+description: "Configure how Versive's AI moderator conducts your interviews"
+---
+
+The AI interviewer is the conversational moderator that runs your study: it asks your questions, listens, probes with follow-ups, and keeps the conversation on track. Everything about its behavior is configurable in **Settings → AI Interviewer**.
+
+<Callout icon="info-circle" color="#71717a">
+The AI Interviewer tab is hidden for studies using the **Survey** engine, since surveys don't have conversational questions.
+</Callout>
+
+## Interviewer mode
+
+| Mode | Behavior |
+| --- | --- |
+| **Quality** (default) | Smarter, more natural follow-up questions — best results for depth interviews. |
+| **Fast** | Quicker and more scripted — good for short studies where speed matters. |
+
+## Personality & guidelines
+
+- **Description** (up to 900 characters) — the interviewer's persona: tone, role, and style. For example, a warm UX researcher, or a neutral market-research moderator.
+- **Guidelines** (up to 3,000 characters) — behavioral rules for the whole interview. When set, your guidelines replace Versive's defaults, so include everything you care about (probing style, what to avoid, how to handle off-topic answers).
+
+## Question rephrasing
+
+By default the AI may **rephrase the next question** so it flows naturally from the conversation ("You mentioned onboarding was confusing — walk me through what happened when…"). You can:
+
+- Turn rephrasing off entirely if exact wording matters (e.g. standardized instruments).
+- Add **rephrasing instructions** (up to 300 characters) to constrain how questions may be reworded.
+
+## Follow-ups
+
+Follow-up behavior is configured per question — see the [AI Question settings](/studies/question-types#ai-question) for follow-up limits, instructions, and duration targets.
+
+## Transcription keywords
+
+Under **Advanced → Keywords**, add domain-specific terms — company names, product names, industry jargon — to improve voice transcription accuracy.
+
+## Voice settings
+
+For realtime voice-to-voice studies, tune the **silence threshold** (0.5–5 seconds, default 1.5) that controls how long the AI waits after the participant stops speaking before responding.

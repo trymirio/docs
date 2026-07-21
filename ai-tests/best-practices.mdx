@@ -1,0 +1,32 @@
+---
+title: "Getting the most from AI tests"
+sidebarTitle: "Best practices"
+description: "Features worth turning on, and how experienced teams run their tests"
+---
+
+## Set up personas like a qual study
+
+- **Build personas from real research data.** Upload interview transcripts, survey exports, or research docs and let Versive [distill them](/ai-tests/personas) — a persona grounded in real quotes and numbers behaves far more specifically than one written from imagination.
+- **Treat personas like human qualitative research.** You can learn from a sample size of one — a single run will surface real issues. But aim for **3–5 executions per persona** so the aggregated summary can group findings and show you which ones are stable versus one-off.
+- **Test with more than one persona.** Results are attributed per persona, so running your skeptical novice alongside your power user shows you where their experiences diverge.
+
+## Scope the test tightly
+
+- **Test small flows and tasks, not open-ended tours.** "Sign up and invite a teammate" produces attributable findings; "explore the app" produces noise. Run several small tests instead of one big one.
+- **Keep Figma files clean.** Import only the frames you actually want tested, in the order you want them seen — stray exploration screens and dead-end frames read as usability failures.
+- **Have placeholder content? Turn on the content-accuracy flag.** The [*ignore content accuracy*](/ai-tests/figma-and-image-tests#test-configuration) setting tells the AI to disregard lorem ipsum and dummy data and focus on structure and flow — without it, placeholder content gets flagged as confusing.
+
+## Pick the right mode
+
+- **Conversational tests simulate real user interviews.** Use them when you want reactions, expectations, and the *why* behind problems — and add a per-screen interview script for the screens you're most worried about.
+- **Expert audits give design-review-style feedback.** A systematic pass against Nielsen's heuristics (or your own design-system rules as [custom heuristics](/ai-tests/test-modes#expert-audit-heuristic-evaluation)) — great before design reviews.
+- **Use SUS to compare across concepts.** Enable the [SUS questionnaire](/ai-tests/test-modes#sus-questionnaires) on a fixed test setup and re-run it per concept or design iteration — the 0–100 score gives you a consistent yardstick. Read it relatively (A vs. B), not as an absolute benchmark.
+
+## Iterate inside the project
+
+- **Add more test runs anytime.** A project isn't one-and-done — after reading the first results, add runs with new personas or more executions to the same project and regenerate the summary.
+- **Test iterations in the same project.** When the design changes, run a new round of tests in the same project with the same personas — comparing rounds shows you whether the fixes actually landed.
+
+## Know what AI tests are best at
+
+AI tests excel at uncovering **usability, product, and design improvements** — confusing flows, unclear copy, missing affordances, heuristic violations — in minutes instead of weeks. Treat findings as hypotheses ranked by likelihood: for higher-risk decisions, or research into real-world behavior, attitudes, and willingness to pay, validate with real participants in a [study](/studies/overview).

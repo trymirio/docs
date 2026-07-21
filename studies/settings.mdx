@@ -1,0 +1,66 @@
+---
+title: "Study settings"
+description: "Every study-level setting, tab by tab"
+---
+
+Study settings live in the settings panel on the study page, organized into tabs: **General**, **Sharing**, **AI Interviewer**, **Branding**, **Languages**, and **Notifications**. This page covers everything except the [AI Interviewer](/studies/ai-interviewer) and [Languages](/studies/languages) tabs, which have their own pages.
+
+## General
+
+| Setting | Description |
+| --- | --- |
+| Study name | The internal title of your study. |
+| Interview engine | **Regular AI** (1 credit per completion), **Realtime AI** (Beta, 2 credits), or **Survey** (no AI questions; uses discounted survey credits). You can't switch to Survey while the study still contains conversational questions (AI Question or Exploratory). |
+| Conversation mode | Text only, Text and voice, Voice with preview, or Video (Regular engine); Text only or Voice to voice (Realtime engine). |
+| Silence threshold | Voice-to-voice only: how long the AI waits after the participant stops speaking (0.5–5 s, default 1.5 s). |
+| Require device | Any device, Desktop only, or Mobile only. |
+| Record user screens | Desktop only. Choose **Browser tab** or **Full screen** recording permissions. |
+
+### Advanced settings
+
+| Setting | Description |
+| --- | --- |
+| Show voice tooltip | Prompt participants that they can answer by voice (non-voice modes). |
+| Allow copy and paste | Off by default — keeping it off deters low-effort or AI-generated text answers. |
+| Beta transcription models | Use the newest transcription models first. |
+| Customize support email | Replace the default support contact shown to participants. |
+| Show estimated completion time | Display the expected length of the study on the welcome screen. |
+| Project ID | Read-only study identifier — used with the [API](/api-reference/introduction) and [Embed SDK](/sdk/overview). |
+
+## Sharing & participants
+
+| Setting | Description |
+| --- | --- |
+| Project status | **Live** (accepting participants) or **Paused**. |
+| Quota | Cap the number of completions. When the quota is reached, new participants are sent to your pause URL. |
+| Custom pause URL | Where participants land when the study is paused or full. Must be `https://`, and supports `{param}` placeholders that pass through URL parameters — useful for panel-provider redirects. |
+| Unique identifier | The URL parameter name you use to identify participants (e.g. `uid`). Enables per-participant tracking and cross-device resume. Share links as `…/s/{studyId}?uid=12345`. |
+
+## Branding
+
+| Setting | Description |
+| --- | --- |
+| Interviewer avatar | Upload a custom avatar image for the AI interviewer. |
+| Interviewer name | The name participants see in the conversation. |
+| Primary color | The accent color of the participant experience (default `#00786F`). |
+| Hide Versive branding | Removes "Powered by Versive" from the participant experience. Available on eligible plans. |
+
+## Study messages
+
+Three fixed messages frame every study. Each is fully editable and translated along with your questions:
+
+- **Welcome message** — title, body, and call-to-action button text shown before the study starts.
+- **Thank-you message** — title, body, and an optional CTA link shown on completion.
+- **Screen-out message** — what disqualified participants see, with an optional CTA link.
+
+## Notifications
+
+Get notified when an interview completes:
+
+- **Email** — send to one or more addresses.
+- **Slack** — post to a channel via an incoming webhook URL.
+- **Webhooks** — call your own endpoint, for custom workflows.
+
+## Access policy
+
+Each study has an access policy that sets the default level of access for organization members: **Full access**, **Can edit**, **Can view**, or **Invite only**. Combine with per-user [study roles](/platform/folders-and-permissions) for finer control.

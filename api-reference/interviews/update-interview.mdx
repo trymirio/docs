@@ -1,0 +1,27 @@
+---
+title: "Update interview"
+api: "PUT /interviews/{id}"
+description: "Update an interview's status"
+---
+
+Updates an interview's status — for example, to cancel a link you no longer want used.
+
+<ParamField path="id" type="string" required>The interview ID.</ParamField>
+<ParamField body="status" type="string">
+  One of `open`, `in_progress`, `paused`, `processing`, `closed`, `screened_out`, `canceled`. Omitting it makes the request a no-op.
+</ParamField>
+
+### Response
+
+```json
+{ "message": "Interview updated successfully" }
+```
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/interviews/5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "canceled" }'
+```
+</RequestExample>

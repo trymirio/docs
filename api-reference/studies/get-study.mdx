@@ -1,0 +1,20 @@
+---
+title: "Get study"
+api: "GET /studies/{id}"
+description: "Fetch a single study"
+---
+
+<ParamField path="id" type="string" required>
+  The study ID.
+</ParamField>
+
+### Response
+
+The study object: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `thank_you_message`, `screen_out_message`, `created_at`.
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

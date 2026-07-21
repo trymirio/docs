@@ -1,0 +1,36 @@
+---
+title: "Languages & translations"
+description: "Run one study in up to 20 languages with AI translation"
+---
+
+Versive can automatically translate your entire study — all questions, plus the welcome, thank-you, and screen-out messages — into 20 languages:
+
+Arabic, Chinese, Dutch, English, Finnish, French, German, Hindi, Indonesian, Italian, Japanese, Korean, Polish, Portuguese, Russian, Spanish, Swedish, Turkish, Ukrainian, and Vietnamese.
+
+## Language settings
+
+Configure languages in **Settings → Languages** (editable while building the study):
+
+| Setting | Description |
+| --- | --- |
+| **Default language** | The language the study was written in. |
+| **Supported languages** | The languages participants can switch between while taking the study. |
+| **Starting language** | The language participants see first when they open the study. Falls back to the default language if unset. |
+
+### Per-link language override
+
+You can also set the starting language per link by appending `?lang=<code>` to the study URL — handy when you're sending different language cohorts their own links:
+
+```
+https://getversive.com/s/your-study-id?lang=de
+```
+
+## Reviewing translations
+
+AI translations are editable: review any question's translated text and adjust wording where needed. Manually edited translations are tracked so re-translating the study won't overwrite your edits. Translation status per language is visible while the study translates in the background.
+
+Question media assets can also have **per-language variants**, so German participants can see a German screenshot while French participants see a French one.
+
+## Translations via the API
+
+You can trigger translation and manage translated question text programmatically — see [Translate a study](/api-reference/studies/translate-study) and the [Translated Questions endpoints](/api-reference/translated-questions/list-translated-questions).

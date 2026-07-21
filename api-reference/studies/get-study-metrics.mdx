@@ -1,0 +1,38 @@
+---
+title: "Get study metrics"
+api: "GET /studies/{id}/metrics"
+description: "Response counts and quota for a study"
+---
+
+Returns response counts for a study. Counts exclude archived and mock (simulated) interviews.
+
+<ParamField path="id" type="string" required>
+  The study ID.
+</ParamField>
+
+### Response
+
+<ResponseField name="complete" type="integer">Completed interviews.</ResponseField>
+<ResponseField name="in_progress" type="integer">Interviews currently in progress.</ResponseField>
+<ResponseField name="screened_out" type="integer">Participants screened out by logic rules.</ResponseField>
+<ResponseField name="quota" type="integer | null">The configured completion quota, if any.</ResponseField>
+<ResponseField name="status" type="string">The study status (e.g. `published`, `paused`).</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/metrics \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "complete": 42,
+  "in_progress": 3,
+  "screened_out": 11,
+  "quota": 100,
+  "status": "published"
+}
+```
+</ResponseExample>

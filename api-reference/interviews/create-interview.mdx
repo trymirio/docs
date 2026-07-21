@@ -1,0 +1,59 @@
+---
+title: "Create interview"
+api: "POST /interviews"
+description: "Create an interview and get a personal participant link"
+---
+
+Creates an interview for a study and returns a unique **participant link**. This is the main integration point for inviting participants from your own systems — each interview gets its own `vid` token, so you can track exactly who responded.
+
+<ParamField body="study_id" type="string" required>
+  The study to create the interview in.
+</ParamField>
+<ParamField body="metadata" type="object">
+  Arbitrary key/value data stored with the interview (e.g. your internal user ID, cohort, source). Available in results, filters, and exports.
+</ParamField>
+<ParamField body="title" type="string">
+  A label for the interview (e.g. the participant's reference).
+</ParamField>
+<ParamField body="language" type="string" default="English">
+  Currently only `English` is accepted.
+</ParamField>
+
+### Response
+
+<ResponseField name="id" type="string">The interview ID.</ResponseField>
+<ResponseField name="link" type="string">
+  The personal participant URL — send this to your participant.
+</ResponseField>
+<ResponseField name="study_id" type="string">The study.</ResponseField>
+<ResponseField name="status" type="string">Starts as `open`.</ResponseField>
+<ResponseField name="title" type="string | null" />
+<ResponseField name="metadata" type="object" />
+<ResponseField name="created_at" type="string" />
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/interviews \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+    "title": "Participant #1042",
+    "metadata": { "userId": "u_1042", "cohort": "churned-q2" }
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "id": "5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f",
+  "title": "Participant #1042",
+  "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+  "metadata": { "userId": "u_1042", "cohort": "churned-q2" },
+  "link": "https://getversive.com/s/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b?vid=Xy3...",
+  "status": "open",
+  "created_at": "2026-07-13T10:30:00Z"
+}
+```
+</ResponseExample>

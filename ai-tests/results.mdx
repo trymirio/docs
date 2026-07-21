@@ -1,0 +1,40 @@
+---
+title: "Results & reports"
+description: "What AI test runs produce and how to read them"
+---
+
+## Per-run results
+
+Every persona execution is a **test run** with its own detailed record:
+
+- **Conversational tests** — a full interview transcript per screen (moderator and persona turns), alongside the screen image.
+- **Expert audits** — heuristic-by-heuristic ratings (*Good / Fair / Poor / Not Applicable*) with the specific issues found.
+- **Website tests** — the step-by-step action log with screenshots and reasoning, task completion status with a confidence score, abandonment reason if the persona gave up, and the session video replay.
+- **SUS score** (if enabled) — the persona's questionnaire answers and computed 0–100 score.
+- **Run summary** — key findings plus recommendations prioritized as **P0 (critical), P1 (important), P2 (nice to have)**.
+- **Accessibility analysis** (website tests) — WCAG-based compliance check with an impact breakdown.
+
+Runs progress from *running* to *completed* (or *failed* — a failed run can be retried once, free unless the retry succeeds; prototype runs may be *partially successful* if only some screens complete).
+
+## Aggregated test summary
+
+Above individual runs, each test gets an **aggregated summary** across all personas and executions:
+
+- **Test overview** and an overall **results rating** — *Excellent, Good, Fair, Poor,* or *Critical* — with an explanation.
+- **Key takeaways**, each tagged with sentiment (positive / negative / neutral).
+- **Prioritized recommendations**, linked to the pages or screens they concern and to the supporting runs and quotes — so every recommendation has receipts.
+
+Summaries generate on demand and can be regenerated after you add more runs.
+
+## Sharing & feedback
+
+- **Public result links** — share a read-only view of a test with anyone, no Versive account needed; revocable at any time.
+- **Word & Markdown export** — formatted reports for stakeholders.
+- **Rate the run** — leave a 1–5 star rating and comment on any run; this feedback goes straight to the Versive team.
+
+## Reading AI test results well
+
+- **Treat findings as hypotheses ranked by likelihood, not verdicts.** AI tests are exceptional at surfacing *where* flows confuse and *what* to look at; confirm the highest-stakes findings with a small real-user [study](/studies/overview).
+- **Look for repetition across personas and executions.** An issue that appears in four of five runs is signal; a one-off is a maybe.
+- **Treat priorities as guidelines.** The P0/P1/P2 rankings are the AI's read on severity — read each recommendation and decide whether it matches your own understanding before acting on it.
+- **Read the abandonment reasons.** Where and why the AI gave up on a task is often the single most actionable data point in a website test.

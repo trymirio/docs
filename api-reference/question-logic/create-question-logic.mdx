@@ -1,0 +1,48 @@
+---
+title: "Create question logic"
+api: "POST /question-logic"
+description: "Add a branching rule to a question"
+---
+
+Creates a logic rule. Rules on a question are evaluated top to bottom; the first match wins. Returns `201`.
+
+<ParamField body="study_id" type="string" required>The study.</ParamField>
+<ParamField body="question_id" type="string" required>The question the rule attaches to (must belong to the study).</ParamField>
+<ParamField body="operation" type="string" required>
+  `==`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `ALWAYS`, or `SMART_CONDITION`. (`INCLUDE_RESPONSE_IN_NEXT_QUESTION` is accepted for backwards compatibility but is legacy — use question mentions instead.)
+</ParamField>
+<ParamField body="comparison_value_type" type="string" required>
+  `string`, `int`, or `smart_condition`.
+</ParamField>
+<ParamField body="action_type" type="string" required>
+  `next_question_id`, `end_interview`, `redirect_url`, or `screen_out`.
+</ParamField>
+<ParamField body="comparison_value" type="string">
+  The comparison value — or, for `SMART_CONDITION`, the natural-language condition (e.g. "the participant mentions pricing").
+</ParamField>
+<ParamField body="next_question_id" type="string">
+  Required for `next_question_id` actions; must be a question in the same study.
+</ParamField>
+<ParamField body="redirect_url" type="string">Required for `redirect_url` actions.</ParamField>
+<ParamField body="end_interview" type="boolean" default="false">Set for `end_interview` actions.</ParamField>
+<ParamField body="language" type="string" default="English">The language this rule applies to.</ParamField>
+
+### Response
+
+The created logic rule — same shape as [List question logic](/api-reference/question-logic/list-question-logic).
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/question-logic \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+    "question_id": "q-123",
+    "operation": "<",
+    "comparison_value": "3",
+    "comparison_value_type": "int",
+    "action_type": "screen_out"
+  }'
+```
+</RequestExample>

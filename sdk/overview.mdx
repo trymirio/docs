@@ -1,0 +1,87 @@
+---
+title: "Embed SDK overview"
+sidebarTitle: "Overview"
+description: "Embed Versive studies in any web app with @getversive/embed"
+---
+
+`@getversive/embed` is a lightweight (~4 KB gzipped), zero-dependency JavaScript SDK that embeds Versive studies — text surveys and AI voice/video interviews — directly in your product. The SDK renders the study in an iframe and manages the modal/inline UI, loading states, and a secure `postMessage` event bridge. All study logic, AI moderation, and branding stay server-side; the SDK never touches study content.
+
+<CardGroup cols={2}>
+  <Card title="Embedding studies" icon="app-window" href="/sdk/embedding">
+    Modal and inline modes, zero-code data attributes, and passing context.
+  </Card>
+  <Card title="API reference" icon="code" href="/sdk/reference">
+    Every method, option, event, and error code.
+  </Card>
+</CardGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="npm">
+    ```bash
+    npm install @getversive/embed
+    ```
+
+    ```js
+    import Versive from '@getversive/embed';
+    ```
+  </Tab>
+  <Tab title="Script tag">
+    ```html
+    <script src="https://getversive.com/embed.js"></script>
+    ```
+
+    The script exposes a global `Versive` class and automatically initializes any element with a `data-versive-study` attribute — no JavaScript required.
+  </Tab>
+</Tabs>
+
+## Quick start
+
+### Modal
+
+Open a study in a modal overlay — for example after a user completes an action in your app:
+
+```js
+const versive = Versive.init();
+
+const session = versive.open('your-study-id', {
+  context: { userId: 'user_123', plan: 'pro' },
+});
+
+session.on('complete', ({ interviewId, responseId }) => {
+  console.log('Study completed', interviewId);
+});
+```
+
+### Inline
+
+Embed a study directly in your page. The iframe automatically resizes to fit the study content:
+
+```js
+const versive = Versive.init();
+
+versive.embed('your-study-id', '#survey-container');
+```
+
+### Zero-code (script tag)
+
+With the script tag, you can embed without writing any JavaScript:
+
+```html
+<!-- Inline embed -->
+<div data-versive-study="your-study-id"></div>
+
+<!-- Open in a modal on click -->
+<button data-versive-study="your-study-id" data-versive-mode="modal">
+  Give feedback
+</button>
+```
+
+## Before you ship
+
+<Warning>
+Embedding is disabled until an organization admin adds your site's domain to the **allowed embed domains** list in Versive settings. Studies only render inside iframes on allow-listed origins. See [Security & domains](/sdk/security).
+</Warning>
+
+Voice and video studies also need microphone/camera permissions delegated to the Versive iframe — the SDK sets `allow="microphone; camera"` on the iframe for you, but your own Content Security Policy and Permissions Policy must not block the Versive origin. Details in [Security & domains](/sdk/security).

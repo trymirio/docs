@@ -1,0 +1,18 @@
+---
+title: "Delete question"
+api: "DELETE /questions/{question_id}"
+description: "Remove a question from its study"
+---
+
+Deletes a question (soft delete) and recalculates the study's estimated length. Returns `204 No Content`.
+
+<ParamField path="question_id" type="string" required>
+  The question ID.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.getversive.com/api/v1/questions/q-456 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

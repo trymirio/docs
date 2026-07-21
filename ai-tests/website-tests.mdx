@@ -1,0 +1,36 @@
+---
+title: "Website tests"
+description: "AI users operate a real browser on your live site"
+---
+
+In a website test, an AI persona drives a **real browser** on your live, publicly accessible website, working toward a task you define. You get a step-by-step action log with a screenshot and reasoning for every step, plus a full session recording.
+
+## Configuration
+
+| Setting | Description |
+| --- | --- |
+| **Website URL** | The page where the AI user starts. The site must be publicly reachable. |
+| **Task** | What the user should accomplish — e.g. "Find a two-bedroom apartment in Austin under $2,000 and start an application." |
+| **Viewport** | Desktop sizes 1920×1080, 1536×864, 1366×768 (default), 1280×720, 1024×768 — or 500×1080 to simulate mobile. |
+| **Test sections** | The dimensions the run is evaluated on. Defaults: *Initial Impressions, User Action & Behavior, Recommendations.* |
+| **Personas** | One or more [personas](/ai-tests/personas), each with an execution count. |
+| **Extended limit** | Raises the per-run cap from 50 to 100 browser steps for longer journeys (may cost up to 2 credits). |
+
+## While it runs
+
+- **Live view** — watch the AI user navigate in real time.
+- Each step logs the action (navigate, click, type, scroll), the element involved, a screenshot, and the AI's reasoning for taking it.
+
+## What you get
+
+- **Task completion status** with a confidence score — and if the AI gave up, the abandonment reason.
+- **Step-by-step replay**: the full click path with screenshots, plus a session video recording.
+- **Findings per test section**, and an aggregated summary with key takeaways and recommendations linked back to the runs that produced them.
+- Optional **accessibility analysis** — WCAG-based checks with an impact breakdown and recommendations.
+
+## Tips
+
+- **Write tasks with a verifiable end state.** "Add the cheapest annual plan to the cart" gives a clean success/failure signal; "explore the pricing page" doesn't.
+- **Start narrow.** Test the critical path (sign-up, checkout, key search) before broad "look around" tests.
+- **Match the viewport to your traffic.** If most visitors are on phones, run the mobile viewport — layouts fail differently at 500px.
+- **Staging environments** work as long as they're publicly reachable (no VPN or login walls the AI can't pass).

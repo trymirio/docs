@@ -1,0 +1,44 @@
+---
+title: "Get interview"
+api: "GET /interviews/{id}"
+description: "Fetch an interview, including transcript and status"
+---
+
+Fetches an interview created via the API.
+
+<ParamField path="id" type="string" required>The interview ID.</ParamField>
+
+### Response
+
+<ResponseField name="id" type="string" />
+<ResponseField name="status" type="string">
+  `open`, `in_progress`, `paused`, `processing`, `closed` (complete), `screened_out`, or `canceled`.
+</ResponseField>
+<ResponseField name="link" type="string">The participant link (empty if none).</ResponseField>
+<ResponseField name="vid" type="string">The participant link token.</ResponseField>
+<ResponseField name="metadata" type="object">Your metadata from creation.</ResponseField>
+<ResponseField name="transcript" type="string | null">The interview transcript.</ResponseField>
+<ResponseField name="conversation_json" type="object[] | null">
+  The conversation as `{ role, content }` messages.
+</ResponseField>
+<ResponseField name="parsed_conversation_json" type="object | null">Structured per-question responses.</ResponseField>
+<ResponseField name="progress" type="integer">Completion progress.</ResponseField>
+<ResponseField name="language" type="string" />
+<ResponseField name="title" type="string | null" />
+<ResponseField name="notes" type="string | null" />
+<ResponseField name="started_at" type="string | null">Timestamp of the first message.</ResponseField>
+<ResponseField name="ended_at" type="string | null">Timestamp of the last message.</ResponseField>
+<ResponseField name="completed_at" type="string | null" />
+<ResponseField name="active_time" type="number | null">Active participation time.</ResponseField>
+<ResponseField name="recording_id" type="string | null" />
+<ResponseField name="type" type="string">Always `VERSIVE` for API-accessible interviews.</ResponseField>
+<ResponseField name="is_mock" type="boolean">Whether this is a simulated interview.</ResponseField>
+<ResponseField name="is_archived" type="boolean" />
+<ResponseField name="created_at" type="string" />
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/interviews/5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

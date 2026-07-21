@@ -1,0 +1,20 @@
+---
+title: "Get translated question"
+api: "GET /translated-questions/{translated_question_id}"
+description: "Fetch a single question translation"
+---
+
+<ParamField path="translated_question_id" type="string" required>
+  The translated-question ID.
+</ParamField>
+
+### Response
+
+A single translated-question object — see [List translated questions](/api-reference/translated-questions/list-translated-questions) for the shape.
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/translated-questions/tq-321 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

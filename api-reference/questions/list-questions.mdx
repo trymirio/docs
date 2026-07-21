@@ -1,0 +1,38 @@
+---
+title: "List questions"
+api: "GET /questions"
+description: "List a study's questions with logic and mentions"
+---
+
+Returns all questions in a study, ordered by `display_order`, each with its logic rules and resolved mentions.
+
+<ParamField query="study_id" type="string" required>
+  The study whose questions to list.
+</ParamField>
+
+### Response
+
+An array of question objects:
+
+<ResponseField name="id" type="string">Question ID.</ResponseField>
+<ResponseField name="content" type="string">The question text (may include `{{Q:...}}` reference placeholders).</ResponseField>
+<ResponseField name="type" type="string">
+  Question type — e.g. `question` (AI Question), `textInput`, `shortText`, `message`, `email`, `multipleChoice`, `ratingScale`, `matrixRatingScale`, `starRating`, `nps`, `number`, `ranking`, `rankingWithMatrix`, `cardSort`, `allocation`, `conjoint`, `treeTest`, `prototypeTask`, `websiteTest`, `externalLink`, `calendar`, `mediaUpload`, `exploratory`. Write endpoints accept `type` as a free-form string; these are the types the Versive app uses.
+</ResponseField>
+<ResponseField name="interviewer_notes" type="string | null">Private notes guiding the AI interviewer.</ResponseField>
+<ResponseField name="display_order" type="integer">Position in the study.</ResponseField>
+<ResponseField name="props" type="object">Type-specific settings (options, scales, limits, and so on).</ResponseField>
+<ResponseField name="assets" type="object[]">Attached media assets.</ResponseField>
+<ResponseField name="logic" type="object[]">
+  The question's logic rules — same shape as [question logic](/api-reference/question-logic/list-question-logic).
+</ResponseField>
+<ResponseField name="mentions" type="object[]">
+  Resolved `{{Q:...}}` references in the content: `placeholder`, `referenced_question_id`, `label`, `type` (`question` | `propertyAnswer`), `property_name`, `property_index`, `valid`, `error`.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/questions?study_id=9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

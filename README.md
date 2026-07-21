@@ -1,43 +1,38 @@
-# Mintlify Starter Kit
+# Versive docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+Public documentation site for [docs.getversive.com](https://docs.getversive.com), built with [Mintlify](https://mintlify.com).
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Local development
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
-
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
-
-## Development
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
+```bash
 npm i -g mint
-```
-
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
+cd docs
 mint dev
 ```
 
-View your local preview at `http://localhost:3000`.
+The site runs at `http://localhost:3000`. `mint broken-links` checks internal links.
 
-## Publishing changes
+## Structure
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+- `docs.json` — site config and navigation (three tabs: Documentation, API reference, SDK)
+- `index.mdx`, `getting-started/` — landing page and core concepts
+- `studies/`, `ai-tests/`, `platform/` — non-technical product docs
+- `api-reference/` — public v1 REST API (MDX-defined endpoints; base URL and auth are configured under `api.mdx` in `docs.json`)
+- `sdk/` — `@getversive/embed` documentation
 
-## Need help?
+## Deploying to docs.getversive.com
 
-### Troubleshooting
+One-time setup in the [Mintlify dashboard](https://app.mintlify.com):
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+1. **Connect the repo** — install the Mintlify GitHub app on `trymirio/versive`.
+2. **Set the monorepo path** — in *Settings → Deployment → Git Settings*, enable "docs.json is in a subdirectory" and set the path to `/docs`. Set the deployment branch (e.g. `main` or `staging`).
+3. **Add the custom domain** — in *Settings → Deployment → Custom domain*, add `docs.getversive.com`. The dashboard shows the DNS record to add (a CNAME for the `docs` subdomain at your DNS provider). TLS certificates are provisioned automatically once DNS propagates.
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+After setup, every push to the deployment branch deploys automatically; PRs get preview deployments.
+
+## Conventions
+
+- Non-technical pages describe the product as it exists in the app — when features change, update the matching page.
+- API pages use Mintlify's MDX API components (`ParamField`, `ResponseField`, `RequestExample`). The API base URL is set once in `docs.json` (`api.mdx.server`).
+- Icons: `docs.json` sets `icons.library` to `tabler`; use plain Tabler icon names (e.g. `icon="messages"`) on Cards.
+- Neutral callouts use `<Callout icon="info-circle" color="#71717a">` (zinc) instead of `<Note>`/`<Info>`, so callout styling stays on brand.

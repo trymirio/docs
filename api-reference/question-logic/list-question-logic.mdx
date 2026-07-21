@@ -1,0 +1,38 @@
+---
+title: "List question logic"
+api: "GET /question-logic"
+description: "List logic rules for a question or study"
+---
+
+Lists logic rules. Provide at least one of `question_id` or `study_id`.
+
+<ParamField query="study_id" type="string">All rules in a study.</ParamField>
+<ParamField query="question_id" type="string">Rules attached to one question.</ParamField>
+<ParamField query="language" type="string">Filter by language.</ParamField>
+
+### Response
+
+An array of logic rules:
+
+<ResponseField name="id" type="string">Rule ID.</ResponseField>
+<ResponseField name="study_id" type="string">The study.</ResponseField>
+<ResponseField name="question_id" type="string">The question the rule belongs to.</ResponseField>
+<ResponseField name="operation" type="string">
+  Condition operator: `==`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `ALWAYS`, or `SMART_CONDITION` (AI-evaluated natural-language rule). `INCLUDE_RESPONSE_IN_NEXT_QUESTION` is a legacy operator that may appear on older studies — use question mentions instead.
+</ResponseField>
+<ResponseField name="comparison_value" type="string | null">
+  The value to compare against — or the natural-language condition for `SMART_CONDITION`.
+</ResponseField>
+<ResponseField name="comparison_value_type" type="string">`string`, `int`, or `smart_condition`.</ResponseField>
+<ResponseField name="action_type" type="string">`next_question_id`, `end_interview`, `redirect_url`, or `screen_out`.</ResponseField>
+<ResponseField name="next_question_id" type="string | null">Jump target for `next_question_id` actions.</ResponseField>
+<ResponseField name="redirect_url" type="string | null">Target URL for `redirect_url` actions.</ResponseField>
+<ResponseField name="end_interview" type="boolean">Whether the rule ends the interview.</ResponseField>
+<ResponseField name="language" type="string">The language the rule applies to.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/question-logic?study_id=9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

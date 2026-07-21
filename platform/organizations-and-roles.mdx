@@ -1,0 +1,33 @@
+---
+title: "Organizations & roles"
+description: "Workspaces, members, and organization-level permissions"
+---
+
+An **organization** is your team's workspace — it owns all studies, AI tests, personas, templates, billing, and API keys. Users can belong to multiple organizations and switch between them, which is how agencies keep client work separated.
+
+## Inviting members
+
+Owners and admins can invite teammates by email from the organization settings. Members sign in with email/password or Google, and can secure their account with **multi-factor authentication** (TOTP authenticator apps). The number of seats is set by your plan.
+
+## Organization roles
+
+| Role | What they can do |
+| --- | --- |
+| **Owner** | Everything, including billing and subscription management — the only role that can change the plan. |
+| **Admin** | Manage everything except billing (can view it): members, org settings, studies, folders, and the Library. |
+| **Creator** | Create and manage studies, folders, and Library content. No access to org settings, members, or billing. |
+| **Member** | View studies and folders — read-only. |
+
+Only owners and admins can add, change, or remove members.
+
+## Organization settings
+
+Beyond members and billing, organization settings include:
+
+- **Logo** — shown in your workspace.
+- **Allowed embed domains** — the domain allow-list required for the [Embed SDK](/sdk/security).
+- **API keys** — organization-scoped keys for the [public API](/api-reference/introduction).
+
+## Two permission layers
+
+Organization roles set what someone can do *globally*. Access to specific folders and studies is refined by a second layer — [folder & study roles](/platform/folders-and-permissions). A user's effective access to a study is the combination of both.

@@ -1,0 +1,72 @@
+---
+title: "Launching & sharing"
+description: "Share links, email outreach, embeds, and AI simulation"
+---
+
+The **Launch** tab is where a study meets its participants. It has five sub-tabs: **Link**, **Send**, **Recruit**, **Simulate**, and **Embed**.
+
+## Link
+
+Every study has a public share URL:
+
+```
+https://getversive.com/s/{studyId}
+```
+
+Anyone with the link can take the study while it's live.
+
+### Hidden fields & participant tracking
+
+Append URL parameters to pass metadata into the response without asking the participant:
+
+```
+https://getversive.com/s/{studyId}?source=newsletter&cohort=beta
+```
+
+Parameters are stored as response metadata and available in results, filters, and CSV exports. If you've configured a [unique identifier](/studies/settings#sharing--participants), include it the same way to track individual participants and enable cross-device resume.
+
+<Warning>
+URL parameters are visible to participants and can end up in browser history, logs, and analytics. Use non-sensitive values like `source=newsletter` or an opaque internal ID — never emails, names, or secrets. For individually tracked invitations, prefer [personal links](#send-email-outreach) or the [API](/api-reference/interviews/create-interview), which keep metadata server-side.
+</Warning>
+
+## Send (email outreach)
+
+Invite specific people and track them individually. Each participant gets a personal link (`…?vid=<token>`).
+
+- **Add participants** by uploading a CSV, entering them manually, or importing from your [Audience](/studies/recruiting-participants#your-audience).
+- **Compose emails** in the built-in editor with **merge fields** (name, custom metadata, and the participant's personal interview link), reusable [email templates](/platform/templates#email-templates), and a preview.
+- **Track delivery** per recipient: delivered, opened, bounced, failed, or spam complaint — plus complete/incomplete study status.
+- **Suppression is automatic**: unsubscribed and bounced contacts are skipped, and every email includes one-click unsubscribe.
+- **Export** the participant table (links, statuses, email history, metadata) to CSV.
+
+Email sends count against your plan's monthly email allowance.
+
+## Recruit (participant panel)
+
+Recruit from a global pool of 4 million+ consumers and professionals across 150 countries, powered by Respondent. See [Recruiting participants](/studies/recruiting-participants) for the full workflow — screeners, incentives, statuses, and payments.
+
+## Simulate (AI test participants)
+
+Before launching to real people, run **simulated interviews** with [AI personas](/ai-tests/personas) to shake out confusing questions, broken logic, and awkward AI-interviewer behavior.
+
+- Pick personas and an execution count per persona (up to 10 runs per persona, 100 simulations per batch).
+- Simulated responses appear in your Results tab, clearly marked as simulations, and can be included in or excluded from insights.
+- Simulations consume credits like real completions.
+
+<Callout icon="info-circle" color="#71717a">
+Some question types are skipped during simulation: Prototype Task, Website Task, Tree Test, Conjoint, Media Upload, Website Link, and Calendar.
+</Callout>
+
+## Embed
+
+Embed the study in your own product — as an inline widget or a modal — using the `@getversive/embed` SDK or a zero-code script tag. The Launch → Embed tab generates ready-to-paste snippets for your study.
+
+<Warning>
+Embedding requires an organization admin to allow-list your site's domain first.
+</Warning>
+
+Full documentation in the [Embed SDK section](/sdk/overview).
+
+## Public result sharing
+
+Share read-only results without inviting people into your workspace: generate **public sharing links** for study insights, individual interview transcripts, or reports. Links can be revoked at any time. See [Collaboration](/platform/collaboration#public-sharing-links).

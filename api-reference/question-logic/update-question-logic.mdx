@@ -1,0 +1,20 @@
+---
+title: "Update question logic"
+api: "PUT /question-logic/{logic_id}"
+description: "Modify a branching rule"
+---
+
+Updates a logic rule; only the fields you send change. Returns `204 No Content`.
+
+<ParamField path="logic_id" type="string" required>The rule ID.</ParamField>
+
+Body fields (all optional): `operation`, `comparison_value`, `comparison_value_type`, `next_question_id`, `redirect_url`, `end_interview`, `action_type`, `language` — same semantics as [Create question logic](/api-reference/question-logic/create-question-logic).
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/question-logic/lr-42 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "comparison_value": "4" }'
+```
+</RequestExample>

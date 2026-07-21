@@ -1,0 +1,84 @@
+---
+title: "Create study"
+api: "POST /studies"
+description: "Create a new study"
+---
+
+Creates a study in your organization. Versive applies sensible default configuration (interview mode, messages, screen-out defaults) and merges any `config` you provide over those defaults.
+
+<ParamField body="title" type="string" required>
+  The study title.
+</ParamField>
+<ParamField body="description" type="string">
+  Internal description of the study.
+</ParamField>
+<ParamField body="type" type="string" default="VERSIVE_STUDY">
+  Study type. Use `VERSIVE_STUDY` (default) for AI-moderated studies.
+</ParamField>
+<ParamField body="mode" type="string" default="TEXT_AND_VOICE">
+  Conversation mode: `TEXT_ONLY`, `TEXT_AND_VOICE`, `VOICE_WITH_PREVIEW`, or `VIDEO`.
+</ParamField>
+<ParamField body="config" type="object">
+  Study configuration overrides, merged over Versive's defaults (interviewer settings, branding, languages, device rules, and so on).
+</ParamField>
+<ParamField body="welcome_message" type="object">
+  Welcome screen: `{ title, body, ctaText }`.
+</ParamField>
+<ParamField body="thank_you_message" type="object">
+  Completion screen: `{ title, body, ctaText, ctaLink }`.
+</ParamField>
+<ParamField body="screen_out_message" type="object">
+  Screen-out screen: `{ title, body, ctaText, ctaLink }`. A default is applied if omitted.
+</ParamField>
+<ParamField body="folder_id" type="string">
+  Folder to create the study in.
+</ParamField>
+<ParamField body="metadata" type="object">
+  Arbitrary key/value metadata stored on the study.
+</ParamField>
+<ParamField body="insights" type="object">
+  Insights configuration (e.g. analysis model).
+</ParamField>
+
+### Response
+
+Returns the created study (status `201`) with fields: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `thank_you_message`, `screen_out_message`, `created_at`.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/studies \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Onboarding feedback — July",
+    "description": "Post-onboarding interview for new signups",
+    "welcome_message": {
+      "title": "Quick chat about your first week?",
+      "body": "This takes about 5 minutes.",
+      "ctaText": "Start"
+    }
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 201
+{
+  "id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+  "title": "Onboarding feedback — July",
+  "description": "Post-onboarding interview for new signups",
+  "metadata": null,
+  "type": "VERSIVE_STUDY",
+  "mode": "TEXT_AND_VOICE",
+  "config": { "interviewMode": "quality", "lang": { "default": { "name": "English" } } },
+  "welcome_message": {
+    "title": "Quick chat about your first week?",
+    "body": "This takes about 5 minutes.",
+    "ctaText": "Start"
+  },
+  "thank_you_message": null,
+  "screen_out_message": { "title": "Thanks for your interest!" },
+  "created_at": "2026-07-13T10:30:00Z"
+}
+```
+</ResponseExample>

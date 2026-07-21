@@ -1,0 +1,29 @@
+---
+title: "Get interview insights"
+api: "GET /insights"
+description: "Fetch the AI-generated summary for an interview"
+---
+
+Returns the AI-generated transcript summary insight(s) for a completed interview.
+
+<ParamField query="interview_id" type="string" required>
+  The interview ID.
+</ParamField>
+
+### Response
+
+An array of insight objects:
+
+<ResponseField name="id" type="string" />
+<ResponseField name="type" type="string">Currently `TRANSCRIPT_SUMMARY`.</ResponseField>
+<ResponseField name="study_id" type="string" />
+<ResponseField name="json_content" type="object">The structured summary content.</ResponseField>
+<ResponseField name="created_at" type="string" />
+<ResponseField name="updated_at" type="string | null" />
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/insights?interview_id=5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

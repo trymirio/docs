@@ -1,0 +1,32 @@
+---
+title: "List studies"
+api: "GET /studies"
+description: "List all studies in your organization"
+---
+
+Returns every AI-moderated (`VERSIVE_STUDY`) study in your organization.
+
+### Response
+
+An array of study objects: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `thank_you_message`, `screen_out_message`, `created_at`.
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+    "title": "Onboarding feedback — July",
+    "type": "VERSIVE_STUDY",
+    "mode": "TEXT_AND_VOICE",
+    "created_at": "2026-07-13T10:30:00Z"
+  }
+]
+```
+</ResponseExample>

@@ -1,0 +1,58 @@
+---
+title: "Test modes"
+description: "Conversational interviews, expert heuristic audits, and SUS questionnaires"
+---
+
+Prototype and image tests run in one of two modes, and either can add a SUS questionnaire on top.
+
+## Conversational test (dynamic interview)
+
+The default mode. An AI moderator interviews the AI persona about each screen, producing a natural back-and-forth transcript — first impressions, expectations, confusion, and what they'd do next.
+
+- The interview covers your **test sections** (e.g. *Initial Impressions, User Actions & Behavior, Usability Issues, Recommendations*).
+- You can add a **custom interview script per screen** to make sure specific questions get asked.
+- Every persona execution produces its own transcript, so five personas give you five distinct perspectives on the same flow.
+
+**Use it when** you want qualitative reactions and the *why* behind usability problems — the closest thing to a moderated usability session, minutes instead of weeks.
+
+## Expert audit (heuristic evaluation)
+
+A single AI expert reviews the entire flow against usability heuristics — by default **Nielsen's 10 usability heuristics**:
+
+1. Visibility of system status
+2. Match between system and the real world
+3. User control and freedom
+4. Consistency and standards
+5. Error prevention
+6. Recognition rather than recall
+7. Flexibility and efficiency of use
+8. Aesthetic and minimalist design
+9. Help users recognize, diagnose, and recover from errors
+10. Help and documentation
+
+You can replace or extend these with **custom heuristics** — each is just a name and a definition, so you can audit against your own design system rules or accessibility criteria.
+
+Results rate each heuristic (**Good / Fair / Poor / Not Applicable**), list the specific issues found, and produce per-screen recommendations.
+
+**Use it when** you want a fast, systematic design QA pass rather than simulated user reactions — great before design reviews or as a pre-launch checklist.
+
+## SUS questionnaires
+
+Optionally, every persona fills in a **System Usability Scale** questionnaire after its run:
+
+- Starts from the 10 standard SUS statements (alternating positive/negative), each answered on a 1–5 scale.
+- Statements are editable, and you can use 1–20 of them — polarity is tracked per statement so scoring stays correct.
+- Produces the standard **0–100 SUS score** per run, comparable across design iterations.
+
+<Tip>
+SUS scores from AI personas are best used **relatively** — comparing design A to design B, or v1 to v2 — rather than as absolute benchmarks against human-normed scales.
+</Tip>
+
+## Choosing a mode
+
+| You want… | Mode |
+| --- | --- |
+| User reactions, confusion points, and quotes | Conversational |
+| A systematic design-quality audit | Expert audit |
+| A trackable usability metric across iterations | Either + SUS |
+| Both perspectives | Run one test in each mode — same project, same screens |

@@ -1,0 +1,160 @@
+---
+title: "Question types"
+description: "Every question type in the study builder, with all available settings"
+---
+
+Versive offers 20+ question types organized into four groups: **Open response**, **Choices & sorting**, **Ratings & feedback**, and **Other**. Every question type supports a **Required** toggle, and most support media attachments — see [Question media](/studies/question-media).
+
+<Callout icon="info-circle" color="#71717a">
+**Surveys** (the no-AI engine) hide the conversational types (AI Question and Exploratory) and use structured types only.
+</Callout>
+
+## Open response
+
+### AI Question
+
+The signature Versive question: an open-ended question where the AI interviewer probes with intelligent follow-ups based on what the participant says.
+
+| Setting | Description |
+| --- | --- |
+| Limit follow-up questions | Cap the number of AI follow-ups (1–10, default 5 when enabled). Leave off for unlimited. |
+| Add instructions | Guidance shown to the AI interviewer for this question (also displayed as a subtitle to participants). |
+| Interviewer notes | Private notes that steer the AI's probing — Versive can also suggest these automatically. |
+| Duration tracker | Show an on-screen timer with a target response window (`min`/`max` duration). The timer is yellow before the minimum, green in range, and red past the maximum. |
+| Follow-up durations | Separate min/max duration targets for follow-up answers (defaults to 50% of the main question's targets). |
+
+### Exploratory
+
+A goal-driven, multi-turn AI conversation. Instead of a fixed question, you give the AI a **research goal** and a **turn budget** (default 8 turns), and it explores the topic conversationally until the goal is covered or the budget runs out.
+
+### Open Text
+
+Long-form free text (or voice) input. Supports optional instructions shown to participants.
+
+### Short Text
+
+A brief, single-line text answer.
+
+### Message
+
+Not a question — displays information, instructions, or media between questions. Settings: custom button text (default "Sounds good"), an optional **timer** that participants must wait out before continuing, and a duration tracker.
+
+## Choices & sorting
+
+### Multiple Choice
+
+Single- or multi-select from a list of options.
+
+| Setting | Description |
+| --- | --- |
+| Multi-select | Allow choosing more than one option, with an optional **max selections** limit. |
+| Include "Other" | Adds a free-text "Other" option. |
+| Randomize order | Shuffle option order per participant to avoid order bias. |
+
+### Card Sort
+
+Participants sort cards into categories — ideal for information architecture research. Settings: cards, categories, randomize order, **allow new categories** (open sort), and **allow new cards**.
+
+### Ranking
+
+Rank a list of options by preference, via **drag-and-drop** or **dropdown** format. Supports randomized order.
+
+### Matrix Ranking
+
+Rank options across multiple **criteria** (e.g. rank features by importance *and* by satisfaction). Same format options as Ranking.
+
+### Allocation
+
+Distribute a fixed budget of points across options (default total: 100). Options can optionally be pulled from a previous question's answers, and you can enforce the total as a hard limit.
+
+### Conjoint
+
+Choice-based conjoint analysis (CBC): participants repeatedly choose between product concepts assembled from your attributes, revealing how much each attribute drives preference.
+
+| Setting | Description |
+| --- | --- |
+| Attributes & levels | The product dimensions being traded off (e.g. Price, Quality, Support), each with 2–5 levels. 3–6 attributes recommended. |
+| Concepts per task | How many concepts appear side by side in each choice (2 or 3). |
+| Tasks per respondent | How many choice tasks each participant completes (6–12). |
+| Include "None" option | Adds a "None of these" choice to every task. |
+| Randomization | Shuffle task order and concept order per participant. |
+
+Results include **attribute importance**, **level utilities**, **choice shares**, and design diagnostics — all computed automatically in Insights.
+
+### Tree Test
+
+Findability testing on a navigation tree. Participants complete tasks by locating the right node in your hierarchy.
+
+| Setting | Description |
+| --- | --- |
+| Tree | The nested navigation structure to test. |
+| Tasks | Each task has a description and one or more correct answers. |
+| Randomize tasks | Shuffle task order. |
+| Show task progress | Display progress through tasks (on by default). |
+| Max levels | Maximum visible tree depth (default 6). |
+| Behavior options | Start expanded, allow skip, allow going back, allow selecting parent nodes, custom instructions. |
+
+## Ratings & feedback
+
+### Rating Scale
+
+A Likert-style scale (default 1–5) with customizable labels for the low, middle, and high points.
+
+### Star Rating
+
+A configurable icon rating — **stars, hearts, or paws** — with an adjustable maximum (default 5).
+
+### NPS
+
+Standard Net Promoter Score (default 0–10) with customizable end labels ("Not at all likely" / "Extremely likely").
+
+### Matrix Rating Scale
+
+Rate multiple items on the same scale. Supports randomized row order and an optional **N/A** column.
+
+## Other
+
+### Prototype Task
+
+A Figma prototype navigation task. Participants attempt to complete a task in your interactive prototype while Versive tracks their path.
+
+| Setting | Description |
+| --- | --- |
+| Goal node | The Figma frame that counts as task success — completion is detected automatically. |
+| Enable recording | Record the participant's prototype session. |
+
+Task outcomes are tracked as *not started, in progress, completed,* or *gave up*.
+
+### Website Task
+
+Send participants to a live website to complete a task.
+
+| Setting | Description |
+| --- | --- |
+| URL & button text | The site to visit and the button label (default "Visit website"). |
+| Voice recording | Ask participants to think aloud while browsing (on by default). |
+| Embedded browser | Open the site inside the study in a virtual browser instead of a new tab. |
+
+### Website Link
+
+Redirect the participant to an external URL (e.g. a partner survey or booking page).
+
+### Media Upload
+
+Participants upload images and/or videos. Configure allowed types, maximum number of files, and maximum file size.
+
+### Email
+
+Capture a valid email address.
+
+### Number
+
+Numeric input, with an optional min/max range validation.
+
+### Calendar
+
+External calendar booking — share a scheduling link (e.g. for a follow-up session) inside the study.
+
+## Referencing earlier answers
+
+Questions can reference earlier answers with **mentions** — type `@` in the question editor to pipe a previous answer into the question text. See [Reusing earlier answers](/studies/logic#reusing-earlier-answers-mentions).

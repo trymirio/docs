@@ -1,0 +1,30 @@
+---
+title: "List translated questions"
+api: "GET /translated-questions"
+description: "List question translations for a study or question"
+---
+
+Lists translated questions. Provide at least one of `study_id` or `question_id`.
+
+<ParamField query="study_id" type="string">All translations for a study.</ParamField>
+<ParamField query="question_id" type="string">Translations of one question.</ParamField>
+<ParamField query="language" type="string">Filter by language (e.g. `German`).</ParamField>
+
+### Response
+
+An array of translated-question objects:
+
+<ResponseField name="id" type="string">The translated-question ID.</ResponseField>
+<ResponseField name="question_id" type="string">The source question.</ResponseField>
+<ResponseField name="language" type="string">The target language.</ResponseField>
+<ResponseField name="question_content" type="string">The original text.</ResponseField>
+<ResponseField name="translated_question_content" type="string">The translated text.</ResponseField>
+<ResponseField name="translated_question_formatted_content" type="string | null">Rich-text version, if available.</ResponseField>
+<ResponseField name="translated_question_props" type="object | null">Translated type-specific settings (e.g. option labels).</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/translated-questions?study_id=9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b&language=German" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

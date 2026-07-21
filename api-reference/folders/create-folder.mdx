@@ -1,0 +1,27 @@
+---
+title: "Create folder"
+api: "POST /folders"
+description: "Create a folder for organizing studies"
+---
+
+Creates a folder. Returns `201`.
+
+<ParamField body="name" type="string" required>The folder name.</ParamField>
+<ParamField body="access_policy" type="string" default="FULL_ACCESS">
+  `FULL_ACCESS`, `CAN_EDIT`, `CAN_VIEW`, `INVITE_ONLY`, or `CAN_EDIT_SURVEY_ONLY`.
+</ParamField>
+
+### Response
+
+<ResponseField name="id" type="string" />
+<ResponseField name="name" type="string" />
+<ResponseField name="created_at" type="string" />
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/folders \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Q3 churn research" }'
+```
+</RequestExample>

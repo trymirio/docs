@@ -1,0 +1,18 @@
+---
+title: "List folders"
+api: "GET /folders"
+description: "List your organization's folders"
+---
+
+Returns all folders in your organization.
+
+### Response
+
+An array of `{ id, name, created_at }`.
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/folders \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

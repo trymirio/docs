@@ -2,103 +2,175 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Versive",
-  "openapi": "api-reference/openapi.json",
+  "description": "Documentation for Versive — the AI-powered user research and testing platform",
   "colors": {
-    "primary": "#0D9488",
-    "light": "#14B8A6",
-    "dark": "#0F766E"
+    "primary": "#00786F",
+    "light": "#2BB3A8",
+    "dark": "#00786F"
   },
   "favicon": "/favicon.ico",
+  "icons": {
+    "library": "tabler"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://getversive.com"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@getversive.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Open Versive",
+      "href": "https://getversive.com/login"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Introduction",
-            "pages": [
-              "index",
-              "quickstart",
-              "webhooks"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "SDKs",
-        "groups": [
-          {
-            "group": "Client Libraries",
-            "pages": [
-              "sdks/python",
-              "sdks/typescript"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Interviews",
-            "pages": [
-              "api-reference/interviews/get-interview-by-id-api-v1-interviews--id--get",
-              "api-reference/interviews/update-interview-api-v1-interviews--id--put",
-              "api-reference/interviews/create-interview-api-v1-interviews-post",
-              "api-reference/interviews/get-interview-by-vid-api-v1-interviews-get"
-            ]
+            "group": "Getting started",
+            "pages": ["index", "getting-started/concepts"]
           },
           {
             "group": "Studies",
             "pages": [
-              "api-reference/studies/get-studies-api-v1-studies-get",
-              "api-reference/studies/create-study-api-v1-studies-post",
-              "api-reference/studies/get-study-by-id-api-v1-studies--id--get",
-              "api-reference/studies/update-study-api-v1-studies--id--put",
-              "api-reference/studies/ai-edit-study-api-v1-studies--study-id--ai-edit-post",
-              "api-reference/studies/agent-edit-study-api-v1-studies--study-id--agent-post"
+              "studies/overview",
+              "studies/question-types",
+              "studies/question-media",
+              "studies/logic",
+              "studies/ai-interviewer",
+              "studies/settings",
+              "studies/languages",
+              "studies/launch-and-sharing",
+              "studies/recruiting-participants",
+              "studies/results-and-insights"
             ]
           },
           {
-            "group": "Folders",
+            "group": "AI tests",
             "pages": [
-              "api-reference/folders/get-folders-api-v1-folders-get",
-              "api-reference/folders/create-folder-api-v1-folders-post"
+              "ai-tests/overview",
+              "ai-tests/figma-and-image-tests",
+              "ai-tests/website-tests",
+              "ai-tests/test-modes",
+              "ai-tests/personas",
+              "ai-tests/results",
+              "ai-tests/best-practices"
+            ]
+          },
+          {
+            "group": "Platform",
+            "pages": [
+              "platform/templates",
+              "platform/organizations-and-roles",
+              "platform/folders-and-permissions",
+              "platform/collaboration"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Studies",
+            "pages": [
+              "api-reference/studies/create-study",
+              "api-reference/studies/list-studies",
+              "api-reference/studies/get-study",
+              "api-reference/studies/update-study",
+              "api-reference/studies/get-study-metrics",
+              "api-reference/studies/translate-study",
+              "api-reference/studies/list-study-translations",
+              "api-reference/studies/agent-edit",
+              "api-reference/studies/agent-apply",
+              "api-reference/studies/ai-edit",
+              "api-reference/studies/available-references"
             ]
           },
           {
             "group": "Questions",
             "pages": [
-              "api-reference/questions/get-questions-api-v1-questions-get",
-              "api-reference/questions/create-questions-batch-api-v1-questions-batch-post",
-              "api-reference/questions/update-question-api-v1-questions--question-id--put",
-              "api-reference/questions/delete-question-api-v1-questions--question-id--delete"
+              "api-reference/questions/list-questions",
+              "api-reference/questions/batch-questions",
+              "api-reference/questions/update-question",
+              "api-reference/questions/delete-question"
             ]
           },
           {
-            "group": "Question Logic",
+            "group": "Question logic",
             "pages": [
-              "api-reference/question logic/get-question-logic-api-v1-question-logic-get",
-              "api-reference/question logic/create-question-logic-api-v1-question-logic-post",
-              "api-reference/question logic/update-question-logic-api-v1-question-logic--logic-id--put",
-              "api-reference/question logic/delete-question-logic-api-v1-question-logic--logic-id--delete"
+              "api-reference/question-logic/list-question-logic",
+              "api-reference/question-logic/create-question-logic",
+              "api-reference/question-logic/update-question-logic",
+              "api-reference/question-logic/delete-question-logic"
+            ]
+          },
+          {
+            "group": "Interviews",
+            "pages": [
+              "api-reference/interviews/create-interview",
+              "api-reference/interviews/get-interview",
+              "api-reference/interviews/get-interview-by-vid",
+              "api-reference/interviews/update-interview"
+            ]
+          },
+          {
+            "group": "Insights",
+            "pages": ["api-reference/insights/get-insights"]
+          },
+          {
+            "group": "Translated questions",
+            "pages": [
+              "api-reference/translated-questions/list-translated-questions",
+              "api-reference/translated-questions/get-translated-question",
+              "api-reference/translated-questions/update-translated-question"
+            ]
+          },
+          {
+            "group": "Folders",
+            "pages": [
+              "api-reference/folders/create-folder",
+              "api-reference/folders/list-folders"
             ]
           }
         ]
+      },
+      {
+        "tab": "SDK",
+        "groups": [
+          {
+            "group": "Embed SDK",
+            "pages": ["sdk/overview", "sdk/embedding", "sdk/reference", "sdk/security"]
+          }
+        ]
       }
-    ],
-    "global": {
-      "anchors": []
+    ]
+  },
+  "api": {
+    "mdx": {
+      "server": "https://api.getversive.com/api/v1",
+      "auth": {
+        "method": "bearer"
+      }
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+  "footer": {
+    "socials": {
+      "website": "https://getversive.com",
+      "linkedin": "https://www.linkedin.com/company/versivehq"
+    }
   }
 }

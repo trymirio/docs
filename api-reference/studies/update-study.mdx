@@ -1,0 +1,34 @@
+---
+title: "Update study"
+api: "PUT /studies/{id}"
+description: "Partially update a study"
+---
+
+Updates only the fields you send. `config` is **merged** into the stored configuration (existing keys you don't send are preserved); all other fields are replaced.
+
+<ParamField path="id" type="string" required>
+  The study ID.
+</ParamField>
+
+<ParamField body="title" type="string">New title.</ParamField>
+<ParamField body="description" type="string">New description.</ParamField>
+<ParamField body="config" type="object">
+  Configuration changes, merged into the existing config.
+</ParamField>
+<ParamField body="welcome_message" type="object">Replaces the welcome message.</ParamField>
+<ParamField body="thank_you_message" type="object">Replaces the thank-you message.</ParamField>
+<ParamField body="screen_out_message" type="object">Replaces the screen-out message.</ParamField>
+<ParamField body="folder_id" type="string">Move the study to a folder.</ParamField>
+
+### Response
+
+The updated study object.
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "config": { "interviewMode": "fast" } }'
+```
+</RequestExample>

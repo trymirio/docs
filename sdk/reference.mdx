@@ -1,0 +1,110 @@
+---
+title: "SDK reference"
+description: "Complete API reference for @getversive/embed"
+---
+
+## `Versive.init(config?)`
+
+Creates a client with global configuration. Call once and reuse.
+
+```js
+const versive = Versive.init({
+  preview: false,
+  display: { width: '480px' },
+  on: { complete: handleComplete },
+});
+```
+
+<ParamField path="baseUrl" type="string" default="https://www.getversive.com">
+  Origin the study loads from. Auto-detected in script-tag mode; you normally don't set this.
+</ParamField>
+<ParamField path="preview" type="boolean" default="false">
+  Global preview mode — responses are not saved.
+</ParamField>
+<ParamField path="display" type="VersiveDisplayConfig">
+  Default modal display options, merged with per-call options.
+</ParamField>
+<ParamField path="on" type="Partial<VersiveCallbacks>">
+  Default event callbacks. Both global and per-call callbacks fire.
+</ParamField>
+
+## `versive.open(studyId, options?)`
+
+Opens a study in a **modal** overlay. Closes any previously open modal session. Returns a [`StudySession`](#studysession).
+
+<ParamField path="studyId" type="string" required>
+  The study's ID (from the study's Launch → Embed tab, or study settings).
+</ParamField>
+<ParamField path="options.preview" type="boolean">
+  Preview mode for this session.
+</ParamField>
+<ParamField path="options.context" type="Record<string, string>">
+  Key/value pairs attached to the response as metadata. Appended to the study URL as query parameters — don't pass sensitive data. Keys `embed` and `mode` are reserved.
+</ParamField>
+<ParamField path="options.display" type="VersiveDisplayConfig">
+  Modal display options for this session.
+</ParamField>
+<ParamField path="options.on" type="Partial<VersiveCallbacks>">
+  Event callbacks for this session.
+</ParamField>
+
+## `versive.embed(studyId, container, options?)`
+
+Embeds a study **inline**. Returns a [`StudySession`](#studysession). Throws if the container isn't found. Inline embeds ignore `display` — the iframe fills the container's width and auto-sizes its height.
+
+<ParamField path="container" type="string | HTMLElement" required>
+  A CSS selector or element to render into.
+</ParamField>
+
+`options` accepts `preview`, `context`, and `on` (as above).
+
+## `versive.close()` / `versive.destroy()`
+
+`close()` closes the active modal session. `destroy()` closes it and removes all listeners.
+
+## Display options
+
+Modal-only, passed via `display`:
+
+| Option | Type | Default |
+| --- | --- | --- |
+| `width` | `string` | `'480px'` |
+| `maxHeight` | `string` | `'90vh'` |
+| `closeOnOverlayClick` | `boolean` | `true` |
+| `closeOnEscape` | `boolean` | `true` |
+| `zIndex` | `number` | `999999` |
+
+## `StudySession`
+
+Returned by `open()` and `embed()`.
+
+| Member | Description |
+| --- | --- |
+| `isOpen` | `boolean` — whether the session is currently open. |
+| `on(event, handler)` | Subscribe to an [event](#events). Returns an unsubscribe function. |
+| `off(event, handler)` | Unsubscribe a handler. |
+| `close()` | Close the session (tears down the iframe/modal). |
+| `destroy()` | Close and remove all event listeners. |
+
+## Events
+
+| Event | Payload | Fires when |
+| --- | --- | --- |
+| `ready` | — | The study has loaded and the loader is hidden. |
+| `start` | `{ interviewId }` | The participant begins the study. |
+| `complete` | `{ interviewId, responseId }` | The participant finishes. |
+| `heightChange` | `height` (number) | The study content resized (inline auto-height). |
+| `close` | `reason` — `'completed' \| 'dismissed' \| 'error'` | The session closed. |
+| `error` | `{ code, message }` | Something went wrong. |
+| `permissionRequired` | `'microphone' \| 'camera'` | Reserved for voice/video permission prompts — treat as experimental. |
+
+### Error codes
+
+| Code | Meaning |
+| --- | --- |
+| `TIMEOUT` | The study didn't load within 15 seconds. The session auto-closes. |
+| `SUBMISSION_ERROR` | A response failed to submit inside the study. |
+
+## Loading behavior
+
+The SDK shows a spinner while the study loads (inline embeds reserve a 600px placeholder until the first height report). If the study hasn't loaded after **15 seconds**, an `error` with code `TIMEOUT` fires and the session closes — most commonly because the host domain isn't on the [allowed embed domains list](/sdk/security).

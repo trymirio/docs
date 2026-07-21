@@ -1,0 +1,94 @@
+---
+title: "Embedding studies"
+description: "Modal and inline embeds, zero-code data attributes, and passing context"
+---
+
+## Modal vs. inline
+
+**Modal** (`versive.open`) overlays the study on your page — best for triggered feedback moments (after checkout, on cancel, feature launch). Only one modal session is active at a time; opening a new one closes the previous.
+
+**Inline** (`versive.embed`) renders the study inside a container element — best for dedicated feedback pages or embedded research panels. The iframe **auto-resizes** to the study content as the participant progresses, and multiple inline embeds can coexist on one page.
+
+```js
+const versive = Versive.init();
+
+// Modal
+versive.open('study-id', { display: { width: '560px' } });
+
+// Inline — pass a selector or an element
+versive.embed('study-id', '#feedback-container');
+```
+
+## Zero-code embedding with data attributes
+
+When loaded via the script tag, the SDK automatically scans the page (and keeps watching for dynamically added elements, so single-page apps work) and wires up any element with `data-versive-study`:
+
+```html
+<!-- Inline embed -->
+<div data-versive-study="your-study-id"></div>
+
+<!-- Button that opens a modal -->
+<button data-versive-study="your-study-id" data-versive-mode="modal">
+  Give feedback
+</button>
+
+<!-- With context and preview mode -->
+<div
+  data-versive-study="your-study-id"
+  data-versive-context-plan="pro"
+  data-versive-context-source="settings-page"
+  data-versive-preview
+></div>
+```
+
+| Attribute | Values | Description |
+| --- | --- | --- |
+| `data-versive-study` | study ID | **Required.** The study to embed. |
+| `data-versive-mode` | `inline` (default) · `modal` | `modal` makes the element a click trigger. |
+| `data-versive-context-*` | any string | Everything after the prefix becomes a context key: `data-versive-context-plan="pro"` → `plan=pro`. |
+| `data-versive-preview` | presence | Enables [preview mode](#preview-mode). |
+
+## Passing context (identifying participants)
+
+Use `context` to attach your own data — a user ID, plan, experiment arm — to the response. Context arrives in Versive as response metadata, available in results, filters, and exports:
+
+```js
+versive.open('study-id', {
+  context: {
+    userId: 'user_123',
+    plan: 'pro',
+    cohort: '2026-07',
+  },
+});
+```
+
+<Warning>
+Context values are appended to the study URL as query parameters, so they're visible to the participant. Never pass emails, names, tokens, or anything sensitive — use an opaque internal ID and join it to your data on your side. The keys `embed` and `mode` are reserved and ignored.
+</Warning>
+
+## Preview mode
+
+Set `preview: true` (globally in `init`, per call, or via `data-versive-preview`) to run the study without saving responses — for development and internal demos:
+
+```js
+const versive = Versive.init({ preview: true });
+```
+
+## Reacting to the study lifecycle
+
+Listen for events on the session (or set defaults in `init`) — for example, to grant an incentive on completion:
+
+```js
+const session = versive.open('study-id', { context: { userId } });
+
+session.on('complete', ({ interviewId, responseId }) => {
+  grantIncentive(userId);
+});
+
+session.on('close', (reason) => {
+  // 'completed' | 'dismissed' | 'error'
+  if (reason !== 'completed') showMaybeLaterToast();
+});
+```
+
+The full event list is in the [API reference](/sdk/reference#events).

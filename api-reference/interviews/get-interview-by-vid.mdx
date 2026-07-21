@@ -1,0 +1,22 @@
+---
+title: "Get interview by link token"
+api: "GET /interviews"
+description: "Look up an interview by its participant link token (vid)"
+---
+
+Fetches an interview by the `vid` token from its participant link — useful when your system knows the link but not the interview ID (e.g. handling a redirect back from the study).
+
+<ParamField query="vid" type="string" required>
+  The participant link token.
+</ParamField>
+
+### Response
+
+The same interview object as [Get interview](/api-reference/interviews/get-interview).
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/interviews?vid=Xy3AbC..." \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

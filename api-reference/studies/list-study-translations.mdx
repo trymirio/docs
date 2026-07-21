@@ -1,0 +1,25 @@
+---
+title: "List study translations"
+api: "GET /studies/{id}/translations"
+description: "Read all translated questions for a study"
+---
+
+Returns the translated questions for a study, optionally filtered to one language. Poll this after [triggering a translation](/api-reference/studies/translate-study) to see results as they complete.
+
+<ParamField path="id" type="string" required>
+  The study ID.
+</ParamField>
+<ParamField query="language" type="string">
+  Filter to a single language (e.g. `German`). Omit for all languages.
+</ParamField>
+
+### Response
+
+An array of translated-question objects — see [Translated questions](/api-reference/translated-questions/list-translated-questions) for the shape.
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/translations?language=German" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

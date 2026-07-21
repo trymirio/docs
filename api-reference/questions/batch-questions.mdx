@@ -1,0 +1,63 @@
+---
+title: "Batch create/update questions"
+api: "POST /questions/batch"
+description: "Create and update questions in one call"
+---
+
+Creates and/or updates questions in a single study in one request. Items **with** an `id` are updated; items **without** an `id` are created (appended after the existing questions in the order given). Returns `201`.
+
+<ParamField body="questions" type="object[]" required>
+  The questions to create or update. Every item must include the same `study_id`. Recognized fields per item:
+
+  - `id` — include to update an existing question; omit to create.
+  - `study_id` — **required** on every item.
+  - `content` — question text; may include `{{Q:...}}` references.
+  - `type` — question type (see [List questions](/api-reference/questions/list-questions) for values).
+  - `props` — type-specific settings object.
+  - `interviewer_notes` — private AI guidance.
+  - `assets` — media assets array.
+  - `display_order` — position (new questions are auto-ordered if omitted).
+</ParamField>
+
+### Question references (mentions)
+
+`content` can reference earlier answers with placeholders like `{{Q:<question_id>}}` (the full answer) or `{{Q:<question_id>.option[1]}}` (a specific property). References are validated on write — invalid ones fail the request with `422` and an `errors` array. Discover valid templates with [List available references](/api-reference/studies/available-references).
+
+### Response
+
+<ResponseField name="created_question_ids" type="string[]">IDs of newly created questions, in input order.</ResponseField>
+<ResponseField name="updated_question_ids" type="string[]">IDs of updated questions.</ResponseField>
+
+The example below creates one new question and updates an existing one (`8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d`), piping that existing question's answer into the new question's text. References must point at questions that already exist in the study — use [List available references](/api-reference/studies/available-references) to discover valid templates.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/questions/batch \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "questions": [
+      {
+        "id": "8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d",
+        "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+        "content": "Which plan are you currently on?"
+      },
+      {
+        "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+        "type": "question",
+        "content": "Why did you choose the {{Q:8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d}} plan?",
+        "props": { "required": true, "maxFollowupQuestions": 3 }
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 201
+{
+  "created_question_ids": ["4f9c1e7a-6b2d-4a8e-9c3f-1d5b7e9a2c4f"],
+  "updated_question_ids": ["8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d"]
+}
+```
+</ResponseExample>

@@ -1,0 +1,50 @@
+---
+title: "List available references"
+api: "GET /studies/{study_id}/available-references"
+description: "Which earlier questions can be referenced from a given position"
+---
+
+Returns the catalog of questions that can be [referenced](/api-reference/questions/batch-questions#question-references-mentions) from a given position in the study — with ready-to-insert `{{Q:...}}` templates for each. Use this to build an "@-mention" picker in your own tooling.
+
+<ParamField path="study_id" type="string" required>
+  The study ID.
+</ParamField>
+<ParamField query="before_question_id" type="string">
+  Only return questions that appear **before** this question — use when editing an existing question.
+</ParamField>
+<ParamField query="before_display_order" type="integer">
+  Only return questions with a lower display order — use when composing a new question. Ignored if `before_question_id` is set.
+</ParamField>
+
+### Response
+
+<ResponseField name="references" type="ReferenceableQuestion[]">
+  Each entry has `question_id`, `display_order`, `type`, `content`, a human-readable `label`, and `available_references` — the insertable items: `kind` (`fullAnswer` | `property`), `label`, `template` (the exact `{{Q:...}}` string), and for properties, `property_name`, `property_index`, and `option`.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/available-references?before_display_order=5" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "references": [
+    {
+      "question_id": "q-123",
+      "display_order": 1,
+      "type": "multipleChoice",
+      "content": "Which plan are you on?",
+      "label": "Q1 — Which plan are you on?",
+      "available_references": [
+        { "kind": "fullAnswer", "label": "Answer", "template": "{{Q:q-123}}" },
+        { "kind": "property", "label": "Option 2", "template": "{{Q:q-123.option[1]}}", "property_name": "option", "property_index": 1, "option": "Pro" }
+      ]
+    }
+  ]
+}
+```
+</ResponseExample>

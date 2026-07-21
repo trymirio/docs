@@ -1,0 +1,52 @@
+---
+title: "Logic & branching"
+description: "Build conditional paths, screen participants out, and pipe answers forward"
+---
+
+Question logic lets each question branch based on the participant's answer. Rules are evaluated **top to bottom — the first matching rule wins**. If no rule matches, the interview simply continues to the next question.
+
+## Conditions
+
+The conditions available depend on the question type:
+
+| Question type | Available conditions |
+| --- | --- |
+| Multiple Choice | Always · Equals · Includes (multi-select) · Fewer than N selections |
+| Rating Scale, NPS, Star Rating, Number | Always · `=` · `>` · `>=` · `<` · `<=` |
+| AI Question, Exploratory, Open Text, Short Text | Always · **AI rule** |
+| All other types | Always |
+
+### AI rules (smart conditions)
+
+For open-ended questions, you can write a condition in plain language — for example, *"If the participant mentions price as a concern"* — and Versive's AI evaluates it against the response. AI rules are evaluated in order along with your other rules.
+
+<Tip>
+Keep AI rules specific and observable ("mentions a competitor by name") rather than interpretive ("seems unhappy"). Specific rules evaluate more reliably.
+</Tip>
+
+## Actions
+
+When a condition matches, one of four actions runs:
+
+| Action | What happens |
+| --- | --- |
+| **Go to question** | Jump to a specific later question. |
+| **End interview** | Finish the interview immediately and show the thank-you message. |
+| **Screen out** | End the interview and show the screen-out message — the response is marked screened-out and doesn't count toward your quota. |
+| **Redirect to URL** | Send the participant to an external URL (not available on AI Question or Exploratory questions). |
+
+## Screening participants
+
+To build a screener, put your qualifying questions first and add **Screen out** rules to each. Screened-out participants see the customizable [screen-out message](/studies/settings#study-messages), and their responses are excluded from completions and insights by default.
+
+## Reusing earlier answers (mentions)
+
+To pipe an earlier answer into a later question, use **mentions**: type `@` in the question editor and pick a previous question to insert a reference to its answer — or to a specific option or property of it. Each participant sees their own earlier answer woven into the question text ("Why did you choose the *Pro* plan?").
+
+Answers from these types can be referenced: Open Text, Short Text, Multiple Choice, Matrix Rating Scale, Card Sort, Ranking, and Allocation.
+
+## Good to know
+
+- The logic editor warns you about rules that reference the question they belong to, and about rules pointing at deleted questions.
+- Logic is language-aware — rules are evaluated against the participant's study language.
+- Chaining multiple rules on one question is fully supported; order them from most to least specific since the first match wins.

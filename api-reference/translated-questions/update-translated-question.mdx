@@ -1,0 +1,27 @@
+---
+title: "Update translated question"
+api: "PUT /translated-questions/{translated_question_id}"
+description: "Overwrite a translation's text"
+---
+
+Replaces the translated text of a question. The edit is marked as manual, so re-running [study translation](/api-reference/studies/translate-study) won't overwrite it.
+
+<ParamField path="translated_question_id" type="string" required>
+  The translated-question ID.
+</ParamField>
+<ParamField body="content" type="string" required>
+  The new translated text. **Plain text only** — markup isn't supported here.
+</ParamField>
+
+### Response
+
+The updated translated-question object.
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/translated-questions/tq-321 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "content": "Wie oft kochen Sie zu Hause?" }'
+```
+</RequestExample>

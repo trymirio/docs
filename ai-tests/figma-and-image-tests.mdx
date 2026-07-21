@@ -1,0 +1,37 @@
+---
+title: "Figma prototype & image tests"
+description: "Test interactive prototypes and static designs with AI users"
+---
+
+Prototype and image tests share the same engine: AI personas review a sequence of **screens** and respond to each according to the [test mode](/ai-tests/test-modes) you choose.
+
+## Figma prototype tests
+
+Import a prototype in one of two ways:
+
+- **Paste a Figma URL** — Versive reads the file, detects the prototype's defined interactions, and imports your frames as screens. The file needs link sharing enabled ("Anyone with the link can view").
+- **The Figma plugin** — *Versive: Instant Usability Tests* in the Figma Community. Select pages and frames inside Figma, authenticate with your Versive account (OAuth — reconnect anytime), and create a test without leaving the design file.
+
+After import, you choose which frames to include and their order, so you can test a single flow out of a larger file.
+
+## Image tests
+
+Upload static screenshots or mockups (multiple images per test) and arrange them in the order the AI should see them. Ideal for early concepts, landing pages, emails, and ad creative — anything where you want reactions to a design that isn't clickable yet.
+
+## Test configuration
+
+| Setting | Description |
+| --- | --- |
+| **Goal** | The context and objective for the test — what the design is, who it's for, and what you want to learn. |
+| **Test mode** | Conversational interview or expert heuristic audit — see [Test modes](/ai-tests/test-modes). |
+| **Test sections** | The dimensions each screen is evaluated on. Defaults: *Initial Impressions, User Actions & Behavior, Usability Issues,* and *Recommendations* — fully editable. |
+| **Per-screen notes & scripts** | Add notes to individual screens, and (in conversational mode) custom interview questions per screen. |
+| **Personas** | One or more [personas](/ai-tests/personas), each with its own execution count. |
+| **SUS questionnaire** | Optionally have each persona fill out a System Usability Scale questionnaire — see [Test modes](/ai-tests/test-modes#sus-questionnaires). |
+| **Ignore content accuracy** | Tell the AI to disregard placeholder content (lorem ipsum, dummy data) and focus on structure and flow, with optional notes about what to ignore. |
+
+## Tips
+
+- **Test one flow at a time.** Ten focused screens beat forty mixed ones — findings stay attributable, and runs are cheaper to repeat as the design iterates.
+- **Write the goal like a research brief**: "First-time user setting up a workspace; we want to know if the invite step is discoverable" beats "test my app."
+- **Test iterations in the same project** — when the design changes, run a new round with the same personas and compare rounds to see whether the fixes landed.

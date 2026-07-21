@@ -1,0 +1,57 @@
+---
+title: "Edit study with AI agent"
+api: "POST /studies/{study_id}/agent"
+description: "Edit a study with natural-language instructions"
+---
+
+Sends a natural-language instruction to Versive's study-editing agent. The agent can add, edit, delete, and reorder questions, change logic rules, and update study settings and messages. By default changes are **saved immediately** (with automatic rollback if anything fails); set `auto_save: false` to preview the mutations and [apply them separately](/api-reference/studies/agent-apply).
+
+<ParamField path="study_id" type="string" required>
+  The study ID.
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  The editing instruction, e.g. "Add an NPS question after the intro and screen out anyone who scores under 3 on Q2."
+</ParamField>
+<ParamField body="auto_save" type="boolean" default="true">
+  Persist changes before returning. Set `false` to preview.
+</ParamField>
+<ParamField body="model" type="string" default="smart">
+  `smart` (higher quality) or `fast` (lower latency).
+</ParamField>
+<ParamField body="language" type="string">
+  Language context for the edit.
+</ParamField>
+
+### Response
+
+<ResponseField name="message" type="string | null">
+  The agent's natural-language summary of what it did.
+</ResponseField>
+<ResponseField name="mutations" type="Mutation[]">
+  The structured change list. Each mutation has `id`, `entity_type` (`question` | `logic_rule` | `study_settings` | `study_messages`), `operation` (`create` | `update` | `delete` | `reorder`), `entity_id`, `before`, `after`, and `timestamp`.
+</ResponseField>
+<ResponseField name="questions" type="object[]">
+  The study's questions after the edit, each including a resolved `mentions` array.
+</ResponseField>
+<ResponseField name="logic" type="object[]">
+  The study's logic rules after the edit.
+</ResponseField>
+<ResponseField name="study_settings" type="object | null">
+  Updated study settings, when changed.
+</ResponseField>
+<ResponseField name="broken_mentions" type="object[]">
+  Any `{{Q:...}}` references broken by the edit: `question_id`, `placeholder`, `error`, `newly_broken`.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/agent \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Add a screener asking how often they cook at home; screen out people who never cook.",
+    "auto_save": false
+  }'
+```
+</RequestExample>

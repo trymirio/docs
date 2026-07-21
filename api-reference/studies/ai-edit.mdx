@@ -1,0 +1,32 @@
+---
+title: "AI edit questions (stateless)"
+api: "POST /studies/{study_id}/ai-edit"
+description: "Transform a question list with AI, without saving"
+---
+
+A stateless AI editing endpoint: send a list of questions and an instruction, get back the transformed list. **Nothing is persisted** — use it to power your own editing UI, then save via the [batch questions endpoint](/api-reference/questions/batch-questions). For an agent that edits and saves the study directly, use the [agent endpoint](/api-reference/studies/agent-edit) instead.
+
+<ParamField path="study_id" type="string" required>
+  The study ID (used for context and access control).
+</ParamField>
+<ParamField body="current_message" type="string" required>
+  The editing instruction.
+</ParamField>
+<ParamField body="questions" type="object[]" required>
+  The current question list to transform.
+</ParamField>
+<ParamField body="language" type="string" required>
+  The language the questions are written in.
+</ParamField>
+
+### Response
+
+<ResponseField name="questions" type="object[]">
+  The transformed questions. Newly added questions are flagged with `is_new: true`.
+</ResponseField>
+<ResponseField name="change_log" type="object">
+  A structured description of what changed.
+</ResponseField>
+<ResponseField name="deleted_questions" type="string[]">
+  IDs of questions the AI removed.
+</ResponseField>

@@ -1,0 +1,16 @@
+---
+title: "Delete question logic"
+api: "DELETE /question-logic/{logic_id}"
+description: "Remove a branching rule"
+---
+
+Deletes a logic rule (soft delete). Returns `204 No Content`.
+
+<ParamField path="logic_id" type="string" required>The rule ID.</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.getversive.com/api/v1/question-logic/lr-42 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

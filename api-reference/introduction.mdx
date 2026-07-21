@@ -1,22 +1,77 @@
 ---
-title: 'Introduction'
-description: 'Versive API Reference'
+title: "API introduction"
+sidebarTitle: "Introduction"
+description: "Authentication, conventions, and errors for the Versive public API"
 ---
 
-## Overview
-
-The Versive API provides programmatic access to the Versive platform features, including interviews, studies, and user management.
-
-All API endpoints are documented below. You can also view the full [OpenAPI specification](openapi.json).
+The Versive public API (v1) lets you manage studies, questions, logic, interviews, translations, and insights programmatically. Typical uses: creating interviews with tracked links from your own app, syncing study content from your systems, building studies with the AI agent, and pulling interview transcripts and summaries into your data warehouse.
 
 ## Base URL
 
-The API is served at `/api/v1`. All endpoints are relative to this path.
+```
+https://api.getversive.com/api/v1
+```
 
 ## Authentication
 
-The Versive API uses Bearer Token authentication. You must include the `Authorization` header in your requests.
+All endpoints require an **API key** passed as a Bearer token:
 
 ```bash
-Authorization: Bearer <your_token>
+curl https://api.getversive.com/api/v1/studies \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
 ```
+
+API keys are created in your organization settings (**Organization → API keys**) by an owner or admin. Each key is scoped to one organization and grants full API access to that organization's data — there are no per-key scopes, so treat keys like passwords: store them in a secrets manager, never in client-side code, and deactivate keys you no longer use.
+
+A missing or invalid key returns `401` with `{"detail": "Invalid authentication credentials"}`.
+
+## Conventions
+
+- **JSON everywhere** — request bodies are JSON (`Content-Type: application/json`); one endpoint ([Update question](/api-reference/questions/update-question)) also accepts `multipart/form-data` for file uploads.
+- **IDs are UUID strings.**
+- **Organization scoping is automatic** — the key determines the organization; requesting a resource that belongs to another organization returns `403`.
+- **Partial updates** — `PUT` endpoints only change the fields you send. On studies, the `config` object is *merged* into the existing config rather than replaced.
+- **No pagination** — list endpoints currently return all matching records.
+
+## Errors
+
+Errors use conventional HTTP status codes with a JSON body:
+
+```json
+{ "detail": "Study not found" }
+```
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request — missing/invalid parameters or values. |
+| `401` | Missing or invalid API key. |
+| `403` | The resource belongs to a different organization. |
+| `404` | Resource not found. |
+| `422` | Validation failed — e.g. invalid `{{Q:...}}` question references; the body includes an `errors` array. |
+| `500` | Internal server error. |
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="Studies" href="/api-reference/studies/create-study" icon="folder">
+    Create, list, update, translate, and AI-edit studies; read response metrics.
+  </Card>
+  <Card title="Questions" href="/api-reference/questions/list-questions" icon="list-check">
+    Read, batch-create/update, and delete a study's questions.
+  </Card>
+  <Card title="Question logic" href="/api-reference/question-logic/list-question-logic" icon="arrows-split-2">
+    Manage conditional branching rules.
+  </Card>
+  <Card title="Interviews" href="/api-reference/interviews/create-interview" icon="messages">
+    Create tracked participant links and read interview transcripts and status.
+  </Card>
+  <Card title="Insights" href="/api-reference/insights/get-insights" icon="chart-line">
+    Fetch AI-generated interview summaries.
+  </Card>
+  <Card title="Translations" href="/api-reference/translated-questions/list-translated-questions" icon="language">
+    Trigger and manage study translations.
+  </Card>
+  <Card title="Folders" href="/api-reference/folders/create-folder" icon="folder">
+    Create and list folders for organizing studies.
+  </Card>
+</CardGroup>

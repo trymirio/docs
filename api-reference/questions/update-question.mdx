@@ -1,0 +1,44 @@
+---
+title: "Update question"
+api: "PUT /questions/{question_id}"
+description: "Update a single question"
+---
+
+Updates a question. Only the fields you send change, and `props` is **merged** with the existing props. Returns `204 No Content`.
+
+<ParamField path="question_id" type="string" required>
+  The question ID.
+</ParamField>
+
+<ParamField body="content" type="string">
+  New question text. `{{Q:...}}` references are validated (`422` on invalid references).
+</ParamField>
+<ParamField body="interviewer_notes" type="string">Private AI guidance.</ParamField>
+<ParamField body="display_order" type="integer">New position.</ParamField>
+<ParamField body="props" type="object">Settings to merge into the existing props.</ParamField>
+<ParamField body="assets" type="object[]">Replaces the media assets array.</ParamField>
+
+### Uploading an asset
+
+This endpoint also accepts `multipart/form-data` to attach a media file directly:
+
+- `file` — the media file.
+- `asset_layout` — `fullScreen` (default) or `inline`.
+- `asset_sizing` — optional sizing mode.
+- Other fields (`content`, `props` as JSON strings, etc.) may be sent as form fields.
+
+<RequestExample>
+```bash cURL (JSON)
+curl -X PUT https://api.getversive.com/api/v1/questions/q-456 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "props": { "randomizeOrder": true } }'
+```
+
+```bash cURL (file upload)
+curl -X PUT https://api.getversive.com/api/v1/questions/q-456 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -F "file=@concept.png" \
+  -F "asset_layout=inline"
+```
+</RequestExample>

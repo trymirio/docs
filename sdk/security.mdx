@@ -1,0 +1,39 @@
+---
+title: "Security & domains"
+description: "Domain allow-listing, CSP requirements, and how the embed stays safe"
+---
+
+## Allowed embed domains
+
+Embedded studies only render on domains your organization has explicitly approved. An **organization admin** manages the list in Versive's embed settings.
+
+- Until at least one domain is allow-listed, embedding is disabled and the embed will fail to load (surfacing as a `TIMEOUT` error in the SDK).
+- Add every origin you embed from — production, staging, and localhost for development.
+- Enforcement happens server-side (via `frame-ancestors`), so a study ID leaking somewhere it shouldn't be embedded is not enough to render it there.
+
+## Content Security Policy on your site
+
+If your site sets a CSP, allow the Versive frame:
+
+```
+Content-Security-Policy: frame-src https://getversive.com https://www.getversive.com;
+```
+
+For **voice and video studies**, the browser also needs permission to delegate microphone/camera to the iframe. The SDK sets `allow="microphone; camera"` on the iframe automatically, but if you set a `Permissions-Policy` header, include the Versive origin:
+
+```
+Permissions-Policy: microphone=(self "https://www.getversive.com"), camera=(self "https://www.getversive.com")
+```
+
+## What the SDK does (and doesn't do)
+
+- The SDK is a thin, zero-dependency wrapper: it creates a sandboxed iframe, shows loading state, and relays a small set of `postMessage` events. All study logic, AI moderation, and data collection happen inside the iframe on Versive's origin.
+- Messages between your page and the iframe are **origin-validated in both directions** — the SDK ignores messages that don't come from the study iframe, and the study ignores commands from other origins.
+- No API keys or secrets are used in the browser. The only identifier the SDK needs is the public study ID; access control comes from the domain allow-list.
+
+## Data hygiene
+
+`context` values travel as URL query parameters and are stored as response metadata:
+
+- Use opaque IDs (`userId: 'u_8f3k2'`), never emails, names, or tokens.
+- Anything you pass can be seen by the participant in DevTools — treat it as public.

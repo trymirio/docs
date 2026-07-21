@@ -1,0 +1,34 @@
+---
+title: "Translate study"
+api: "POST /studies/{id}/translate"
+description: "Kick off translation into all supported languages"
+---
+
+Starts background translation of the study's questions and messages into every supported language configured on the study (`config.lang.support`) other than the default. Returns immediately with `202 Accepted`.
+
+<ParamField path="id" type="string" required>
+  The study ID.
+</ParamField>
+
+No request body. Returns `400` if the study has no default language configured.
+
+### Response
+
+<ResponseField name="study_id" type="string">The study being translated.</ResponseField>
+<ResponseField name="translation_languages" type="string[]">The target languages queued for translation.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/translate \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 202
+{
+  "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+  "translation_languages": ["German", "French", "Spanish"]
+}
+```
+</ResponseExample>
