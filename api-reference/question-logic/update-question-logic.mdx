@@ -8,7 +8,7 @@ Updates a logic rule; only the fields you send change. Returns `204 No Content`.
 
 <ParamField path="logic_id" type="string" required>The rule ID.</ParamField>
 
-Body fields (all optional): `operation`, `comparison_value`, `comparison_value_type`, `next_question_id`, `redirect_url`, `end_interview`, `action_type`, `language` — same semantics as [Create question logic](/api-reference/question-logic/create-question-logic).
+Body fields (all optional): `operation`, `comparison_value`, `comparison_value_type`, `next_question_id`, `next_question_group_id`, `redirect_url`, `end_interview`, `action_type`, `language` — same semantics and target validation as [Create question logic](/api-reference/question-logic/create-question-logic).
 
 <RequestExample>
 ```bash cURL

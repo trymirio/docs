@@ -24,8 +24,9 @@ An array of logic rules:
   The value to compare against — or the natural-language condition for `SMART_CONDITION`.
 </ResponseField>
 <ResponseField name="comparison_value_type" type="string">`string`, `int`, or `smart_condition`.</ResponseField>
-<ResponseField name="action_type" type="string">`next_question_id`, `end_interview`, `redirect_url`, or `screen_out`.</ResponseField>
+<ResponseField name="action_type" type="string">`next_question_id`, `move_to_question_group`, `end_interview`, `redirect_url`, or `screen_out`.</ResponseField>
 <ResponseField name="next_question_id" type="string | null">Jump target for `next_question_id` actions.</ResponseField>
+<ResponseField name="next_question_group_id" type="string | null">Jump target for `move_to_question_group` actions; the interview enters at the group's first question.</ResponseField>
 <ResponseField name="redirect_url" type="string | null">Target URL for `redirect_url` actions.</ResponseField>
 <ResponseField name="end_interview" type="boolean">Whether the rule ends the interview.</ResponseField>
 <ResponseField name="language" type="string">The language the rule applies to.</ResponseField>

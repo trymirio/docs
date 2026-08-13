@@ -15,13 +15,16 @@ Creates a logic rule. Rules on a question are evaluated top to bottom; the first
   `string`, `int`, or `smart_condition`.
 </ParamField>
 <ParamField body="action_type" type="string" required>
-  `next_question_id`, `end_interview`, `redirect_url`, or `screen_out`.
+  `next_question_id`, `move_to_question_group`, `end_interview`, `redirect_url`, or `screen_out`.
 </ParamField>
 <ParamField body="comparison_value" type="string">
   The comparison value — or, for `SMART_CONDITION`, the natural-language condition (e.g. "the participant mentions pricing").
 </ParamField>
 <ParamField body="next_question_id" type="string">
-  Required for `next_question_id` actions; must be a question in the same study.
+  Required for `next_question_id` actions; must be a question in the same study. Cannot be the rule's own question, or a question inside a randomized group (directly or nested) — target the group with `move_to_question_group` instead.
+</ParamField>
+<ParamField body="next_question_group_id" type="string">
+  Required for `move_to_question_group` actions; the interview enters at the group's first question (respecting per-participant randomization). Question groups must be enabled for the study. Must be a group in the same study that contains at least one question. Cannot be the question's own group or an ancestor of it, or a group nested inside a randomized group.
 </ParamField>
 <ParamField body="redirect_url" type="string">Required for `redirect_url` actions.</ParamField>
 <ParamField body="end_interview" type="boolean" default="false">Set for `end_interview` actions.</ParamField>

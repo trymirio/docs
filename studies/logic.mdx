@@ -26,14 +26,24 @@ Keep AI rules specific and observable ("mentions a competitor by name") rather t
 
 ## Actions
 
-When a condition matches, one of four actions runs:
+When a condition matches, one of five actions runs:
 
 | Action | What happens |
 | --- | --- |
-| **Go to question** | Jump to a specific later question. |
+| **Go to question** | Jump ahead to a later question, skipping everything in between. |
+| **Move to group** | Jump ahead to a question group — the interview enters at the group's first question and continues from there. |
 | **End interview** | Finish the interview immediately and show the thank-you message. |
 | **Screen out** | End the interview and show the screen-out message — the response is marked screened-out and doesn't count toward your quota. |
 | **Redirect to URL** | Send the participant to an external URL (not available on AI Question or Exploratory questions). |
+
+### Where jumps can land
+
+Jumps are **forward-only**: a rule can only target a question or group that comes after the question it belongs to, so the last question of a study has no jump targets. When your study uses question groups, two more rules apply:
+
+- **Randomized groups** — questions inside a group with randomized order can't be targeted directly, since their position differs per participant. Target the group itself instead: each participant enters at whichever question their shuffled order puts first, so randomization is preserved.
+- **Empty groups** can't be targeted — there's no question to jump to.
+
+The target pickers only offer valid destinations, so you don't need to memorize these rules. If a later edit invalidates a saved rule — say, deleting the target or enabling randomized order on its group — the logic editor flags the rule with a warning.
 
 ## Screening participants
 
@@ -47,6 +57,6 @@ Answers from these types can be referenced: Open Text, Short Text, Multiple Choi
 
 ## Good to know
 
-- The logic editor warns you about rules that reference the question they belong to, and about rules pointing at deleted questions.
+- The logic editor warns you about rules that can no longer fire: targets that were deleted, moved to before the question, or moved inside a randomized group, plus rules on the last question.
 - Logic is language-aware — rules are evaluated against the participant's study language.
 - Chaining multiple rules on one question is fully supported; order them from most to least specific since the first match wins.

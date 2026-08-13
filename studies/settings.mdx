@@ -33,7 +33,7 @@ Study settings live in the settings panel on the study page, organized into tabs
 | --- | --- |
 | Project status | **Live** (accepting participants) or **Paused**. |
 | Quota | Cap the number of completions. When the quota is reached, new participants are sent to your pause URL. |
-| Custom pause URL | Where participants land when the study is paused or full. Must be `https://`, and supports `{param}` placeholders that pass through URL parameters — useful for panel-provider redirects. |
+| Custom pause URL | Where participants land when the study is paused or full. Supports `{param}` placeholders from URL parameters, including a placeholder as the full URL base. The resolved destination must use `http://` or `https://`. |
 | Unique identifier | The URL parameter name you use to identify participants (e.g. `uid`). Enables per-participant tracking and cross-device resume. Share links as `…/s/{studyId}?uid=12345`. |
 
 ## Branding
