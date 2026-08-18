@@ -1,0 +1,102 @@
+---
+title: "Tools & capabilities"
+sidebarTitle: "Tools & capabilities"
+description: "Every tool, prompt, resource, and permission scope on the Versive MCP server"
+---
+
+You don't call these tools yourself — your AI assistant picks the right ones based on what you ask. This page is a reference for what's possible and what permissions each capability needs.
+
+## Permission scopes
+
+The consent screen shows exactly which scopes a client requested when you connect. Read scopes are granted by default; write access must be explicitly requested by the client.
+
+| Scope | Grants | Default |
+| --- | --- | --- |
+| `studies:read` | Read your studies, questions, groups, logic, and settings | Yes |
+| `interviews:read` | Read interviews and results in your studies | Yes |
+| `studies:write` | Create and edit studies, questions, groups, and logic (includes `studies:read`) | Requested explicitly |
+
+Scopes are an upper bound, not a bypass: every request is also checked against your organization role and each study's access policy, so an agent can never see or change more than you can in the dashboard.
+
+## Tools
+
+### Studies
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_studies` | List your studies newest-first, with status filters, search, and optional activity counts | `studies:read` |
+| `get_study` | Full study detail: settings, quota, branding, messages, languages, and share links | `studies:read` |
+| `create_study` | Create a new study (requires an owner, admin, or creator organization role) | `studies:write` |
+| `edit_study_settings` | Edit title, description, status, mode, quota, access policy, branding, or languages | `studies:write` |
+| `edit_interview_message` | Edit the welcome, thank-you, or screen-out message | `studies:write` |
+| `archive_study` | Archive a study — the only removal MCP offers; reversible in the dashboard | `studies:write` |
+
+### Questions
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_questions` | List questions in display order with type, group, notes, and logic flags | `studies:read` |
+| `get_question_details` | One question's full configuration plus its logic rules | `studies:read` |
+| `add_questions` | Add questions at a position or append them to a group | `studies:write` |
+| `edit_question` | Edit any question field, including its type | `studies:write` |
+| `remove_questions` | Remove questions (soft delete); reports logic rules left dangling | `studies:write` |
+| `reorder_questions` | Reorder all questions in an ungrouped study | `studies:write` |
+
+### Question groups
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_question_groups` | Group hierarchy, order, and randomization settings | `studies:read` |
+| `add_question_group` | Create a top-level group or a subgroup (groups nest at most two levels) | `studies:write` |
+| `edit_question_group` | Rename a group or toggle child randomization | `studies:write` |
+| `move_questions_to_group` | Move questions into a group or back to the top level | `studies:write` |
+| `remove_question_group` | Ungroup or delete a group (delete cascades to its questions) | `studies:write` |
+
+### Logic rules
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `get_logic_rules` | Logic rules for one question or the whole study | `studies:read` |
+| `add_logic_rule` | Add a conditional rule: skip to a question, move to a group, end the interview, or redirect | `studies:write` |
+| `edit_logic_rule` | Edit an existing rule | `studies:write` |
+| `delete_logic_rule` | Delete a rule | `studies:write` |
+
+### Interviews & results
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_interviews` | List interviews with status filters; simulated interviews excluded by default | `interviews:read` |
+| `get_interview` | One interview with its question-and-answer conversation | `interviews:read` |
+| `get_study_stats` | Completion funnel, drop-off by question, weekly trends, or per-question answer aggregates | `interviews:read` |
+| `export_study_data` | Interview responses as CSV — one row per interview, one column per question | `interviews:read` |
+
+### Capabilities
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `get_capabilities` | The ground truth on what Versive supports: question types with defaults, logic and group rules, and unsupported features with workarounds | `studies:read` |
+
+## Prompts
+
+Prompts are ready-made analysis workflows. Most clients surface them in a prompt or command menu (in Claude, look under the connector's entry in the tools menu).
+
+| Prompt | What it does |
+| --- | --- |
+| `study-summary` | Structured research summary: themes with supporting quotes, contradictions, confidence, and follow-up questions |
+| `study-insights` | Per-question thematic insights, mirroring the dashboard's Insights tab |
+| `study-insights-summary` | Executive summary for stakeholders: overview, takeaways, participants, recommendations |
+| `custom-insight` | Runs your own analysis question across all transcripts in a study |
+| `interview-summary` | One interview: overview, participant profile, sentiment, takeaways, and quality/fraud ratings |
+
+## Resources
+
+| Resource | Description |
+| --- | --- |
+| `versive://study/{study_id}` | A study as a JSON document; clients that support resource browsing can list your accessible studies |
+
+## Good to know
+
+Your agent handles fetching and pagination on its own — there's nothing to configure. Two things are worth knowing so results make sense:
+
+- **Numbers can differ from a casual dashboard glance.** Mock and archived interviews are never exposed over MCP, and simulated interviews are always reported separately from real ones — so MCP counts reflect real research activity only.
+- **A few things still happen in the dashboard.** Figma prototype tasks, tree tests, and conjoint questions are configured there (their text stays editable via MCP), and stimulus media is attached there. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.

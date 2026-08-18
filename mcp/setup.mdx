@@ -1,0 +1,125 @@
+---
+title: "Set up the MCP server"
+sidebarTitle: "Setup"
+description: "Connect Versive to Claude, ChatGPT, Cursor, Claude Code, or any other MCP client"
+---
+
+Every client uses the same server URL:
+
+```text
+https://mcp.getversive.com/mcp
+```
+
+Setup is the same everywhere: add the URL as a remote MCP server (sometimes called a "custom connector"), then sign in to Versive and approve access when your client opens the browser. No API keys are involved.
+
+<Callout icon="info-circle" color="#71717a">
+You can also find this guide in the app, under **MCP** in the sidebar.
+</Callout>
+
+## Client-specific instructions
+
+<Tabs>
+  <Tab title="Claude">
+    Works in claude.ai and the Claude desktop app (custom connectors require a paid Claude plan).
+
+    <Steps>
+      <Step title="Open connector settings">
+        Go to **Settings → Connectors**.
+      </Step>
+      <Step title="Add the connector">
+        Click **Add custom connector**, name it "Versive", and paste `https://mcp.getversive.com/mcp`.
+      </Step>
+      <Step title="Connect and approve">
+        Click **Connect**. Your browser opens Versive — sign in and approve the requested access.
+      </Step>
+      <Step title="Enable it in a chat">
+        In any conversation, enable Versive from the search and tools menu, then ask about your research.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Claude Code">
+    Add the server from your terminal:
+
+    ```bash
+    claude mcp add --transport http versive https://mcp.getversive.com/mcp
+    ```
+
+    Then, inside Claude Code, run `/mcp` and select **versive** to sign in and approve access. Tools become available immediately after authentication.
+  </Tab>
+  <Tab title="ChatGPT">
+    Custom MCP plugins in ChatGPT require Developer Mode.
+
+    <Steps>
+      <Step title="Enable Developer Mode">
+        Go to **Settings → Plugins → Developer Mode** and turn on **Developer Mode**.
+      </Step>
+      <Step title="Add the plugin">
+        Back in **Plugins**, click **+** in the top right. Name it "Versive", set the server URL to `https://mcp.getversive.com/mcp`, and choose **OAuth** for authentication.
+      </Step>
+      <Step title="Approve access">
+        Sign in to Versive when the browser opens and approve the requested access.
+      </Step>
+      <Step title="Use it in a chat">
+        Enable the Versive plugin in a new conversation.
+      </Step>
+    </Steps>
+
+    <Note>
+      ChatGPT can take a few minutes to load the tool list after you connect. If the plugin shows no tools right after
+      setup, use **Refresh** on the plugin's connection page or wait a moment and check again. Plugins are enabled per
+      conversation, so make sure Versive is turned on in the chat you're testing.
+    </Note>
+  </Tab>
+  <Tab title="Cursor">
+    Add Versive to `.cursor/mcp.json` in your project, or `~/.cursor/mcp.json` to make it available everywhere:
+
+    ```json
+    {
+      "mcpServers": {
+        "versive": {
+          "url": "https://mcp.getversive.com/mcp"
+        }
+      }
+    }
+    ```
+
+    Then open **Cursor Settings → MCP** and click the authentication prompt next to Versive to sign in and approve access.
+  </Tab>
+  <Tab title="Other clients">
+    Versive works with any MCP client that supports **remote servers over Streamable HTTP with OAuth** — just add `https://mcp.getversive.com/mcp` wherever your client accepts a remote MCP server and complete the sign-in when prompted. A legacy SSE endpoint is available at `https://mcp.getversive.com/sse` for older clients.
+
+    If your client only supports local (stdio) servers, bridge it with [mcp-remote](https://www.npmjs.com/package/mcp-remote):
+
+    ```json
+    {
+      "mcpServers": {
+        "versive": {
+          "command": "npx",
+          "args": ["mcp-remote", "https://mcp.getversive.com/mcp"]
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Disconnecting
+
+Removing the connector from your client stops it from reaching Versive. To fully revoke a grant on the Versive side, ask an organization admin or contact [support@getversive.com](mailto:support@getversive.com). Access also ends automatically if you leave the organization.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The connection succeeds but no tools appear">
+    Connections made before late 2025 used an older grant format that no longer registers tools. Remove the connector and add it again to re-run the sign-in.
+  </Accordion>
+  <Accordion title="I'm asked to choose between US and EU">
+    Versive runs separate US and EU data regions. Pick the region where your Versive account lives — if you're unsure, it's the region in your app URL (`getversive.com` for US, `eu.getversive.com` for EU).
+  </Accordion>
+  <Accordion title="Sign-in loops or shows a stale account">
+    Your client may have cached old credentials. Remove and re-add the connector; for `mcp-remote` bridges, also clear the local cache with `rm -rf ~/.mcp-auth`.
+  </Accordion>
+  <Accordion title="Tool calls fail after working earlier">
+    Access tokens are short-lived and normally refresh on their own. If calls keep failing, your grant may have been revoked or your organization membership changed — reconnect, or check with your organization admin.
+  </Accordion>
+</AccordionGroup>

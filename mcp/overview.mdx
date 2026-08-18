@@ -1,0 +1,48 @@
+---
+title: "Versive MCP server"
+sidebarTitle: "Overview"
+description: "Connect Claude, ChatGPT, Cursor, and other AI agents to your Versive research"
+---
+
+The Versive MCP server lets AI assistants work with your research directly. Connect it once and your agent can answer questions about your results, pull quotes from interviews, draft and edit studies, and export data — all in conversation.
+
+```text
+https://mcp.getversive.com/mcp
+```
+
+It's built on the [Model Context Protocol](https://modelcontextprotocol.io) (MCP), an open standard supported by Claude, ChatGPT, Cursor, Claude Code, and a growing list of other AI tools. You sign in with your Versive account — there are no API keys to manage, and the server is available to every Versive user.
+
+<CardGroup cols={2}>
+  <Card title="Set up your client" icon="plug" href="/mcp/setup">
+    Step-by-step setup for Claude, ChatGPT, Cursor, Claude Code, and any other MCP client.
+  </Card>
+  <Card title="Tools & capabilities" icon="tool" href="/mcp/tools">
+    Every tool, prompt, and permission scope the server exposes.
+  </Card>
+  <Card title="Best practices" icon="bulb" href="/mcp/best-practices">
+    How to design, build, and analyze studies with your agent.
+  </Card>
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Prefer raw HTTP? The public REST API covers similar ground for enterprise customers.
+  </Card>
+</CardGroup>
+
+## What you can do
+
+**Analyze results.** Ask about completion rates, drop-off, and themes across a study, dig into individual interview transcripts, or export responses as CSV. Built-in prompts generate structured research summaries, per-question insights, and stakeholder-ready executive summaries.
+
+**Build and edit studies.** Create a study from a conversation, add and reorder questions, organize them into groups, and set up skip logic. Agents know Versive's full question-type catalog — including AI-moderated questions — and can check what's supported before building.
+
+**Keep humans in the loop.** Everything an agent creates shows up in your dashboard immediately, and nothing reaches participants until you share the study link yourself.
+
+## How access works
+
+When you connect a client, Versive walks you through a standard OAuth sign-in:
+
+1. Your client asks for access and you're taken to Versive in the browser.
+2. You sign in (if you aren't already) and see a consent screen listing exactly which permissions the client requested — read-only by default, with write access only when explicitly requested.
+3. After you approve, the client can act on your behalf, limited to what **you** can see and do: your organization role and each study's access policy apply to every request.
+
+<Callout icon="info-circle" color="#71717a">
+Access is personal. Each teammate connects with their own Versive account, and every action is recorded in Versive's audit log. If your account uses both the US and EU regions, you'll pick the region to connect during sign-in.
+</Callout>

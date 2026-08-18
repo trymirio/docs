@@ -18,6 +18,10 @@ Creates a study in your organization. Versive applies sensible default configura
 <ParamField body="mode" type="string" default="TEXT_AND_VOICE">
   Conversation mode: `TEXT_ONLY`, `TEXT_AND_VOICE`, `VOICE_WITH_PREVIEW`, or `VIDEO`.
 </ParamField>
+<ParamField body="access_policy" type="string" default="FULL_ACCESS">
+  Controls which organization members can access the study. Use `FULL_ACCESS`, `CAN_EDIT`,
+  `CAN_EDIT_SURVEY_ONLY`, `CAN_VIEW`, or `INVITE_ONLY`. This does not control participant access.
+</ParamField>
 <ParamField body="config" type="object">
   Study configuration overrides, merged over Versive's defaults (interviewer settings, branding, languages, device rules, and so on).
 </ParamField>
@@ -42,7 +46,7 @@ Creates a study in your organization. Versive applies sensible default configura
 
 ### Response
 
-Returns the created study (status `201`) with fields: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `thank_you_message`, `screen_out_message`, `created_at`.
+Returns the created study (status `201`) with fields: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `thank_you_message`, `screen_out_message`, `access_policy`, and `created_at`.
 
 <RequestExample>
 ```bash cURL
@@ -70,6 +74,7 @@ curl -X POST https://api.getversive.com/api/v1/studies \
   "metadata": null,
   "type": "VERSIVE_STUDY",
   "mode": "TEXT_AND_VOICE",
+  "access_policy": "FULL_ACCESS",
   "config": { "interviewMode": "quality", "lang": { "default": { "name": "English" } } },
   "welcome_message": {
     "title": "Quick chat about your first week?",

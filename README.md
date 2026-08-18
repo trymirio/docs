@@ -14,10 +14,11 @@ The site runs at `http://localhost:3000`. `mint broken-links` checks internal li
 
 ## Structure
 
-- `docs.json` — site config and navigation (three tabs: Documentation, API reference, SDK)
+- `docs.json` — site config and navigation (four tabs: Documentation, API reference, MCP, SDK)
 - `index.mdx`, `getting-started/` — landing page and core concepts
 - `studies/`, `ai-tests/`, `platform/` — non-technical product docs
 - `api-reference/` — public v1 REST API (MDX-defined endpoints; base URL and auth are configured under `api.mdx` in `docs.json`)
+- `mcp/` — Versive MCP server documentation (connecting AI agents)
 - `sdk/` — `@getversive/embed` documentation
 
 ## Deploying to docs.getversive.com

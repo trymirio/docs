@@ -149,6 +149,15 @@
         ]
       },
       {
+        "tab": "MCP",
+        "groups": [
+          {
+            "group": "MCP server",
+            "pages": ["mcp/overview", "mcp/setup", "mcp/tools", "mcp/best-practices"]
+          }
+        ]
+      },
+      {
         "tab": "SDK",
         "groups": [
           {

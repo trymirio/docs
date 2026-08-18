@@ -1,0 +1,57 @@
+---
+title: "MCP best practices"
+sidebarTitle: "Best practices"
+description: "How to design, build, and analyze research with your AI agent"
+---
+
+Working with Versive through an agent follows the same arc as any research project: decide what you want to learn, build the study, then turn responses into decisions. This guide covers all three — whether you're a researcher, designer, marketer, or product manager.
+
+## 1. Design your study with the agent
+
+**Start from goals, not questions.** The best studies begin with what you're trying to learn or decide — not a question list. Tell the agent the decision you're facing and let it propose the approach: it knows Versive's full method toolbox, from screeners and ratings to AI-moderated questions that probe with adaptive follow-ups and exploratory sections that pursue a research goal on their own.
+
+**Design with your agent and your team, then build.** Treat the agent as a research partner in the design conversation: paste in the PRD, positioning doc, or campaign brief; workshop the discussion guide together; share the draft with your team before anything gets built. Studies are cheap to create, but a study that asks the right things is designed before it exists.
+
+**Let the agent handle the mechanics.** Agents check what Versive supports on their own — question types, logic, grouping, defaults — and will suggest the right structure or a workaround without you needing to know the catalog.
+
+Some prompts to try:
+
+- "I want to understand why trials churn before converting. Help me design a 10-minute interview study — what should we ask, and what should we deliberately leave out?"
+- "Here's the PRD for our new dashboard. What are the riskiest assumptions in it, and how would you test them with an eight-question study?"
+- "Draft a discussion guide for a pricing study, then critique it: which questions are leading, and what's missing?"
+
+## 2. Build, edit, and launch
+
+**Build in conversation, review in the dashboard.** Once the design is settled, the agent can create the whole study — questions, groups, screeners, logic, messages — in one go. Everything it creates appears in your dashboard immediately, and nothing reaches participants until you share the link, so review the built study the way you'd review a teammate's draft.
+
+**Iterate incrementally.** Edits are conversational: add a screener, soften the welcome message, cap follow-ups, reorder sections — no rebuilding. If the study is already collecting responses, the agent can still adjust messages and unanswered questions.
+
+**Launching is sharing the link.** Preview the study yourself first (take it once end-to-end), then distribute the share link — directly, through your panel, or via an integration. The agent can check response volume and drop-off as results come in.
+
+Some prompts to try:
+
+- "Create the study we just designed, with a screener that ends the interview for anyone who isn't a current customer."
+- "Cap the AI follow-ups at two per question and make the welcome message warmer."
+- "Move the demographics to the end and randomize the two concept sections."
+
+<Note>
+  Write access is a separate permission: the consent screen shows exactly what a client requested, and read-only is the
+  default. Approve `studies:write` for the clients you actually build with.
+</Note>
+
+## 3. Analyze results and create reports
+
+**Start broad, then drill in.** Ask for themes, completion, and drop-off first — study-level summaries are fast and cheap. Then pull quotes, dig into specific interviews, or export CSV once you know where to look. This ordering gets better answers than dumping every transcript into the conversation.
+
+**Make recurring readouts repeatable.** The built-in prompts (`study-summary`, `study-insights`, `study-insights-summary`) encode a consistent analysis structure, so this week's readout is comparable with last week's. For one-off questions, `custom-insight` runs your question across every transcript.
+
+**Build reports where your stakeholders read them.** The agent can turn results into the artifact you actually need — a one-page executive summary with supporting quotes, a slide-ready narrative, a Slack update, or a comparison across studies — in your voice, for your audience.
+
+**Refer to studies by name.** Agents can search your workspace, so "my March onboarding study" is enough — no IDs needed.
+
+Some prompts to try:
+
+- "What are the biggest pain points participants mentioned in my onboarding study? Give me the top three with a quote each."
+- "Which questions have the highest drop-off, and what might be causing it?"
+- "Compare the themes in my March and June brand studies — what changed?"
+- "Write a one-page readout of the checkout research for leadership: key findings, supporting quotes, and what we should do next."
