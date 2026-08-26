@@ -1,0 +1,54 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "Receive signed notifications when a Versive interview is completed"
+---
+
+Versive can send an HTTPS webhook after an interview is completed. Webhooks are an organization-level integration
+provisioned with the Versive team; creating and rotating destinations is not part of the public `v1` REST API. Contact
+[support@getversive.com](mailto:support@getversive.com) to configure one for your organization.
+
+## Event
+
+The current public event type is:
+
+| Event | Sent when |
+| --- | --- |
+| `interview.completed` | A participant completes an interview. Screened-out interviews are excluded. |
+
+The HTTP request body contains the event type and the completed interview and study:
+
+```json
+{
+  "event_type": "interview.completed",
+  "interview": {
+    "id": "interview-uuid",
+    "status": "closed",
+    "vid": "participant-facing-id"
+  },
+  "study": {
+    "id": "study-uuid",
+    "title": "Onboarding research"
+  }
+}
+```
+
+The interview payload can include transcript, recording, timing, and metadata fields. Treat the entire request as
+sensitive research data, log only the fields you need, and do not expose the destination publicly.
+
+## Verify every request
+
+Deliveries are signed by Svix. Verify the `svix-id`, `svix-timestamp`, and `svix-signature` headers against your endpoint
+secret before parsing or processing the payload. Use a maintained Svix library when one is available for your language,
+reject stale timestamps, and preserve the raw request body for signature verification.
+
+See the [Svix verification guide](https://docs.svix.com/receiving/verifying-payloads/how) for language-specific examples.
+
+## Retries and idempotency
+
+Return a `2xx` response only after your service has accepted the event. Use the `svix-id` header as an idempotency key
+because a delivery may be retried. Queue slow work and respond promptly rather than performing long-running processing
+in the request handler.
+
+For changes to available events or webhook management, follow the
+[versioning policy](/api-reference/versioning).

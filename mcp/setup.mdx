@@ -16,6 +16,18 @@ Setup is the same everywhere: add the URL as a remote MCP server (sometimes call
 You can also find this guide in the app, under **MCP** in the sidebar.
 </Callout>
 
+## Discovery for integrators
+
+MCP clients discover OAuth automatically from the server's
+[protected-resource metadata](https://mcp.getversive.com/.well-known/oauth-protected-resource/mcp). Agents and connector
+catalogs can inspect the public
+[Versive capability manifest](https://mcp.getversive.com/.well-known/versive-mcp.json) for tool names, descriptions,
+required scopes, prompts, and resources before a user connects.
+
+These discovery documents are descriptive and do not grant access. The live MCP `tools/list` method, tool schemas, and
+tool calls require OAuth, and every request remains subject to the connected user's organization role and study
+permissions.
+
 ## Client-specific instructions
 
 <Tabs>

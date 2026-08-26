@@ -82,7 +82,11 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": ["api-reference/introduction"]
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/versioning",
+              "api-reference/webhooks"
+            ]
           },
           {
             "group": "Studies",
