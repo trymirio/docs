@@ -18,6 +18,20 @@ Updates a question. Only the fields you send change, and `props` is **merged** w
 <ParamField body="props" type="object">Settings to merge into the existing props.</ParamField>
 <ParamField body="assets" type="object[]">Replaces the media assets array.</ParamField>
 
+### Adding an earlier answer
+
+Mentions are stored directly in `content`. Use `{{Q:<question_id>}}` for the complete earlier answer. For one response from a matrix, ranking, allocation, or card-sort question, first call [List available references](/api-reference/studies/available-references) with `before_question_id` set to this question, then copy the returned property `template` verbatim.
+
+For example, this inserts the rating for the first matrix item:
+
+```json
+{
+  "content": "You rated speed {{Q:matrix-q-123.ratingForItem[0]}}. What influenced that rating?"
+}
+```
+
+Property indices are zero-based. Invalid property names or indices return `422`.
+
 ### Uploading an asset
 
 This endpoint also accepts `multipart/form-data` to attach a media file directly:

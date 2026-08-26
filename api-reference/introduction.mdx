@@ -12,9 +12,18 @@ The Versive public API (v1) lets you manage studies, questions, logic, interview
 https://api.getversive.com/api/v1
 ```
 
+The machine-readable OpenAPI document is available at:
+
+```
+https://api.getversive.com/api/v1/openapi.json
+```
+
+Use the OpenAPI document for code generation and agent tool discovery. The pages in this reference add examples,
+authorization context, and product guidance that are not represented fully in the schema.
+
 ## Authentication
 
-All endpoints require an **API key** passed as a Bearer token:
+Public REST integrations use an organization **API key** passed as a Bearer token:
 
 ```bash
 curl https://api.getversive.com/api/v1/studies \
@@ -23,7 +32,13 @@ curl https://api.getversive.com/api/v1/studies \
 
 API keys are created in your organization settings (**Organization → API keys**) by an owner or admin. Each key is scoped to one organization and grants full API access to that organization's data — there are no per-key scopes, so treat keys like passwords: store them in a secrets manager, never in client-side code, and deactivate keys you no longer use.
 
-A missing or invalid key returns `401` with `{"detail": "Invalid authentication credentials"}`.
+A missing or invalid bearer credential returns `401` with `{"detail": "Invalid authentication credentials"}`.
+
+The same public API routes also accept short-lived, scoped JWTs issued for authenticated
+[Versive MCP server](/mcp/overview) sessions. MCP clients request explicit `studies:read`, `interviews:read`, and, when
+needed, `studies:write` scopes. Those scopes are an upper bound: organization roles and study access policies are still
+checked on every request. MCP clients manage these credentials automatically; do not copy MCP access tokens into direct
+REST API integrations.
 
 ## Conventions
 
@@ -31,7 +46,16 @@ A missing or invalid key returns `401` with `{"detail": "Invalid authentication 
 - **IDs are UUID strings.**
 - **Organization scoping is automatic** — the key determines the organization; requesting a resource that belongs to another organization returns `403`.
 - **Partial updates** — `PUT` endpoints only change the fields you send. On studies, the `config` object is *merged* into the existing config rather than replaced.
-- **No pagination** — list endpoints currently return all matching records.
+- **Pagination is endpoint-specific** — list studies currently returns all matching records, while `GET /interviews?study_id=...` supports `page` and `page_size`. Check each endpoint's parameters before assuming either behavior.
+
+## Rate limits and retries
+
+Versive does not currently publish numeric request-rate limits for the public API. Clients should keep concurrency
+bounded and retry transient `5xx` responses with exponential backoff and jitter. If the API edge returns `429`, treat it
+as transient and honor `Retry-After` when present. Do not retry validation, authentication, or authorization failures
+without changing the request.
+
+See [Versioning and compatibility](/api-reference/versioning) for the public API lifecycle and deprecation signals.
 
 ## Errors
 
@@ -44,9 +68,10 @@ Errors use conventional HTTP status codes with a JSON body:
 | Status | Meaning |
 | --- | --- |
 | `400` | Invalid request — missing/invalid parameters or values. |
-| `401` | Missing or invalid API key. |
+| `401` | Missing or invalid bearer credential. |
 | `403` | The resource belongs to a different organization. |
 | `404` | Resource not found. |
+| `429` | The API edge rejected excess traffic — retry with backoff and honor `Retry-After` when present. |
 | `422` | Validation failed — e.g. invalid `{{Q:...}}` question references; the body includes an `errors` array. |
 | `500` | Internal server error. |
 
@@ -73,5 +98,11 @@ Errors use conventional HTTP status codes with a JSON body:
   </Card>
   <Card title="Folders" href="/api-reference/folders/create-folder" icon="folder">
     Create and list folders for organizing studies.
+  </Card>
+  <Card title="Webhooks" href="/api-reference/webhooks" icon="webhook">
+    Receive an event after an interview is completed.
+  </Card>
+  <Card title="Versioning" href="/api-reference/versioning" icon="code-branch">
+    Understand compatibility guarantees and deprecation signals.
   </Card>
 </CardGroup>

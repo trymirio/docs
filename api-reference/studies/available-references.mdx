@@ -4,7 +4,9 @@ api: "GET /studies/{study_id}/available-references"
 description: "Which earlier questions can be referenced from a given position"
 ---
 
-Returns the catalog of questions that can be [referenced](/api-reference/questions/batch-questions#question-references-mentions) from a given position in the study — with ready-to-insert `{{Q:...}}` templates for each. Use this to build an "@-mention" picker in your own tooling.
+Returns the catalog of questions that can be [referenced](/api-reference/questions/batch-questions#question-references-mentions) from a given position in the study — with ready-to-insert `{{Q:...}}` templates for each. Use this endpoint to build an "@-mention" picker or discover the exact token for one option response.
+
+Always copy the returned `template` into the destination question's `content`. A full-answer token such as `{{Q:<question_id>}}` inserts the complete response. To insert one item from a structured answer, choose an entry whose `kind` is `property`.
 
 <ParamField path="study_id" type="string" required>
   The study ID.
@@ -16,10 +18,46 @@ Returns the catalog of questions that can be [referenced](/api-reference/questio
   Only return questions with a lower display order — use when composing a new question. Ignored if `before_question_id` is set.
 </ParamField>
 
+## Supported question types
+
+The following source question types can be mentioned:
+
+- `textInput`, `shortText`, and `multipleChoice` — full answer only.
+- `matrixRatingScale` — full answer or `ratingForItem[index]`, which returns the rating for one item.
+- `ranking` — full answer, `rankOfOption[index]`, or `optionAtRank[index]`.
+- `allocation` — full answer or `allocationForItem[index]`.
+- `cardSort` — full answer, `categoryForCard[index]`, or `cardsInCategory[index]`.
+
+Property indices are **zero-based**. For example, `ratingForItem[0]` selects the first entry in the matrix question's `props.options`.
+
+<Callout icon="info-circle" color="#71717a">
+  Property selectors are type-specific. There is no generic `.option[index]` selector, and multiple-choice questions expose only their full answer.
+</Callout>
+
 ### Response
 
 <ResponseField name="references" type="ReferenceableQuestion[]">
-  Each entry has `question_id`, `display_order`, `type`, `content`, a human-readable `label`, and `available_references` — the insertable items: `kind` (`fullAnswer` | `property`), `label`, `template` (the exact `{{Q:...}}` string), and for properties, `property_name`, `property_index`, and `option`.
+  Each entry has `question_id`, `display_order`, `type`, `content`, a human-readable `label`, and `available_references`.
+</ResponseField>
+
+<ResponseField name="available_references[].kind" type="string">
+  `fullAnswer` for the complete response or `property` for one structured sub-answer.
+</ResponseField>
+
+<ResponseField name="available_references[].template" type="string">
+  The exact `{{Q:...}}` token to insert into the destination question's `content`.
+</ResponseField>
+
+<ResponseField name="available_references[].property_name" type="string | null">
+  Type-specific selector such as `ratingForItem`, `rankOfOption`, or `allocationForItem`. Null for a full answer.
+</ResponseField>
+
+<ResponseField name="available_references[].property_index" type="integer | null">
+  Zero-based option, category, or rank-position index. Null for a full answer.
+</ResponseField>
+
+<ResponseField name="available_references[].option" type="string | null">
+  Human-readable option, category, or rank position selected by the property reference.
 </ResponseField>
 
 <RequestExample>
@@ -34,14 +72,28 @@ curl "https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f
 {
   "references": [
     {
-      "question_id": "q-123",
+      "question_id": "matrix-q-123",
       "display_order": 1,
-      "type": "multipleChoice",
-      "content": "Which plan are you on?",
-      "label": "Q1 — Which plan are you on?",
+      "type": "matrixRatingScale",
+      "content": "Rate each part of the experience",
+      "label": "Q2",
       "available_references": [
-        { "kind": "fullAnswer", "label": "Answer", "template": "{{Q:q-123}}" },
-        { "kind": "property", "label": "Option 2", "template": "{{Q:q-123.option[1]}}", "property_name": "option", "property_index": 1, "option": "Pro" }
+        {
+          "kind": "fullAnswer",
+          "label": "Q2",
+          "template": "{{Q:matrix-q-123}}",
+          "property_name": null,
+          "property_index": null,
+          "option": null
+        },
+        {
+          "kind": "property",
+          "label": "Q2.ratingForItem[1]",
+          "template": "{{Q:matrix-q-123.ratingForItem[0]}}",
+          "property_name": "ratingForItem",
+          "property_index": 0,
+          "option": "Speed"
+        }
       ]
     }
   ]

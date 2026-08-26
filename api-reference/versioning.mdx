@@ -1,0 +1,42 @@
+---
+title: "Versioning and compatibility"
+sidebarTitle: "Versioning"
+description: "How Versive versions, changes, and deprecates its public API"
+---
+
+## Current public version
+
+The supported public API is `v1`, and every public endpoint begins with:
+
+```
+https://api.getversive.com/api/v1
+```
+
+Routes under `/api/v0` are used by the Versive application itself. They are not a public integration surface and are
+not covered by the compatibility expectations on this page.
+
+## Compatible changes
+
+Versive may make backward-compatible additions within `v1`, including:
+
+- Adding optional request parameters or fields.
+- Adding response fields or new enum values.
+- Adding endpoints and webhook payload fields.
+- Improving validation, error detail, documentation, and performance.
+
+Clients should ignore response fields they do not recognize and avoid exhaustive handling that fails when a new enum
+value appears.
+
+## Breaking changes
+
+A change that requires existing integrations to update will use a new major path such as `/api/v2`. The existing
+version will remain separate during migration rather than silently changing its contract.
+
+When a public route or version is scheduled for removal, Versive will:
+
+1. Mark it deprecated in the API reference and OpenAPI document.
+2. Announce the replacement and migration guidance in the documentation.
+3. Return standards-based `Deprecation` and `Sunset` response headers once a removal date has been set.
+
+No `v1` sunset is currently scheduled. Contact [support@getversive.com](mailto:support@getversive.com) for contractual
+support requirements or migration questions.
