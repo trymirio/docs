@@ -46,6 +46,7 @@
               "studies/question-types",
               "studies/question-media",
               "studies/logic",
+              "studies/split-tests",
               "studies/ai-interviewer",
               "studies/settings",
               "studies/languages",
