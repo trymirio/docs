@@ -1,0 +1,32 @@
+---
+title: "Split tests"
+description: "Route participants into weighted study arms and compare variants side by side"
+---
+
+Split tests let one study show different participants different content — concept A vs. concept B, two message framings, alternative pricing pages — and compare the results side by side. They're built with **randomizers**: an element in the study builder that routes each participant down one of several weighted **arms**.
+
+## Building a split test
+
+1. In the study builder's add menu, choose **Add randomizer** (alongside *Add question* and *Add group*).
+2. Drag the questions or question groups for each variant into its arm.
+3. Open **Randomizer settings** to name the randomizer, label the arms, and set their weights. A randomizer has 2–12 arms; weights are percentages and must total 100%.
+
+When a participant reaches the randomizer, they're assigned to one arm at random according to the weights, answer only that arm's questions, and then continue with the rest of the study. Everything outside the randomizer is seen by everyone — so shared screeners and intro questions go before it, and shared closing questions after.
+
+Publishing validates the setup: empty arms, missing labels, or weights that don't add up are flagged in the builder before the study goes live.
+
+## Reading split-test results
+
+Every response records which arm the participant entered:
+
+- **Filter** both Results and Insights by arm to compare variants.
+- The grid view and transcripts label each response with its arm.
+- **CSV exports** include the routing columns, so you can pivot by arm in your own tools.
+
+## Split tests with the AI study creator
+
+You can also ask the AI study creator for a split test directly — *"Create a concept test where 50% of participants see concept A and 50% see concept B"* — and it builds the randomizer, arms, and variant groups for you.
+
+<Note>
+Split tests are in early access and enabled per study. If you don't see **Add randomizer** in your study builder, reach out to us to turn it on.
+</Note>

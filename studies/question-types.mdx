@@ -29,11 +29,11 @@ A goal-driven, multi-turn AI conversation. Instead of a fixed question, you give
 
 ### Open Text
 
-Long-form free text (or voice) input. Supports optional instructions shown to participants.
+Long-form free text (or voice) input. Supports optional instructions shown to participants, and an optional **character limit** — participants see a live counter and typing stops at the limit.
 
 ### Short Text
 
-A brief, single-line text answer.
+A brief, single-line text answer. Supports an optional **character limit** with a live counter.
 
 ### Message
 
@@ -48,7 +48,9 @@ Single- or multi-select from a list of options.
 | Setting | Description |
 | --- | --- |
 | Multi-select | Allow choosing more than one option, with an optional **max selections** limit. |
-| Include "Other" | Adds a free-text "Other" option. |
+| Display format | Single-select only: show options as the classic list, or collapse long option lists into a **dropdown**. |
+| Exclusive options | Multi-select only: mark options like "None of the above" as exclusive — picking one clears every other selection, and picking any other option clears it. |
+| Include "Other" | Adds a free-text "Other" option, with an optional character limit for the field. |
 | Randomize order | Shuffle option order per participant to avoid order bias. |
 
 ### Card Sort
@@ -112,6 +114,8 @@ Standard Net Promoter Score (default 0–10) with customizable end labels ("Not 
 
 Rate multiple items on the same scale. Supports randomized row order and an optional **N/A** column.
 
+An optional **one selection per column** constraint makes each scale value usable by at most one row — once a row picks a value, it's greyed out for the others (N/A stays shared). Useful for forced-ranking grids. The toggle is only available when every row can still receive a value: at least as many scale points as rows, or the N/A column enabled.
+
 ## Other
 
 ### Prototype Task
@@ -151,9 +155,13 @@ Capture a valid email address.
 
 Numeric input, with an optional min/max range validation.
 
-### Calendar
+### Date
 
-External calendar booking — share a scheduling link (e.g. for a follow-up session) inside the study.
+Structured date entry with month/day selectors and a typed four-digit year. Full date is the default; authors can instead collect month & year or year only and choose MDY, DMY, or YMD display order. Optional earliest/latest limits restrict which dates participants can submit. Answers remain stored in sortable ISO partial-date format: `YYYY-MM-DD` for full dates, `YYYY-MM` for month and year, and `YYYY` for year only. Storage is independent of display order.
+
+### Calendly
+
+External Calendly booking — share a scheduling link (e.g. for a follow-up session) inside the study.
 
 ## Referencing earlier answers
 

@@ -14,6 +14,8 @@ Browse responses in two views:
 
 Each interview shows the transcript, recordings (audio, video, and screen recordings if enabled), uploaded media, respondent details and metadata, duration, word count, tags, and notes. Specialized renderers show prototype task paths, tree test results, and website task sessions.
 
+If a voice answer was transcribed poorly, you can **re-run transcription** — for a single message or the whole interview — directly from the transcript view.
+
 Interviews move through statuses — *open, in progress, paused, processing, closed (complete), screened out,* and *canceled* — and can be archived. Simulated interviews are labeled with their persona and run number.
 
 ### Per-interview AI analysis
@@ -52,6 +54,7 @@ Filter both Results and Insights by:
 - Metadata fields (including [hidden fields](/studies/launch-and-sharing#hidden-fields--participant-tracking) from your links)
 - Interview status — completed, archived, screened out
 - Simulated vs. real interviews
+- [Split-test arm](/studies/split-tests) — compare variants in studies with a randomizer
 
 Filters support multiple values and can be saved for reuse.
 
@@ -62,7 +65,7 @@ Build cross-study **reports** (documents or presentations) with an AI chat assis
 ## Exports
 
 - **PDF** — formatted reports with a cover page, executive summary, custom insights, and per-question pages with charts and data tables. Optimized for large studies (1,000+ responses).
-- **CSV** — raw response data, sanitized for Excel compatibility.
+- **CSV** — raw response data, sanitized for Excel compatibility. Multi-select multiple choice answers export as one column per option (cell filled when selected, blank when not, plus an *Other* column when free-text entries are enabled) — the same fan-out matrix, ranking, and allocation questions use — so per-option pivots work directly in Excel.
 
 ## Staying in the loop
 
