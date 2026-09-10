@@ -10,7 +10,7 @@ Every client uses the same server URL:
 https://mcp.getversive.com/mcp
 ```
 
-Setup is the same everywhere: add the URL as a remote MCP server (sometimes called a "custom connector"), then sign in to Versive and approve access when your client opens the browser. No API keys are involved.
+In Claude, Versive is listed in the connector directory, so you can add it without pasting anything. For every other client, add the URL as a remote MCP server (sometimes called a "custom connector"). Either way, sign in to Versive and approve access when your client opens the browser. No API keys are involved.
 
 <Callout icon="info-circle" color="#71717a">
 You can also find this guide in the app, under **MCP** in the sidebar.
@@ -32,22 +32,27 @@ permissions.
 
 <Tabs>
   <Tab title="Claude">
-    Works in claude.ai and the Claude desktop app (custom connectors require a paid Claude plan).
+    Versive is in the Claude connector directory. Works in claude.ai and the Claude desktop app.
 
     <Steps>
-      <Step title="Open connector settings">
-        Go to **Settings → Connectors**.
+      <Step title="Browse connectors">
+        In any chat, click the **+** button next to the message box, then **Browse connectors**.
       </Step>
-      <Step title="Add the connector">
-        Click **Add custom connector**, name it "Versive", and paste `https://mcp.getversive.com/mcp`.
+      <Step title="Find Versive">
+        Search for **Versive** and click **Connect**.
       </Step>
-      <Step title="Connect and approve">
-        Click **Connect**. Your browser opens Versive — sign in and approve the requested access.
+      <Step title="Sign in and approve">
+        Your browser opens Versive — sign in and approve the requested access.
       </Step>
       <Step title="Enable it in a chat">
         In any conversation, enable Versive from the search and tools menu, then ask about your research.
       </Step>
     </Steps>
+
+    <Note>
+      You can also add Versive manually: go to **Settings → Connectors**, click **Add custom connector**, name it
+      "Versive", and paste `https://mcp.getversive.com/mcp`. Custom connectors require a paid Claude plan.
+    </Note>
   </Tab>
   <Tab title="Claude Code">
     Add the server from your terminal:

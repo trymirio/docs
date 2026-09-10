@@ -1,6 +1,6 @@
 ---
 title: "Launching & sharing"
-description: "Share links, email outreach, embeds, and AI simulation"
+description: "Share links, participant sources, email outreach, embeds, and AI simulation"
 ---
 
 The **Launch** tab is where a study meets its participants. It has five sub-tabs: **Link**, **Send**, **Recruit**, **Simulate**, and **Embed**.
@@ -29,6 +29,25 @@ Parameters are stored as response metadata and available in results, filters, an
 URL parameters are visible to participants and can end up in browser history, logs, and analytics. Use non-sensitive values like `source=newsletter` or an opaque internal ID — never emails, names, or secrets. For individually tracked invitations, prefer [personal links](#send-email-outreach) or the [API](/api-reference/interviews/create-interview), which keep metadata server-side.
 </Warning>
 
+### Participant sources
+
+Recruiting from more than one channel? Add named **sources** on the Link tab. Each source gets its own share link (`…/s/{studyId}?source=<key>`) and can send its participants somewhere different at each exit point:
+
+| Outcome | Default behavior | With a custom URL |
+| --- | --- | --- |
+| **Completion** | The study's thank-you page | Full-page redirect |
+| **Screenout** | The study's [screen-out destination](/studies/settings#sharing--participants) | Full-page redirect |
+| **Quota / paused** | The study's pause URL or paused page | Full-page redirect |
+
+This is how you give a panel its completion-code redirect while your email list still sees the thank-you page — each channel keeps its own behavior.
+
+Good to know:
+
+- Custom URLs must be `https://` and support `{param}` placeholders: any parameter on the participant's link is substituted in, which is how panel IDs and completion codes (e.g. `{PID}`) pass through.
+- A source's URL key is generated from its name when created and then locked — renaming the source later never breaks links you've already distributed.
+- Links without a `?source=`, with an unknown key, or hitting an outcome with no custom URL fall back to the study's defaults.
+- Some sources are created for you: email outreach creates an `emails` source, and panel recruiting creates a `respondent` source (its screenout redirect is managed by Versive so panel payment tracking keeps working).
+
 ## Send (email outreach)
 
 Invite specific people and track them individually. Each participant gets a personal link (`…?vid=<token>`).
@@ -50,6 +69,7 @@ Recruit from a global pool of 4 million+ consumers and professionals across 150 
 Before launching to real people, run **simulated interviews** with [AI personas](/ai-tests/personas) to shake out confusing questions, broken logic, and awkward AI-interviewer behavior.
 
 - Pick personas and an execution count per persona (up to 10 runs per persona, 100 simulations per batch).
+- Conversational questions are simulated for real: AI Question and Exploratory questions run as full multi-turn conversations, so you can see how the interviewer probes before real participants do.
 - Simulated responses appear in your Results tab, clearly marked as simulations, and can be included in or excluded from insights.
 - Simulations consume credits like real completions.
 

@@ -8,13 +8,15 @@ You don't call these tools yourself — your AI assistant picks the right ones b
 
 ## Permission scopes
 
-The consent screen shows exactly which scopes a client requested when you connect. Read scopes are granted by default; write access must be explicitly requested by the client.
+The consent screen shows exactly which scopes will be granted when you connect. Every client covered in the [setup guide](/mcp/setup) receives all three scopes, including connectors with no configurable scope field. If you're building your own client, you can request a read-only connection by sending an explicit `scope` with just the read scopes.
 
-| Scope | Grants | Default |
-| --- | --- | --- |
-| `studies:read` | Read your studies, questions, groups, logic, and settings | Yes |
-| `interviews:read` | Read interviews and results in your studies | Yes |
-| `studies:write` | Create and edit studies, questions, groups, and logic (includes `studies:read`) | Requested explicitly |
+| Scope | Grants |
+| --- | --- |
+| `studies:read` | Read your studies, questions, groups, logic, and settings |
+| `interviews:read` | Read interviews and results in your studies |
+| `studies:write` | Create and edit studies, questions, groups, and logic (includes `studies:read`) |
+
+Scopes are fixed when a client connects. To change them (for example, to add write access to a connection that was approved read-only), disconnect the client and connect it again so the consent screen runs with the new scopes.
 
 Scopes are an upper bound, not a bypass: every request is also checked against your organization role and each study's access policy, so an agent can never see or change more than you can in the dashboard.
 
