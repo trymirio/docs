@@ -14,7 +14,8 @@ It's built on the [Model Context Protocol](https://modelcontextprotocol.io) (MCP
 
 <CardGroup cols={2}>
   <Card title="Set up your client" icon="plug" href="/mcp/setup">
-    Step-by-step setup for Claude, ChatGPT, Cursor, Claude Code, and any other MCP client.
+    Step-by-step setup for Claude, ChatGPT, Cursor, Claude Code, and any other
+    MCP client.
   </Card>
   <Card title="Tools & capabilities" icon="tool" href="/mcp/tools">
     Every tool, prompt, and permission scope the server exposes.
@@ -23,7 +24,8 @@ It's built on the [Model Context Protocol](https://modelcontextprotocol.io) (MCP
     How to design, build, and analyze studies with your agent.
   </Card>
   <Card title="API reference" icon="code" href="/api-reference/introduction">
-    Prefer raw HTTP? The public REST API covers similar ground for enterprise customers.
+    Prefer raw HTTP? The public REST API covers similar ground for enterprise
+    customers.
   </Card>
 </CardGroup>
 
@@ -40,9 +42,11 @@ It's built on the [Model Context Protocol](https://modelcontextprotocol.io) (MCP
 When you connect a client, Versive walks you through a standard OAuth sign-in:
 
 1. Your client asks for access and you're taken to Versive in the browser.
-2. You sign in (if you aren't already) and see a consent screen listing exactly which permissions the client requested — read-only by default, with write access only when explicitly requested.
+2. You sign in (if you aren't already) and see a consent screen listing exactly which permissions will be granted. Clients that request specific scopes get those; clients that request none get the full set, including write access.
 3. After you approve, the client can act on your behalf, limited to what **you** can see and do: your organization role and each study's access policy apply to every request.
 
 <Callout icon="info-circle" color="#71717a">
-Access is personal. Each teammate connects with their own Versive account, and every action is recorded in Versive's audit log. If your account uses both the US and EU regions, you'll pick the region to connect during sign-in.
+  Access is personal. Each teammate connects with their own Versive account, and
+  every action is recorded in Versive's audit log. If your account uses both the
+  US and EU regions, you'll pick the region to connect during sign-in.
 </Callout>

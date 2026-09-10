@@ -2,6 +2,8 @@
 
 Public documentation site for [docs.getversive.com](https://docs.getversive.com), built with [Mintlify](https://mintlify.com).
 
+**Source of truth: `docs/` in the `trymirio/versive` monorepo.** Docs changes ship in feature PRs there and are then synced to the public mirror repo [`trymirio/docs`](https://github.com/trymirio/docs), which Mintlify deploys. If you're reading this in `trymirio/docs`: don't edit here — changes will be overwritten by the next sync. Fix the monorepo and re-sync.
+
 ## Local development
 
 ```bash
@@ -23,13 +25,12 @@ The site runs at `http://localhost:3000`. `mint broken-links` checks internal li
 
 ## Deploying to docs.getversive.com
 
-One-time setup in the [Mintlify dashboard](https://app.mintlify.com):
+Deployment is a two-step flow:
 
-1. **Connect the repo** — install the Mintlify GitHub app on `trymirio/versive`.
-2. **Set the monorepo path** — in *Settings → Deployment → Git Settings*, enable "docs.json is in a subdirectory" and set the path to `/docs`. Set the deployment branch (e.g. `main` or `staging`).
-3. **Add the custom domain** — in *Settings → Deployment → Custom domain*, add `docs.getversive.com`. The dashboard shows the DNS record to add (a CNAME for the `docs` subdomain at your DNS provider). TLS certificates are provisioned automatically once DNS propagates.
+1. **Docs land in the monorepo.** Every feature PR that changes user-facing behavior updates the matching page under `docs/` (see the docs rule in the root `CLAUDE.md`).
+2. **Sync to the public mirror.** After the docs changes reach `main`, run the `sync-public-docs` skill (`.claude/skills/sync-public-docs/` — or just ask Claude to "sync the public docs"). It copies the tracked `docs/` tree into a local checkout of `trymirio/docs`, reports the diff for review, and you commit and push to that repo's `main`. Every push to the mirror's `main` deploys automatically via Mintlify.
 
-After setup, every push to the deployment branch deploys automatically; PRs get preview deployments.
+Mintlify itself is configured in the [Mintlify dashboard](https://app.mintlify.com): the GitHub app is installed on `trymirio/docs` with `main` as the deployment branch, and the custom domain `docs.getversive.com` is set under *Settings → Deployment → Custom domain* (a CNAME for the `docs` subdomain; TLS is provisioned automatically).
 
 ## Conventions
 

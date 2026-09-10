@@ -35,8 +35,10 @@ Some prompts to try:
 - "Move the demographics to the end and randomize the two concept sections."
 
 <Note>
-  Write access is a separate permission: the consent screen shows exactly what a client requested, and read-only is the
-  default. Approve `studies:write` for the clients you actually build with.
+  The consent screen lists exactly what will be granted before you approve. Every client covered in the setup guide
+  receives write access ("Create and edit your studies"). If you're building your own client, you can request a
+  read-only connection by sending an explicit `scope`. Your organization role and each study's access policy still
+  apply to every request.
 </Note>
 
 ## 3. Analyze results and create reports

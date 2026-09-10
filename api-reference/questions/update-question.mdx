@@ -39,6 +39,7 @@ This endpoint also accepts `multipart/form-data` to attach a media file directly
 - `file` — the media file.
 - `asset_layout` — `fullScreen` (default) or `inline`.
 - `asset_sizing` — optional sizing mode.
+- `asset_max_width_percent` — optional, integer from 1 to 100 capping the width at that percent of the question column. Requires `asset_layout=inline` and an image or video. Omit or send `100` for full width.
 - Other fields (`content`, `props` as JSON strings, etc.) may be sent as form fields.
 
 <RequestExample>

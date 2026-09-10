@@ -1,0 +1,69 @@
+---
+title: "Prototype testing"
+description: "Test Figma prototypes and web-based prototypes (Figma Make, v0, Lovable, Bolt) with real participants"
+---
+
+Versive embeds two kinds of prototypes in studies, and each has its own question type and media type:
+
+- **Figma prototypes** — click-through designs made in Figma (`figma.com/proto/…` links). Versive integrates with Figma directly: frame-by-frame path tracking, click capture, and automatic goal detection.
+- **Web-based prototypes** — working apps published from tools like **Figma Make, v0, Lovable, Bolt, Replit, and Framer**. These are real websites, so they're embedded directly and participants use the actual app.
+
+## Which one do I use?
+
+| You have | Give participants a task | Show it beside a question |
+| --- | --- | --- |
+| A **Figma prototype** (`figma.com/proto/…`) | [Prototype Task](/studies/question-types#prototype-task) | [Figma media type](/studies/question-media#figma-prototypes) |
+| A **web-based prototype** (Figma Make, v0, Lovable, Bolt, …) or any website | [Website Task](/studies/question-types#website-task) with **Embed the site** on | [Embedded website media type](/studies/question-media) |
+
+The task types are for "try to do X" scenarios — participants start the task, explore, think aloud, and finish explicitly. The media types show the prototype as context beside any question — ratings, open-ends, or AI-moderated questions about what participants see.
+
+## Figma prototypes
+
+Paste the prototype link into a **Prototype Task** (or attach it as Figma media on any question). Versive reads the file and its interactions from Figma, so you can pick a starting frame, and — for tasks — a **goal frame** that detects completion automatically. Every click and screen change is tracked.
+
+<Callout icon="info-circle" color="#71717a">
+The Figma file needs link sharing enabled ("Anyone with the link can view"), or participants will see a Figma login inside the study.
+</Callout>
+
+## Web-based prototypes
+
+Paste the **published** app link into a Website Task (with **Embed the site in Versive** on) or an embedded-website media attachment — direct embedding is detected automatically from the URL:
+
+| Tool | Link to paste | Where to get it |
+| --- | --- | --- |
+| **Figma Make** | `your-app.figma.site` | **Publish** your Make app in Figma |
+| **v0** | `your-app.vercel.app` | **Deploy** the app in v0 |
+| **Lovable** | `your-app.lovable.app` | **Publish** in Lovable |
+| **Bolt** | `your-app.bolt.host` | **Deploy** in Bolt |
+| **Replit** | `your-app.replit.app` | **Deploy** in Replit |
+| **Framer** | `your-site.framer.website` | **Publish** in Framer |
+
+Editor and share links don't embed — the builder tells you how to fix the link when it recognizes one (a `v0.app/chat/…` share link, a `figma.com/make/…` editor link). Any other website works too; sites not in this table open in a secure virtual browser instead of a direct embed.
+
+### Check your link before launching
+
+Direct embedding requires the prototype to be **publicly reachable** — the most common failure is an app that sits behind a login:
+
+- **v0 / Vercel** — Deployment Protection (password or SSO) must be off.
+- **Figma Make** — apps restricted to your organization's members won't load for participants; publish publicly.
+- **Replit** — private deployments require a Replit login.
+
+The builder's **Preview prototype** panel shows exactly what participants will see. If it asks for a login there, it will for them too.
+
+## What's captured
+
+| Signal | Figma prototype | Web prototype (direct embed) | Other websites (virtual browser) |
+| --- | --- | --- | --- |
+| Task duration | ✅ | ✅ | ✅ |
+| Voice think-aloud transcript | ✅ | ✅ | ✅ |
+| Completion | ✅ automatic (goal frame) | ✅ self-reported | ✅ self-reported |
+| Screens / pages visited | ✅ | — | ✅ |
+| Clicks | ✅ | — | — |
+
+A directly embedded web app is opaque to Versive — clicks and navigation inside it aren't tracked. For richer capture, turn on **browser-tab screen recording** in the Website Task card to record what participants do, and lean on voice think-aloud plus AI follow-up questions for the "why".
+
+## Troubleshooting
+
+- **Blank or stuck panel** — after ~15 seconds participants get an **Open in a new tab** fallback. Usually means the deployment is slow, was taken down, or is login-walled — recheck the builder preview.
+- **App loads but misbehaves** — prototypes that rely on popup-based sign-in or third-party cookies can act up inside an embed. Test your specific app in the preview; if it needs a real tab, turn off the embed toggle to use the new-tab flow.
+- **Site shows the virtual browser instead of embedding** — only the domains in the table above embed directly; everything else intentionally routes through the virtual browser.

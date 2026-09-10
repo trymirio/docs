@@ -15,7 +15,7 @@ Always copy the returned `template` into the destination question's `content`. A
   Only return questions that appear **before** this question — use when editing an existing question.
 </ParamField>
 <ParamField query="before_display_order" type="integer">
-  Only return questions with a lower display order — use when composing a new question. Ignored if `before_question_id` is set.
+  Only return the questions at zero-based interview positions lower than this value — use when composing a new question. Positions count questions in the order participants see them, with question groups expanded, so they match the numbers in the study editor. Ignored if `before_question_id` is set.
 </ParamField>
 
 ## Supported question types
@@ -37,7 +37,7 @@ Property indices are **zero-based**. For example, `ratingForItem[0]` selects the
 ### Response
 
 <ResponseField name="references" type="ReferenceableQuestion[]">
-  Each entry has `question_id`, `display_order`, `type`, `content`, a human-readable `label`, and `available_references`.
+  Each entry has `question_id`, `display_order` (zero-based interview position, groups expanded), `type`, `content`, a human-readable `label` such as `Q2`, and `available_references`.
 </ResponseField>
 
 <ResponseField name="available_references[].kind" type="string">
