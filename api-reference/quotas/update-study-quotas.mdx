@@ -1,0 +1,48 @@
+---
+title: "Update study quotas"
+api: "PUT /studies/{id}/quotas"
+description: "Replace the study-level quota configuration"
+---
+
+Replaces the study's quota configuration. Modes are mutually exclusive: send the full configuration for the mode you want, and any previous configuration is discarded. Question quotas are not affected.
+
+<ParamField path="id" type="string" required>The study ID.</ParamField>
+
+<ParamField body="mode" type="string" required>`off`, `fixed`, or `url_param`.</ParamField>
+<ParamField body="fixed_limit" type="integer">
+  Required in `fixed` mode, not allowed otherwise. `0` closes the study to new participants.
+</ParamField>
+<ParamField body="param_name" type="string">
+  Required in `url_param` mode, not allowed otherwise. Letters, digits, underscores, and hyphens only; up to 64 characters.
+</ParamField>
+<ParamField body="buckets" type="array">
+  Required in `url_param` mode, not allowed otherwise. One `{ value, limit }` per link value, up to 50, with unique values. Matching is exact and case-sensitive. A `limit` of `0` closes that value.
+</ParamField>
+<ParamField body="unmatched_param_policy" type="string" default="allow">
+  `allow` lets in participants whose link has no matching value (they don't count toward any bucket); `reject` turns them away.
+</ParamField>
+
+### Response
+
+The saved configuration, same shape as [Get study quotas](/api-reference/quotas/get-study-quotas).
+
+<Tip>
+To check what a given link would do before sharing it, `POST /studies/{id}/quotas/evaluate` with `{ "entry_params": { "group": "1" } }` returns `{ allowed, reason, bucket }` without recording anything.
+</Tip>
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/quotas \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "url_param",
+    "param_name": "group",
+    "buckets": [
+      { "value": "1", "limit": 50 },
+      { "value": "2", "limit": 50 }
+    ],
+    "unmatched_param_policy": "reject"
+  }'
+```
+</RequestExample>

@@ -1,0 +1,39 @@
+---
+title: "Get study quotas"
+api: "GET /studies/{id}/quotas"
+description: "The study-level quota configuration"
+---
+
+Returns the study's quota configuration. See [Quotas](/studies/settings#quotas) for how each mode behaves.
+
+<ParamField path="id" type="string" required>The study ID.</ParamField>
+
+### Response
+
+<ResponseField name="mode" type="string">`off`, `fixed` (total completes), or `url_param` (per link parameter).</ResponseField>
+<ResponseField name="fixed_limit" type="integer | null">Completes allowed in `fixed` mode. `0` closes the study to new participants.</ResponseField>
+<ResponseField name="param_name" type="string | null">The URL parameter in `url_param` mode.</ResponseField>
+<ResponseField name="buckets" type="array">One `{ value, limit }` per link value in `url_param` mode. A `limit` of `0` closes that value.</ResponseField>
+<ResponseField name="unmatched_param_policy" type="string">`allow` or `reject`: what happens to participants whose link has no matching value.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/quotas \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "mode": "url_param",
+  "fixed_limit": null,
+  "param_name": "group",
+  "buckets": [
+    { "value": "1", "limit": 50 },
+    { "value": "2", "limit": 50 }
+  ],
+  "unmatched_param_policy": "allow"
+}
+```
+</ResponseExample>

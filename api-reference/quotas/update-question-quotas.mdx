@@ -1,0 +1,45 @@
+---
+title: "Update question quotas"
+api: "PUT /studies/{id}/questions/{question_id}/quotas"
+description: "Replace the quota buckets of one Multiple Choice question"
+---
+
+Replaces the [question quotas](/studies/question-quotas) of one question. Send the full list you want to keep; an empty array removes every quota on the question. Other questions and the study-level quota are not affected.
+
+<ParamField path="id" type="string" required>The study ID.</ParamField>
+<ParamField path="question_id" type="string" required>A Multiple Choice question in the study.</ParamField>
+
+The request body is a JSON array of buckets, up to 50, unique per `match` and `value`:
+
+<ParamField body="match" type="string" required>
+  `equals` (exactly that one option selected) or `includes` (the option is among the selected options). `includes` is only accepted on multi-select questions.
+</ParamField>
+<ParamField body="value" type="string" required>
+  The exact option text in the study's default language. A value that matches no option is saved but never fills.
+</ParamField>
+<ParamField body="limit" type="integer" required>
+  Completes allowed for this option. `0` closes the option: the next participant who chooses it is screened out.
+</ParamField>
+<ParamField body="kind" type="string" default="choice">Always `choice`.</ParamField>
+
+### Response
+
+The saved configuration: `{ question_id, buckets }`, same shape as one entry of [List question quotas](/api-reference/quotas/list-question-quotas).
+
+Returns `404` for an unknown question and `422` when the question is not Multiple Choice or an `includes` bucket targets a single-select question.
+
+<Tip>
+`POST /studies/{id}/questions/{question_id}/quotas/evaluate` with `{ "values": ["iPhone"], "others": [] }` tells you whether that answer would be screened out right now, without recording anything.
+</Tip>
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/questions/3f1c2a9e-8d4b-4c7a-9e21-5b6d7c8e9f01/quotas \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '[
+    { "match": "equals", "value": "iPhone", "limit": 25 },
+    { "match": "equals", "value": "Android", "limit": 25 }
+  ]'
+```
+</RequestExample>

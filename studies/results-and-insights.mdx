@@ -67,6 +67,14 @@ Build cross-study **reports** (documents or presentations) with an AI chat assis
 - **PDF** — formatted reports with a cover page, executive summary, custom insights, and per-question pages with charts and data tables. Optimized for large studies (1,000+ responses).
 - **CSV** — raw response data, sanitized for Excel compatibility. Multi-select multiple choice answers export as one column per option (cell filled when selected, blank when not, plus an *Other* column when free-text entries are enabled) — the same fan-out matrix, ranking, and allocation questions use — so per-option pivots work directly in Excel.
 
+### Telling repeated questions apart
+
+Concept tests often repeat the same questions once per stimulus — three concept blocks inside one randomized group, say — so the question text alone can't tell you which concept a column belongs to. The CSV export adds that context to each column header:
+
+- **Group titles** — a question inside a titled group is prefixed with the group's breadcrumb: `3. Concepts › Concept B › How appealing is this?`. Untitled groups add nothing, so name your concept blocks to get labeled columns.
+- **Attached media** — a question with [media attached](/studies/question-media) lists the file names after its text: `1. Take a look at this [concept-b.png]`.
+- **Order shown** — each randomized group gets an extra `<group title> (order shown)` column recording the order that participant actually met its contents in, pipe-separated so it splits cleanly: `Concept B|Concept C|Concept A`. Blocks the participant never reached are left out. An untitled block is named by the first file attached inside it.
+
 ## Staying in the loop
 
 Get notified the moment an interview completes — by [email, Slack, or webhook](/studies/settings#notifications) — so you can review pilot responses right after launch and catch issues early.

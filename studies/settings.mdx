@@ -32,10 +32,76 @@ Study settings live in the settings panel on the study page, organized into tabs
 | Setting | Description |
 | --- | --- |
 | Project status | **Live** (accepting participants) or **Paused**. |
-| Quota | Cap the number of completions. When the quota is reached, new participants are sent to your pause URL. |
+| Quota | Stop accepting new participants once you have enough completes: a total cap, or a separate cap per link parameter value. See [Quotas](#quotas). |
 | Custom pause URL | Where participants land when the study is paused or full. Supports `{param}` placeholders from URL parameters, including a placeholder as the full URL base. The resolved destination must use `http://` or `https://`. |
 | When a participant is screened out | Send them to the study's screen-out page, or redirect to your own URL (e.g. panel tracking). [Participant sources](/studies/launch-and-sharing#participant-sources) can override the destination per channel. |
 | Unique identifier | The URL parameter name you use to identify participants (e.g. `uid`). Enables per-participant tracking and cross-device resume. Share links as `…/s/{studyId}?uid=12345`. |
+
+## Quotas
+
+A quota stops the study from accepting new participants once you have enough completes. Anyone already mid-interview can still finish. Set it in **Sharing & participants** by choosing one of three modes:
+
+| Mode | What it does |
+| --- | --- |
+| No quota | Keep accepting participants until you pause the study. |
+| Total completes | Stop after a set number of completed interviews. |
+| Per link parameter | A separate cap for each value of a URL parameter, so you can fill groups independently from one study. |
+
+To cap individual answer options instead (for example 50 iPhone users and 50 Android users), use [question quotas](/studies/question-quotas). They work independently of the study quota and can be combined with it.
+
+### Per link parameter
+
+<Steps>
+  <Step title="Name the parameter">
+    Enter the parameter name your links will carry, such as `group`. Letters, digits, underscores, and hyphens only.
+  </Step>
+  <Step title="Add a row per value">
+    Each row pairs a link value with its number of completes. Every value can be used once, up to 50 values per study.
+  </Step>
+  <Step title="Share one link per value">
+    Append the parameter to the study link:
+
+    ```
+    https://getversive.com/s/{studyId}?group=1
+    https://getversive.com/s/{studyId}?group=2
+    ```
+  </Step>
+</Steps>
+
+Matching is exact and case-sensitive: a participant who opens `?group=1` counts toward the `1` row, while `?Group=1` or `?group=01` do not. The parameter is stored as response metadata like any other [hidden field](/studies/launch-and-sharing#hidden-fields--participant-tracking), so you can filter results by it.
+
+**Require a matching value** decides what happens to participants whose link has no value from your list, including the plain study link:
+
+- **Off** (default): they are let in. Their completes don't count toward any row.
+- **On**: they are turned away and see the same thing as participants arriving at a full study.
+
+Leave it off if you also share the plain study link.
+
+### Closing a quota
+
+A limit of 0 closes the study (Total completes) or that one value (Per link parameter) to new participants. To remove the cap entirely, switch to **No quota**.
+
+### What participants see when a quota is full
+
+Late arrivals are handled the same way as a paused study, in this order:
+
+1. The **quota** redirect of their [participant source](/studies/launch-and-sharing#participant-sources), when the link carries a `source` parameter that has one.
+2. Your **custom pause URL**, if set.
+3. The built-in paused page ("This study has been paused").
+
+### What counts toward a quota
+
+- Only **completed** interviews count. In-progress and screened-out interviews don't.
+- Mock interviews, previews, and AI simulations never count.
+- Archived interviews don't count.
+
+<Note>
+Caps are approximate. Versive checks the count when a participant arrives and lets everyone who was admitted finish, so several participants completing at the same moment can push a total slightly past its limit.
+</Note>
+
+### Tracking progress
+
+The study header shows a quota pill: `Quota 42/100` for a total cap, or the parameter name with combined progress (`Group · 38/60`) with a per-value breakdown on hover. It turns amber when any value is full and red when every value is full. The pill covers the study quota only; question quotas show their own counts in the question editor.
 
 ## Branding
 
