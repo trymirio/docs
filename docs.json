@@ -47,6 +47,7 @@
               "studies/question-media",
               "studies/prototype-testing",
               "studies/logic",
+              "studies/question-quotas",
               "studies/split-tests",
               "studies/ai-interviewer",
               "studies/settings",
@@ -104,6 +105,16 @@
               "api-reference/studies/agent-apply",
               "api-reference/studies/ai-edit",
               "api-reference/studies/available-references"
+            ]
+          },
+          {
+            "group": "Quotas",
+            "pages": [
+              "api-reference/quotas/get-study-quotas",
+              "api-reference/quotas/update-study-quotas",
+              "api-reference/quotas/get-quota-progress",
+              "api-reference/quotas/list-question-quotas",
+              "api-reference/quotas/update-question-quotas"
             ]
           },
           {

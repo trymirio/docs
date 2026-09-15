@@ -1,0 +1,51 @@
+---
+title: "Get quota progress"
+api: "GET /studies/{id}/quotas/progress"
+description: "Completes versus limit for every quota bucket"
+---
+
+Returns the study's quota configuration together with the current number of completes per bucket. Only completed, real interviews count: in-progress, screened-out, archived, mock, and AI-simulated interviews are excluded.
+
+<ParamField path="id" type="string" required>The study ID.</ParamField>
+
+### Response
+
+<ResponseField name="mode" type="string">`off`, `fixed`, or `url_param`.</ResponseField>
+<ResponseField name="fixed" type="object | null">`{ limit, complete }` in `fixed` mode.</ResponseField>
+<ResponseField name="param_name" type="string | null">The URL parameter in `url_param` mode.</ResponseField>
+<ResponseField name="buckets" type="array">One `{ value, limit, complete }` per link value in `url_param` mode.</ResponseField>
+<ResponseField name="unmatched_param_policy" type="string">`allow` or `reject`.</ResponseField>
+<ResponseField name="question_buckets" type="array">
+  One `{ question_id, kind, match, value, limit, complete }` per [question quota](/studies/question-quotas), included in every mode.
+</ResponseField>
+
+`complete` can exceed `limit` by a small amount when several participants finish at the same time.
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/quotas/progress \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "mode": "fixed",
+  "fixed": { "limit": 100, "complete": 42 },
+  "param_name": null,
+  "buckets": [],
+  "unmatched_param_policy": "allow",
+  "question_buckets": [
+    {
+      "question_id": "3f1c2a9e-8d4b-4c7a-9e21-5b6d7c8e9f01",
+      "kind": "choice",
+      "match": "equals",
+      "value": "iPhone",
+      "limit": 25,
+      "complete": 19
+    }
+  ]
+}
+```
+</ResponseExample>

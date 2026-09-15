@@ -1,0 +1,64 @@
+---
+title: "Question quotas"
+description: "Cap completes per answer option on a Multiple Choice question"
+---
+
+A question quota caps how many completed interviews may choose a given option on a **Multiple Choice** question. Use it to fill segments from a single link, for example 50 participants who pick *iPhone* and 50 who pick *Android*, without creating a link per group.
+
+Question quotas are independent of the [study quota](/studies/settings#quotas): a study can have both, and each is enforced on its own. Only Multiple Choice questions support them.
+
+## Setting up a quota
+
+<Steps>
+  <Step title="Open the question">
+    In the study editor, select a Multiple Choice question. The **Quotas** section sits below its logic rules.
+  </Step>
+  <Step title="Add a row per option">
+    Click **Add quota**, pick the match type and the option, and enter the number of completes. Options without a row are unlimited. A question can hold up to 50 rows, one per match type and option.
+  </Step>
+  <Step title="Save the study">
+    Quotas are saved with the rest of the study. Questions that carry a quota show a target icon in the question list.
+  </Step>
+</Steps>
+
+## Equals vs Includes
+
+| Match | Available on | An answer counts when |
+| --- | --- | --- |
+| **Equals** | Single- and multi-select | The participant selected exactly that one option and nothing else. |
+| **Includes** | Multi-select only | The option is among the selected options, whatever else was chosen. |
+
+Custom text typed into an **Other** option never matches an option quota. On an Equals quota, an Other entry alongside the option also means the answer is no longer an exact match, so it doesn't count.
+
+Matching is language-aware: a translated option label counts toward the same quota as the original.
+
+## Closing an option
+
+Set the limit to 0 to close an option: the next participant who chooses it is screened out. Remove the row to lift the cap.
+
+## What participants see
+
+A participant whose answer lands on a full option is screened out at that moment, and their response is marked screened out rather than complete. They land on the study's [screen-out destination](/studies/settings#sharing--participants): the screen-out message, your custom URL, or the per-channel [source redirect](/studies/launch-and-sharing#participant-sources). Other options keep accepting answers.
+
+<Note>
+Question quotas don't gate entry. Participants can start the study and answer earlier questions before reaching a full option, so place quota questions early, typically with your screener, to keep screened-out sessions short. Use a [study quota](/studies/settings#quotas) when you need to turn participants away at the door.
+</Note>
+
+## What counts toward a quota
+
+- Only **completed** interviews count. Screened-out and in-progress interviews don't.
+- Mock interviews, previews, and AI simulations never count, and a mock interview is never screened out by a quota.
+- Archived interviews don't count.
+
+Each saved row shows a **N so far** readout with its current count, in red once the option is full. The header quota pill covers the study quota only; question quota progress lives here in the question editor.
+
+<Note>
+Caps are approximate. The count is checked when a participant answers, and everyone already past the question can finish, so a few participants answering at the same moment can push an option slightly past its limit.
+</Note>
+
+## Good to know
+
+- Quotas match on option text. Renaming an option in the editor carries its quota along. Deleting an option, or changing the question to another type, removes its quotas.
+- An Includes quota only works while the question is multi-select. If you turn multi-select off, switch the quota to Equals or remove it before saving; the study won't save with an Includes quota on a single-select question.
+- Quotas are enforced in every conversation mode, including voice.
+- Manage question quotas programmatically with the [API](/api-reference/quotas/update-question-quotas) or the MCP server's [`set_question_quotas`](/mcp/tools) tool.

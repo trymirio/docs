@@ -1,0 +1,39 @@
+---
+title: "List question quotas"
+api: "GET /studies/{id}/question-quotas"
+description: "Every question in a study that has quota buckets"
+---
+
+Lists the [question quotas](/studies/question-quotas) of a study, grouped by question. Questions without quotas are omitted. To read one question, use `GET /studies/{id}/questions/{question_id}/quotas`, which returns a single entry (with an empty `buckets` list when the question has none).
+
+<ParamField path="id" type="string" required>The study ID.</ParamField>
+
+### Response
+
+An array of:
+
+<ResponseField name="question_id" type="string">The Multiple Choice question.</ResponseField>
+<ResponseField name="buckets" type="array">
+  The question's quota buckets, each `{ kind, match, value, limit }`. `kind` is always `choice`; `match` is `equals` or `includes`; `value` is the option text in the study's default language.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/question-quotas \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "question_id": "3f1c2a9e-8d4b-4c7a-9e21-5b6d7c8e9f01",
+    "buckets": [
+      { "kind": "choice", "match": "equals", "value": "iPhone", "limit": 25 },
+      { "kind": "choice", "match": "equals", "value": "Android", "limit": 25 }
+    ]
+  }
+]
+```
+</ResponseExample>

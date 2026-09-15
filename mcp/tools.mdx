@@ -29,7 +29,7 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | `list_studies` | List your studies newest-first, with status filters, search, and optional activity counts | `studies:read` |
 | `get_study` | Full study detail: settings, quota, branding, messages, languages, and share links | `studies:read` |
 | `create_study` | Create a new study (requires an owner, admin, or creator organization role) | `studies:write` |
-| `edit_study_settings` | Edit title, description, status, mode, quota, access policy, branding, or languages | `studies:write` |
+| `edit_study_settings` | Edit title, description, status, mode, quota (a total cap, or per-link-parameter buckets with a matching-value policy), pause URL, access policy, branding, or languages | `studies:write` |
 | `edit_interview_message` | Edit the welcome, thank-you, or screen-out message | `studies:write` |
 | `archive_study` | Archive a study — the only removal MCP offers; reversible in the dashboard | `studies:write` |
 
@@ -38,9 +38,10 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | Tool | Description | Scope |
 | --- | --- | --- |
 | `list_questions` | List questions in display order with type, group, notes, and logic flags | `studies:read` |
-| `get_question_details` | One question's full configuration plus its logic rules | `studies:read` |
+| `get_question_details` | One question's full configuration plus its logic rules and quotas | `studies:read` |
 | `add_questions` | Add questions at a position or append them to a group | `studies:write` |
 | `edit_question` | Edit any question field, including its type | `studies:write` |
+| `set_question_quotas` | Cap completes per option on a multiple choice question (`equals` or `includes` match, 0 closes an option); pass the full list, an empty list clears it | `studies:write` |
 | `remove_questions` | Remove questions (soft delete); reports logic rules left dangling | `studies:write` |
 | `reorder_questions` | Reorder all questions in an ungrouped study | `studies:write` |
 

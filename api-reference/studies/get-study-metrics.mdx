@@ -1,10 +1,10 @@
 ---
 title: "Get study metrics"
 api: "GET /studies/{id}/metrics"
-description: "Response counts and quota for a study"
+description: "Response counts and quota progress for a study"
 ---
 
-Returns response counts for a study. Counts exclude archived and mock (simulated) interviews.
+Returns response counts and quota progress for a study. Counts exclude archived, mock, and AI-simulated interviews.
 
 <ParamField path="id" type="string" required>
   The study ID.
@@ -13,10 +13,27 @@ Returns response counts for a study. Counts exclude archived and mock (simulated
 ### Response
 
 <ResponseField name="complete" type="integer">Completed interviews.</ResponseField>
-<ResponseField name="in_progress" type="integer">Interviews currently in progress.</ResponseField>
-<ResponseField name="screened_out" type="integer">Participants screened out by logic rules.</ResponseField>
-<ResponseField name="quota" type="integer | null">The configured completion quota, if any.</ResponseField>
+<ResponseField name="in_progress" type="integer">Interviews a participant has started but not finished.</ResponseField>
+<ResponseField name="screened_out" type="integer">Participants screened out by logic rules or question quotas.</ResponseField>
+<ResponseField name="quota" type="integer | null">
+  The total-completes cap when the study uses one, otherwise `null`. Kept for compatibility; use `quotas` for the full picture.
+</ResponseField>
+<ResponseField name="quotas" type="object">
+  Quota configuration and progress, same shape as [Get quota progress](/api-reference/quotas/get-quota-progress).
+  <Expandable title="properties">
+    <ResponseField name="mode" type="string">`off`, `fixed` (total completes), or `url_param` (per link parameter).</ResponseField>
+    <ResponseField name="fixed" type="object | null">`{ limit, complete }` in `fixed` mode.</ResponseField>
+    <ResponseField name="param_name" type="string | null">The URL parameter in `url_param` mode.</ResponseField>
+    <ResponseField name="buckets" type="array">One `{ value, limit, complete }` per link value in `url_param` mode.</ResponseField>
+    <ResponseField name="unmatched_param_policy" type="string">`allow` or `reject`: what happens to participants whose link has no matching value.</ResponseField>
+    <ResponseField name="question_buckets" type="array">
+      One `{ question_id, kind, match, value, limit, complete }` per [question quota](/studies/question-quotas), regardless of `mode`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
 <ResponseField name="status" type="string">The study status (e.g. `published`, `paused`).</ResponseField>
+
+Derive "quota met" or "spots remaining" from `limit` and `complete` yourself. A `limit` of 0 means the bucket is closed.
 
 <RequestExample>
 ```bash cURL
@@ -31,8 +48,28 @@ curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5
   "complete": 42,
   "in_progress": 3,
   "screened_out": 11,
-  "quota": 100,
-  "status": "published"
+  "quota": null,
+  "status": "published",
+  "quotas": {
+    "mode": "url_param",
+    "fixed": null,
+    "param_name": "group",
+    "buckets": [
+      { "value": "1", "limit": 50, "complete": 30 },
+      { "value": "2", "limit": 50, "complete": 12 }
+    ],
+    "unmatched_param_policy": "allow",
+    "question_buckets": [
+      {
+        "question_id": "3f1c2a9e-8d4b-4c7a-9e21-5b6d7c8e9f01",
+        "kind": "choice",
+        "match": "equals",
+        "value": "iPhone",
+        "limit": 25,
+        "complete": 19
+      }
+    ]
+  }
 }
 ```
 </ResponseExample>

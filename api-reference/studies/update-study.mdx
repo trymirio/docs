@@ -19,6 +19,9 @@ Updates only the fields you send. `config` is **merged** into the stored configu
 <ParamField body="thank_you_message" type="object">Replaces the thank-you message.</ParamField>
 <ParamField body="screen_out_message" type="object">Replaces the screen-out message.</ParamField>
 <ParamField body="folder_id" type="string">Move the study to a folder.</ParamField>
+<ParamField body="quota" type="integer | null">
+  Total-completes cap. `null` or `0` removes a positive cap. Ignored when the study uses per-link-parameter buckets or is closed with a cap of `0`; use [Update study quotas](/api-reference/quotas/update-study-quotas) to change those.
+</ParamField>
 
 ### Response
 
