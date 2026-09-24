@@ -1,0 +1,35 @@
+---
+title: "Update randomizer"
+api: "PUT /randomizers/{id}"
+description: "Replace a randomizer's name, arms, weights, and targets"
+---
+
+Replaces the randomizer's complete arm configuration. Pass every arm that should survive: an existing arm is matched by `branch_id`, an arm without one is added, and any existing arm you leave out is removed **together with its content**. A kept arm sent without a target is emptied the same way, so pass its current `question_id` or `question_group_id` back to keep what it shows. To take content out of a randomizer without deleting it, use [Remove randomizer](/api-reference/randomizers/remove-randomizer) with `mode: "ungroup"` instead.
+
+<ParamField path="id" type="string" required>The randomizer ID.</ParamField>
+<ParamField body="study_id" type="string" required>The study ID.</ParamField>
+<ParamField body="name" type="string" required>The randomizer name (send the current name to keep it).</ParamField>
+<ParamField body="arms" type="array" required>
+  2 to 12 arms, the full final set. Each arm: optional `branch_id` (existing arm to keep; the arm's `id` from [List randomizers](/api-reference/randomizers/list-randomizers) is accepted in its place), `label`, `weight_basis_points` (all arms total exactly 10000), and one of `question_ids`, `question_id` (a single question, the shape [List randomizers](/api-reference/randomizers/list-randomizers) returns), or `question_group_id`, or none of them for an empty arm.
+</ParamField>
+<ParamField body="display_order" type="integer">New position in the parent. Omit to keep the current position.</ParamField>
+
+### Response
+
+The updated randomizer, same shape as [List randomizers](/api-reference/randomizers/list-randomizers).
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/randomizers/5f1c2d3e-0000-4000-8000-000000000001 \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+    "name": "Concept test",
+    "arms": [
+      { "branch_id": "7a0b1c2d-0000-4000-8000-000000000001", "label": "Concept A", "weight_basis_points": 7000, "question_ids": ["c1d2e3f4-0000-4000-8000-000000000001"] },
+      { "branch_id": "7a0b1c2d-0000-4000-8000-000000000002", "label": "Concept B", "weight_basis_points": 3000, "question_group_id": "d4e5f6a7-0000-4000-8000-000000000002" }
+    ]
+  }'
+```
+</RequestExample>

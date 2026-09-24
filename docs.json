@@ -37,7 +37,10 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": ["index", "getting-started/concepts"]
+            "pages": [
+              "index",
+              "getting-started/concepts"
+            ]
           },
           {
             "group": "Studies",
@@ -118,6 +121,15 @@
             ]
           },
           {
+            "group": "Randomizers",
+            "pages": [
+              "api-reference/randomizers/list-randomizers",
+              "api-reference/randomizers/create-randomizer",
+              "api-reference/randomizers/update-randomizer",
+              "api-reference/randomizers/remove-randomizer"
+            ]
+          },
+          {
             "group": "Questions",
             "pages": [
               "api-reference/questions/list-questions",
@@ -146,7 +158,9 @@
           },
           {
             "group": "Insights",
-            "pages": ["api-reference/insights/get-insights"]
+            "pages": [
+              "api-reference/insights/get-insights"
+            ]
           },
           {
             "group": "Translated questions",
@@ -170,7 +184,12 @@
         "groups": [
           {
             "group": "MCP server",
-            "pages": ["mcp/overview", "mcp/setup", "mcp/tools", "mcp/best-practices"]
+            "pages": [
+              "mcp/overview",
+              "mcp/setup",
+              "mcp/tools",
+              "mcp/best-practices"
+            ]
           }
         ]
       },
@@ -179,7 +198,12 @@
         "groups": [
           {
             "group": "Embed SDK",
-            "pages": ["sdk/overview", "sdk/embedding", "sdk/reference", "sdk/security"]
+            "pages": [
+              "sdk/overview",
+              "sdk/embedding",
+              "sdk/reference",
+              "sdk/security"
+            ]
           }
         ]
       }

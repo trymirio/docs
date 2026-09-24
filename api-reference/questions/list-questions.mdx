@@ -22,7 +22,17 @@ An array of question objects:
 <ResponseField name="interviewer_notes" type="string | null">Private notes guiding the AI interviewer.</ResponseField>
 <ResponseField name="display_order" type="integer">Position in the study.</ResponseField>
 <ResponseField name="props" type="object">Type-specific settings (options, scales, limits, and so on).</ResponseField>
-<ResponseField name="assets" type="object[]">Attached media assets.</ResponseField>
+<ResponseField name="assets" type="object[] | null">
+  Attached media assets. Each asset keeps its stable `url` identifier and includes `download_url` for viewing
+  or downloading it. Private storage links last one hour; `download_url_expires_at` is their UTC expiry time.
+  Request this endpoint again for a fresh link. External URLs are passed through and have no expiry time.
+  If a private file cannot be signed, both download fields are `null`; the rest of the response remains available.
+</ResponseField>
+
+Use `download_url` to fetch the file. When updating a question, retain the asset's `url` identifier and omit
+the read-only `download_url` and `download_url_expires_at` fields. A private asset's identifier may contain
+`/object/public/`; it identifies the stored file but cannot be used as a public download link.
+
 <ResponseField name="logic" type="object[]">
   The question's logic rules — same shape as [question logic](/api-reference/question-logic/list-question-logic).
 </ResponseField>

@@ -1,0 +1,38 @@
+---
+title: "Create randomizer"
+api: "POST /randomizers"
+description: "Create a weighted split test over existing questions or groups"
+---
+
+Creates a randomizer from content that already exists in the study. Each arm shows one question or one existing question group; when an arm lists several `question_ids`, they are moved into a new group for that arm automatically. An arm may be left empty as a placeholder, but every arm needs a target before participants can be routed to it.
+
+<ParamField body="study_id" type="string" required>The study ID.</ParamField>
+<ParamField body="name" type="string" required>Internal name, e.g. `"Concept test"`.</ParamField>
+<ParamField body="arms" type="array" required>
+  2 to 12 arms. Each arm: `label` (string), `weight_basis_points` (integer, 1–10000; all arms must total exactly 10000), and one of `question_ids` (array of question IDs), `question_id` (a single question), or `question_group_id` (an existing group), or none of them for an empty arm.
+</ParamField>
+<ParamField body="display_order" type="integer">Top-level position after the arm content is moved into the arms. Omit to append.</ParamField>
+
+### Response
+
+`201` with the created randomizer, same shape as [List randomizers](/api-reference/randomizers/list-randomizers).
+
+<Warning>
+A question or group can belong to only one arm, and logic rules must never jump between arms — a participant only ever sees one.
+</Warning>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/randomizers \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+    "name": "Concept test",
+    "arms": [
+      { "label": "Concept A", "weight_basis_points": 5000, "question_ids": ["c1d2e3f4-0000-4000-8000-000000000001"] },
+      { "label": "Concept B", "weight_basis_points": 5000, "question_group_id": "d4e5f6a7-0000-4000-8000-000000000002" }
+    ]
+  }'
+```
+</RequestExample>

@@ -16,7 +16,10 @@ Updates a question. Only the fields you send change, and `props` is **merged** w
 <ParamField body="interviewer_notes" type="string">Private AI guidance.</ParamField>
 <ParamField body="display_order" type="integer">New position.</ParamField>
 <ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive options are kept in sync.</ParamField>
-<ParamField body="assets" type="object[]">Replaces the media assets array.</ParamField>
+<ParamField body="assets" type="object[]">
+  Replaces the media assets array. Keep each asset's stable `url` from [List questions](/api-reference/questions/list-questions).
+  `download_url` and `download_url_expires_at` are read-only and are discarded if sent back.
+</ParamField>
 
 ### Adding an earlier answer
 

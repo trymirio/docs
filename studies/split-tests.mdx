@@ -25,4 +25,8 @@ Every response records which arm the participant entered:
 
 ## Split tests with the AI study creator
 
-You can also ask the AI study creator for a split test directly — *"Create a concept test where 50% of participants see concept A and 50% see concept B"* — and it builds the randomizer, arms, and variant groups for you.
+You can also ask the AI study creator for a split test directly — *"Create a concept test where 50% of participants see concept A and 50% see concept B"* — and it builds the randomizer, arms, and variant groups for you. To undo a split test without losing the content, ask it to *remove the randomizer but keep the questions*: every arm's content moves back into the study and all participants see it.
+
+## Split tests via the API and MCP
+
+Randomizers are available programmatically too: the [Randomizers endpoints](/api-reference/randomizers/list-randomizers) list, create, update, and remove them, and the [Versive MCP server](/mcp/tools#randomizers) exposes the same operations as `list_randomizers`, `add_randomizer`, `edit_randomizer`, and `remove_randomizer`.

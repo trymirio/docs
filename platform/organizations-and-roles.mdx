@@ -9,6 +9,8 @@ An **organization** is your team's workspace — it owns all studies, AI tests, 
 
 Owners and admins can invite teammates by email from the organization settings. Members sign in with email/password or Google, and can secure their account with **multi-factor authentication** (TOTP authenticator apps). The number of seats is set by your plan.
 
+If Google sign-in fails, Versive shows a general sign-in error. Retry signing in; if the problem continues, contact support.
+
 ## Organization roles
 
 | Role | What they can do |
@@ -22,11 +24,32 @@ Only owners and admins can add, change, or remove members.
 
 ## Organization settings
 
-Beyond members and billing, organization settings include:
+Organization settings are split across tabs:
 
-- **Logo** — shown in your workspace.
-- **Allowed embed domains** — the domain allow-list required for the [Embed SDK](/sdk/security).
-- **API keys** — organization-scoped keys for the [public API](/api-reference/introduction).
+- **Team** — your organization name, the logo shown in your workspace, and members.
+- **Plans** — your subscription and billing.
+- **Settings** — study branding defaults and embed domains, covered below.
+- **API** — organization-scoped keys for the [public API](/api-reference/introduction), available to enterprise organizations.
+
+### Study branding defaults
+
+Every study carries its own branding — the logo and color participants see. Rather than restyle each new study by hand, owners and admins can set the branding new studies start from under **Organization > Settings > Study defaults**:
+
+| Default | Applies to |
+| --- | --- |
+| **Study logo** | The logo in the header participants see. New studies with no logo of their own get this one. |
+| **Primary color** | The accent color of the participant experience. Must be a 6-digit hex value like `#00786F`. |
+
+Two things are worth knowing about how these are applied:
+
+- **They are copied in at creation, not linked.** A study takes a snapshot of the defaults the moment it is created and owns its branding from then on, so changing a default later leaves existing studies alone. To restyle a study that already exists, edit its [Branding](/studies/settings#branding) tab.
+- **An explicit choice always wins.** Only branding the creator left unset is filled in from the defaults. This holds however the study is created — the dashboard, the [API](/api-reference/studies/create-study), or the AI agent. Studies duplicated or created from a template keep the source's branding and are not touched at all.
+
+Each study can still change or remove its branding in its own [Branding](/studies/settings#branding) tab.
+
+### Embed domains
+
+The domain allow-list required before a study can be embedded with the [Embed SDK](/sdk/security). Studies cannot be embedded anywhere until at least one domain is added.
 
 ## Two permission layers
 
