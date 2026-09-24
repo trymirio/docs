@@ -23,7 +23,9 @@ Creates a study in your organization. Versive applies sensible default configura
   `CAN_EDIT_SURVEY_ONLY`, `CAN_VIEW`, or `INVITE_ONLY`. This does not control participant access.
 </ParamField>
 <ParamField body="config" type="object">
-  Study configuration overrides, merged over Versive's defaults (interviewer settings, branding, languages, device rules, and so on).
+  Study configuration overrides, merged over Versive's defaults (AI interviewer settings, branding, languages, device rules, and so on).
+
+  Branding you omit here is filled in from your organization's [study branding defaults](/platform/organizations-and-roles#study-branding-defaults); branding you send explicitly is kept as-is.
 </ParamField>
 <ParamField body="welcome_message" type="object">
   Welcome screen: `{ title, body, ctaText }`.

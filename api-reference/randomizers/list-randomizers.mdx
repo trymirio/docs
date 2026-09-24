@@ -1,0 +1,60 @@
+---
+title: "List randomizers"
+api: "GET /randomizers"
+description: "A study's randomizers (weighted split tests) with their arms"
+---
+
+Returns every randomizer in a study. A randomizer routes each participant to exactly one arm; an arm shows one question or one question group. Groups owned by an arm also carry that arm's id as `routing_branch_id` in the question-groups endpoints.
+
+<ParamField query="study_id" type="string" required>The study ID.</ParamField>
+
+### Response
+
+An array of randomizers.
+
+<ResponseField name="id" type="string">The randomizer ID.</ResponseField>
+<ResponseField name="name" type="string">Internal name; never shown to participants.</ResponseField>
+<ResponseField name="parent_question_group_id" type="string | null">The group the randomizer sits in, or `null` at the top level.</ResponseField>
+<ResponseField name="display_order" type="integer">Position among its siblings.</ResponseField>
+<ResponseField name="arms" type="array">
+  In arm order. Each arm has `id`, `label`, `weight_basis_points`, `display_order`, and exactly one of `question_id` or `question_group_id` (both `null` for an empty placeholder arm).
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/randomizers?study_id=9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "id": "5f1c2d3e-0000-4000-8000-000000000001",
+    "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+    "name": "Concept test",
+    "parent_question_group_id": null,
+    "display_order": 2,
+    "arms": [
+      {
+        "id": "7a0b1c2d-0000-4000-8000-000000000001",
+        "label": "Concept A",
+        "weight_basis_points": 5000,
+        "display_order": 0,
+        "question_id": "c1d2e3f4-0000-4000-8000-000000000001",
+        "question_group_id": null
+      },
+      {
+        "id": "7a0b1c2d-0000-4000-8000-000000000002",
+        "label": "Concept B",
+        "weight_basis_points": 5000,
+        "display_order": 1,
+        "question_id": null,
+        "question_group_id": "d4e5f6a7-0000-4000-8000-000000000002"
+      }
+    ]
+  }
+]
+```
+</ResponseExample>

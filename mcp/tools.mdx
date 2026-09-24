@@ -38,7 +38,7 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | Tool | Description | Scope |
 | --- | --- | --- |
 | `list_questions` | List questions in display order with type, group, notes, and logic flags | `studies:read` |
-| `get_question_details` | One question's full configuration plus its logic rules and quotas | `studies:read` |
+| `get_question_details` | One question's full configuration, media download links, logic rules, and quotas | `studies:read` |
 | `add_questions` | Add questions at a position or append them to a group | `studies:write` |
 | `edit_question` | Edit any question field, including its type | `studies:write` |
 | `set_question_quotas` | Cap completes per option on a multiple choice question (`equals` or `includes` match, 0 closes an option); pass the full list, an empty list clears it | `studies:write` |
@@ -54,6 +54,17 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | `edit_question_group` | Rename a group or toggle child randomization | `studies:write` |
 | `move_questions_to_group` | Move questions into a group or back to the top level | `studies:write` |
 | `remove_question_group` | Ungroup or delete a group (delete cascades to its questions) | `studies:write` |
+
+### Randomizers
+
+Randomizers are weighted split tests: each participant is routed to exactly one arm, and an arm shows one question or one question group (or is left empty as a placeholder while you build). Use a randomized question group when you only want to shuffle order.
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_randomizers` | Randomizers with their arms, weights, and each arm's target question or group | `studies:read` |
+| `add_randomizer` | Create a split test over existing questions or groups (2–12 arms, weights total 10,000 basis points) | `studies:write` |
+| `edit_randomizer` | Rename a randomizer or replace its arms, weights, and targets | `studies:write` |
+| `remove_randomizer` | Dissolve a randomizer keeping all its content (`ungroup`), or delete it with everything in its arms (`delete`) | `studies:write` |
 
 ### Logic rules
 
@@ -79,6 +90,13 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | --- | --- | --- |
 | `get_capabilities` | The ground truth on what Versive supports: question types with defaults, logic and group rules, and unsupported features with workarounds | `studies:read` |
 
+### Help center
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `search_docs` | Search this help center for product and how-to documentation — credits and billing, sharing, recruiting, roles, MCP setup, API and SDK basics | `studies:read` |
+| `read_doc` | Read one help-center page, or a single section of it, as Markdown | `studies:read` |
+
 ## Prompts
 
 Prompts are ready-made analysis workflows. Most clients surface them in a prompt or command menu (in Claude, look under the connector's entry in the tools menu).
@@ -99,7 +117,9 @@ Prompts are ready-made analysis workflows. Most clients surface them in a prompt
 
 ## Good to know
 
-Your agent handles fetching and pagination on its own — there's nothing to configure. Two things are worth knowing so results make sense:
+Your agent handles fetching and pagination on its own — there's nothing to configure. A few things to know:
+
+- **Question media links expire.** `get_question_details` returns each asset's stable `url` plus a usable `download_url`. Private download links last one hour, with their UTC expiry in `download_url_expires_at`. Fetch details again to refresh a link. A `null` download URL means the private file is currently unavailable.
 
 - **Numbers can differ from a casual dashboard glance.** Mock and archived interviews are never exposed over MCP, and simulated interviews are always reported separately from real ones — so MCP counts reflect real research activity only.
 - **A few things still happen in the dashboard.** Figma prototype tasks, tree tests, and conjoint questions are configured there (their text stays editable via MCP), and stimulus media is attached there. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.

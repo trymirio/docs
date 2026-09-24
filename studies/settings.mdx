@@ -10,7 +10,7 @@ Study settings live in the settings panel on the study page, organized into tabs
 | Setting | Description |
 | --- | --- |
 | Study name | The internal title of your study. |
-| Interview engine | **Regular AI** (1 credit per completion), **Realtime AI** (Beta, 2 credits), or **Survey** (no AI questions; uses discounted survey credits). You can't switch to Survey while the study still contains conversational questions (AI Question or Exploratory). |
+| Study type | **Regular AI** (AI-moderated interview, 1 AI credit per completion), **Realtime AI** (Beta, 2 AI credits per completion), or **Survey** (fixed-response questions only; completions count against your survey responses, never AI credits). The AI types need a plan with AI credits; on the Free plan every study is a survey. You can't switch to Survey while the study still contains conversational questions (AI Question or Exploratory), and a survey can't be switched to an AI type without AI credits on your plan. Surveys support the Text only and Text and voice modes. |
 | Conversation mode | Text only, Text and voice, Voice with preview, or Video (Regular engine); Text only or Voice to voice (Realtime engine). |
 | Silence threshold | Voice-to-voice only: how long the AI waits after the participant stops speaking (0.5–5 s, default 1.5 s). |
 | Require device | Any device, Desktop only, or Mobile only. |
@@ -107,10 +107,14 @@ The study header shows a quota pill: `Quota 42/100` for a total cap, or the para
 
 | Setting | Description |
 | --- | --- |
-| Interviewer avatar | Upload a custom avatar image for the AI interviewer. |
-| Interviewer name | The name participants see in the conversation. |
+| Study logo | The logo shown in the header participants see. Upload your own, or remove it to go back to the default. |
+| Study title | The title shown next to the logo. Leave blank to use the study name. |
 | Primary color | The accent color of the participant experience (default `#00786F`). |
 | Hide Versive branding | Removes "Powered by Versive" from the participant experience. Available on eligible plans. |
+
+Branding is per study, so what you set here affects this study only.
+
+To avoid restyling every study by hand, owners and admins can set a default logo and primary color for the whole organization under **Organization > Settings > Study defaults** — see [study branding defaults](/platform/organizations-and-roles#study-branding-defaults). New studies start from those defaults; this tab always wins over them, and changing a default later leaves studies that already exist alone.
 
 ## Study messages
 

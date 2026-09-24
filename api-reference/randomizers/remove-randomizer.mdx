@@ -1,0 +1,40 @@
+---
+title: "Remove randomizer"
+api: "POST /randomizers/{id}/remove"
+description: "Dissolve a randomizer keeping its content, or delete it with its arms"
+---
+
+Removes a randomizer in one of two modes:
+
+- **`ungroup`** (default) dissolves the randomizer: each arm's question or group moves back into the study at the randomizer's position, in arm order, and every participant sees all of it. Nothing is deleted.
+- **`delete`** removes the randomizer and everything inside its arms — questions, groups, nested randomizers, and logic rules that pointed at them.
+
+Once participants have been assigned to a randomizer's arms, its arms can't be removed or retargeted, so both modes return `409 Conflict`. The same applies to removing or retargeting an assigned arm with [Update randomizer](/api-reference/randomizers/update-randomizer).
+
+<ParamField path="id" type="string" required>The randomizer ID.</ParamField>
+<ParamField body="study_id" type="string" required>The study ID.</ParamField>
+<ParamField body="mode" type="string" default="ungroup">`ungroup` or `delete`.</ParamField>
+
+### Response
+
+<ResponseField name="mode" type="string">The mode that was applied.</ResponseField>
+<ResponseField name="lifted_questions" type="integer">`ungroup` only: questions moved back into the study directly.</ResponseField>
+<ResponseField name="lifted_groups" type="integer">`ungroup` only: arm groups moved back into the study (their questions stay inside them).</ResponseField>
+<ResponseField name="deleted_questions" type="integer">`delete` only.</ResponseField>
+<ResponseField name="deleted_groups" type="integer">`delete` only.</ResponseField>
+<ResponseField name="deleted_logic_rules" type="integer">Logic rules removed because their target was deleted.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.getversive.com/api/v1/randomizers/5f1c2d3e-0000-4000-8000-000000000001/remove \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b", "mode": "ungroup" }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{ "mode": "ungroup", "lifted_questions": 1, "lifted_groups": 1, "deleted_logic_rules": 0 }
+```
+</ResponseExample>
