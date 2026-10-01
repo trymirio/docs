@@ -37,16 +37,12 @@ The HTTP request body contains the event type and the completed interview and st
 The interview payload can include transcript, recording, timing, and metadata fields. Treat the entire request as
 sensitive research data, log only the fields you need, and do not expose the destination publicly.
 
-`interview.used_fallback_transcription` is `true` if the interview's transcription usage history includes a
-successful transcription by a fallback model outside AssemblyAI, ElevenLabs Scribe, and Gemini 3.5 Transcribe.
-It is `false` when only those primary providers were used, or no transcription usage was recorded. A failed
-primary attempt followed by another primary provider does not set the flag. Later re-transcription with a primary
-provider does not clear earlier fallback usage. Text generation and speech synthesis do not affect the flag.
-
-For text and voice-answer interviews, first transcription attempts are distributed equally across the three primary
-providers. Audio longer than two minutes, and non-WAV audio, is distributed between Scribe and Gemini because
-AssemblyAI's synchronous API only accepts WAV recordings up to two minutes. Real-time voice interviews transcribe
-speech live on a separate path that records no transcription usage, so the flag is always `false` for them.
+`interview.used_fallback_transcription` is `true` if any of the interview's recorded answers was transcribed by a
+fallback model rather than one of Versive's primary transcription models. It is `false` when only primary models
+were used, or when no transcription was recorded. An attempt that fails and then succeeds on another primary model
+does not set the flag, and transcribing an answer again later does not clear it. Text generation and speech synthesis
+do not affect the flag. Real-time voice interviews transcribe speech live on a separate path, so the flag is always
+`false` for them.
 
 ## Verify every request
 
