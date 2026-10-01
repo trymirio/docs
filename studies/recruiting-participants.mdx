@@ -33,14 +33,26 @@ The **Recruit** tab connects your study to consumers and professionals through t
 ### Setting up a Prolific project
 
 1. Set the **participant count, estimated duration, and reward**. Versive displays the estimated total, including provider fees, before checkout.
-2. Search Prolific's filter catalog and add the demographic or behavioral criteria you need. You can assign distribution quotas across selected filter values.
-3. Review the audience and cost, then choose **Pay and publish**. You can pause or resume recruitment from the project afterward.
+2. If your study uses screen-out logic, Versive turns on screen-out payments automatically: set the **max screen-outs** and the **screen-out reward** (see below).
+3. Search Prolific's filter catalog and add the demographic or behavioral criteria you need. You can assign distribution quotas across selected filter values.
+4. Review the audience and cost, then choose **Pay and publish**. You can pause or resume recruitment from the project afterward.
 
-Prolific projects cannot use Versive screen-out or redirect logic. Qualify the audience with Prolific's built-in filters instead; Versive creates the required completion codes and sends participants back to Prolific automatically.
+Versive creates the required Prolific completion codes and sends participants back to Prolific automatically. Prolific projects cannot use Versive **redirect** logic, since the integration owns where participants go when they finish.
+
+#### Screening participants out
+
+Prolific's audience filters exclude people before they start your study, at no cost. Screen-out logic on a question inside your survey is different: those participants have already started, so Prolific requires them to be paid. When your study has screen-out logic, the Prolific project's **Screen-out questions** toggle is on and locked, and the section shows which questions screen participants out. A study without screen-out logic needs no screen-out budget: everyone who starts it counts as a completion. (If you plan to add screen-out rules after launch, turn the toggle on anyway; a budget can't be added once the study is published.)
+
+- **Max screen-outs** — the number of paid screen-outs you're budgeting for. It defaults to one per participant, and Versive shows the qualify rate your budget implies (for example, 20 screen-outs for 20 participants assumes about 50% of people who start the study qualify). Screened-out participants don't use up study places. When the limit is reached, Prolific pauses recruiting and Versive emails your workspace owners, admins and creators.
+- **Screen-out reward** — a fixed amount paid automatically to each screened-out participant. Prolific requires at least $0.14 and less than the participant reward. The default is $0.25; set it by how long participants spend before the screen-out question.
+
+The screen-out budget (reward × max screen-outs, plus Prolific fees) is included in the checkout total; unused screen-out budget is refunded after you close the project (Versive processes the refund). The reward can't be changed after publishing, but while the study is active or paused you can **add screen-out slots** from the project's Submissions tab — pay for the extra slots and recruiting resumes automatically if Prolific had paused it. Unused top-up budget is included in the refund when you close the project.
+
+Screened-out participants appear as **Screened out** in the project's submissions, and each panel row shows screen-outs used against the limit.
 
 ### Tracking recruitment
 
-Panel projects have a lifecycle of **Draft → Active → Closed / Archived** and can be paused, resumed, duplicated, or closed. Respondent projects show funnel counts such as requested, invited, survey taken, qualified, and paid. Prolific projects show each submission's live status and let you approve, reject, or bulk-approve responses awaiting review.
+Panel projects have a lifecycle of **Draft → Active → Closed / Archived** and can be paused, resumed, duplicated, or closed. Respondent projects show funnel counts such as requested, invited, survey taken, qualified, and paid. Prolific projects show each submission's live status (including screened-out participants and how many screen-out slots remain) and let you approve, reject, or bulk-approve responses awaiting review.
 
 Closing a Respondent project approves completed respondents for payment. You can also export Respondent profiles (name, job title, company, LinkedIn, skills, location, match quality) to CSV.
 

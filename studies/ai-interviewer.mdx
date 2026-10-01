@@ -11,6 +11,8 @@ The AI Interviewer tab is hidden for studies using the **Survey** engine, since 
 
 ## Interviewer mode
 
+Find it under **Advanced settings** on the AI Interviewer tab.
+
 | Mode | Behavior |
 | --- | --- |
 | **Quality** (default) | Smarter, more natural follow-up questions — best results for depth interviews. |
@@ -21,7 +23,15 @@ The AI Interviewer tab is hidden for studies using the **Survey** engine, since 
 - **Description** (up to 900 characters) — the interviewer's persona: tone, role, and style. For example, a warm UX researcher, or a neutral market-research moderator.
 - **Guidelines** (up to 3,000 characters) — behavioral rules for the whole interview. When set, your guidelines replace Versive's defaults, so include everything you care about (probing style, what to avoid, how to handle off-topic answers).
 
-## Memory (Beta)
+## Study context
+
+Add **Study context** (up to 3,000 characters) to give the interviewer background about your study, product, audience, or terminology. For example: "We're studying how small business owners use our invoicing tool. Most participants manage billing themselves and send fewer than 20 invoices per month."
+
+This optional background helps the interviewer ask more relevant questions and follow-ups in both traditional and realtime voice interviews, including exploratory questions. It supplements your Description and Guidelines. Leave it blank or clear it to run interviews without additional study context.
+
+Study context is loaded by the interviewer on the server and excluded from the public study data sent to participants' browsers. The 3,000-character limit also applies to API and assistant updates.
+
+## Memory
 
 Turn on **Memory** to let the interviewer learn from completed interviews in the same study and ask sharper, more informed follow-up questions as responses accumulate.
 
@@ -29,7 +39,9 @@ After each completed live interview, Versive extracts small observations — eme
 
 Good to know:
 
-- Off by default; toggle it in **Settings → AI Interviewer**.
+- Off by default; toggle it in **Settings → Memory**. The same tab shows what the interviewer has learned so far, grouped by question, to members who can see the study's results.
+- **What should the memory focus on?** (up to 300 characters) — optional. Steers what gets remembered from each completed interview. It applies to interviews completed after you save, for example "Capture price sensitivity and the reasons behind it; ignore feedback about the app."
+- **Any rules for using it in interviews?** (up to 300 characters) — optional. Added to the interviewer's memory briefing. It applies to live interviews as soon as you save, for example "Don't bring up competitors from memory unless the participant mentions them first."
 - Only completed live interviews contribute — simulated interviews don't feed memory.
 - Findings are treated carefully: a pattern needs multiple independent confirmations before the interviewer treats it as established, and when participants disagree, the interviewer probes to resolve the disagreement rather than assuming.
 - The interviewer never reveals or attributes what earlier participants said — memory shapes which questions get asked, not what gets shared.

@@ -29,7 +29,7 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | `list_studies` | List your studies newest-first, with status filters, search, and optional activity counts | `studies:read` |
 | `get_study` | Full study detail: settings, quota, branding, messages, languages, and share links | `studies:read` |
 | `create_study` | Create a new study (requires an owner, admin, or creator organization role) | `studies:write` |
-| `edit_study_settings` | Edit title, description, status, mode, quota (a total cap, or per-link-parameter buckets with a matching-value policy), pause URL, access policy, branding, or languages | `studies:write` |
+| `edit_study_settings` | Edit title, description, status, mode, quota (a total cap, or per-link-parameter buckets with a matching-value policy), pause URL, access policy, branding, study context, or languages | `studies:write` |
 | `edit_interview_message` | Edit the welcome, thank-you, or screen-out message | `studies:write` |
 | `archive_study` | Archive a study — the only removal MCP offers; reversible in the dashboard | `studies:write` |
 
@@ -71,7 +71,7 @@ Randomizers are weighted split tests: each participant is routed to exactly one 
 | Tool | Description | Scope |
 | --- | --- | --- |
 | `get_logic_rules` | Logic rules for one question or the whole study | `studies:read` |
-| `add_logic_rule` | Add a conditional rule: skip to a question, move to a group, end the interview, or redirect | `studies:write` |
+| `add_logic_rule` | Add a conditional rule: skip to a question, move to a group, end the interview, screen the participant out, or redirect | `studies:write` |
 | `edit_logic_rule` | Edit an existing rule | `studies:write` |
 | `delete_logic_rule` | Delete a rule | `studies:write` |
 

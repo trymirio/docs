@@ -6,8 +6,19 @@ description: "Edit a study with natural-language instructions"
 
 Sends a natural-language instruction to Versive's study-editing agent. The agent can add, edit, delete, and reorder questions, change logic rules, and update study settings and messages. By default changes are **saved immediately** (with automatic rollback if anything fails); set `auto_save: false` to preview the mutations and [apply them separately](/api-reference/studies/agent-apply).
 
+For both default JSON and streaming requests, a detected disconnect cancels
+pending work and rolls back an in-progress save. JSON edits no longer continue
+in the background after the client or proxy disconnects. Set your client timeout
+above the expected edit duration, or use [streaming](#streaming) for long edits.
+If the save completed before the connection was lost, its acknowledgement may
+be missing; inspect the study before retrying.
+
 <ParamField path="study_id" type="string" required>
   The study ID.
+</ParamField>
+<ParamField header="Accept" type="string" default="application/json">
+  Set `text/event-stream` to stream progress and keepalives while the agent runs.
+  The URL, request body, authentication, and final response fields are unchanged.
 </ParamField>
 
 <ParamField body="message" type="string" required>
@@ -55,3 +66,133 @@ curl -X POST https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1
   }'
 ```
 </RequestExample>
+
+### Streaming
+
+For long edits, send `Accept: text/event-stream`. The server responds with
+`Content-Type: text/event-stream`, `Cache-Control: no-cache`, and
+`X-Accel-Buffering: no`. After authorization and setup, it immediately sends
+`started`, then SSE keepalive comments approximately every 15 seconds while
+waiting, including during saving.
+
+```text
+event: started
+data: {"study_id":"9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b"}
+
+: keepalive
+
+event: progress
+data: {"tool":"edit_question","status":"completed","entity_id":"q_8f2"}
+
+event: result
+data: {"message":"Updated the question.","mutations":[],"questions":[],"logic":[],"study_settings":null,"broken_mentions":[],"question_groups":[],"question_quotas":[],"routing_nodes":[],"routing_branches":[]}
+
+```
+
+| Event | Data |
+| --- | --- |
+| `started` | `{"study_id":"..."}` |
+| `progress` | `{"tool":"...","status":"completed","entity_id":"..."}`. The entity ID is omitted when the tool has no single affected entity. Progress is advisory and may be skipped for slow clients. |
+| `result` | The complete `AgentEditResponseV1` JSON, with the same encoding and fields as the default JSON response, including `broken_mentions`. There is no extra wrapper. |
+| `error` | `{"code":"...","message":"..."}`; for example `{"code":"agent_execution_failed","message":"Agent execution failed: The request took too long. Please try again."}`. Structured save rejections preserve their public `code` (such as `question_limit_exceeded`) and `message`. Client validation failures also include an `errors` array when rule-level error strings are available, matching the reasons in the JSON response. If no code is provided, HTTP failures use codes such as `http_400`. Unexpected failures use `internal_error`. |
+
+Each connected stream ends with **exactly one** terminal event: `result` or
+`error`, followed by connection close. A client can ignore all other events and
+parse the single `data:` line on `result`. Tool progress indicates completed
+in-memory work; with `auto_save: true`, mutations are saved **before** `result`.
+With `auto_save: false`, `result` is a preview you can
+[apply separately](/api-reference/studies/agent-apply).
+
+Authentication, access, entitlement, and request/setup validation failures still
+return normal HTTP errors before streaming begins. After streaming starts, the
+HTTP status is already `200`, so clients must handle the terminal `error` event.
+
+When the server detects a disconnect, it cancels pending agent work. A cancelled
+save rolls back changes already applied in that batch. If the connection is lost
+just after a save completes, the client may miss its `result`; inspect the study
+before retrying. This endpoint does not deduplicate retries or resume streams.
+Treat EOF without a terminal event as an interrupted request with an unknown
+outcome, and disable automatic retries of this POST.
+
+#### cURL
+
+Use `-N` (`--no-buffer`) to display events as they arrive. Use your regional API
+host (`api-eu.getversive.com` for EU studies).
+
+```bash
+curl -N --fail-with-body --max-time 900 \
+  -X POST "https://api-eu.getversive.com/api/v1/studies/$STUDY_ID/agent" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: text/event-stream" \
+  -d '{"message":"Add a question about the biggest frustration with onboarding.","auto_save":false}'
+```
+
+#### Python
+
+This example uses `requests`. The read timeout limits idle time between received
+bytes, rather than the total duration of the edit. The small `chunk_size` lets
+short keepalives and events reach the parser immediately.
+
+```python
+import json
+import os
+
+import requests
+
+url = f"https://api-eu.getversive.com/api/v1/studies/{os.environ['STUDY_ID']}/agent"
+with requests.post(
+    url,
+    headers={
+        "Authorization": f"Bearer {os.environ['VERSIVE_API_KEY']}",
+        "Accept": "text/event-stream",
+    },
+    json={"message": "Add a question about onboarding frustrations.", "auto_save": False},
+    stream=True,
+    timeout=(10, 60),
+) as response:
+    response.raise_for_status()
+    response.encoding = "utf-8"
+    event, data = None, []
+    for line in response.iter_lines(chunk_size=1, decode_unicode=True):
+        if line.startswith(":"):
+            continue  # Keepalive comment
+        if line.startswith("event:"):
+            event = line[6:].strip()
+        elif line.startswith("data:"):
+            data.append(line[5:].lstrip())
+        elif line == "":
+            if event in ("result", "error"):
+                payload = json.loads("\n".join(data))
+                if event == "error":
+                    raise RuntimeError(f"{payload['code']}: {payload['message']}")
+                print(json.dumps(payload, ensure_ascii=False, indent=2))
+                break
+            event, data = None, []
+    else:
+        raise RuntimeError("Stream interrupted; inspect the study before retrying")
+```
+
+#### Proxy requirements
+
+Every proxy between the client and Versive must forward `Accept: text/event-stream`
+and stream the response immediately, including SSE comments. Disable response
+buffering, caching, and compression that buffers small chunks; do not collect the
+body with `.json()` or `.text()` before forwarding it. For nginx, use
+`proxy_buffering off` and a suitable `proxy_read_timeout`. Preserve the upstream
+content type and cancellation: when the downstream client disconnects, abort the
+upstream request too.
+
+Set idle timeouts comfortably above 15 seconds (for example, 60 seconds) and allow
+a total request duration long enough for the edit. Heartbeats prevent idle read
+timeouts only when all intermediaries flush them; they cannot extend an absolute
+request-duration limit. Cloudflare documents a default
+[125-second Proxy Read Timeout](https://developers.cloudflare.com/fundamentals/reference/connection-limits/).
+A buffering customer proxy can still cause a timeout even when Versive streams.
+
+To verify the integration, use a test study and check that `started` appears
+promptly, comments arrive during quiet periods, and an edit lasting over 125
+seconds still ends in `result`. On a disposable study, start an edit with
+`auto_save: true`, disconnect while generation is in progress, and confirm the
+study remains unchanged after the request has been cancelled. Also remove the
+`Accept` header to confirm the default JSON behavior.
