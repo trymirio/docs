@@ -15,7 +15,7 @@ Updates a question. Only the fields you send change, and `props` is **merged** w
 </ParamField>
 <ParamField body="interviewer_notes" type="string">Private AI guidance.</ParamField>
 <ParamField body="display_order" type="integer">New position.</ParamField>
-<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive options are kept in sync.</ParamField>
+<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive options are kept in sync, and [Checks against earlier answers](#checks-against-earlier-answers) for `number` and `allocation` validation against an earlier answer.</ParamField>
 <ParamField body="assets" type="object[]">
   Replaces the media assets array. Keep each asset's stable `url` from [List questions](/api-reference/questions/list-questions).
   `download_url` and `download_url_expires_at` are read-only and are discarded if sent back.
@@ -52,6 +52,26 @@ To change which options are exclusive, send the new `exclusiveOptions` list expl
   "props": {
     "options": ["Red", "Blue", "None of the above"],
     "exclusiveOptions": ["None of the above"]
+  }
+}
+```
+
+### Checks against earlier answers
+
+`number` and `allocation` questions can carry checks of the answer against an earlier answer in `props.earlierAnswerChecks`. Each check has an `operation` (`<`, `<=`, `==`, `>=`, or `>`) and a `source`: the earlier question's `questionId`, plus `option` (the exact option text) when the earlier question is an `allocation`.
+
+- A `number` question holds a list of checks.
+- An `allocation` question holds either `{"target": "total", "checks": [...]}` — the total is compared, and the fixed limit (`hasLimit`) no longer applies — or `{"target": "options", "checks": {"<option text>": [...]}}` with one list per option of this question. Keys must exactly match entries in `props.options`.
+
+The earlier question must be a `number` or `allocation` question that comes before this one on every path a participant can take, and it must still have the option named; otherwise the request is rejected with `422` and an `errors` array. Renaming an option of the earlier question that a check names is rejected the same way — update the check first. When you edit this question's own `options`, per-option checks follow a renamed option and are dropped for a removed one, like `exclusiveOptions`.
+
+```json
+{
+  "props": {
+    "earlierAnswerChecks": {
+      "target": "total",
+      "checks": [{ "operation": "==", "source": { "questionId": "8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d" } }]
+    }
   }
 }
 ```

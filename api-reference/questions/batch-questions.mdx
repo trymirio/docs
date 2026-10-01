@@ -13,7 +13,7 @@ Creates and/or updates questions in a single study in one request. Items **with*
   - `study_id` — **required** on every item.
   - `content` — question text; may include `{{Q:...}}` references.
   - `type` — question type (see [List questions](/api-reference/questions/list-questions) for values).
-  - `props` — type-specific settings object. On updates it is merged with the existing props, with the same handling of multiple-choice `exclusiveOptions` as [Update question](/api-reference/questions/update-question#editing-multiple-choice-options).
+  - `props` — type-specific settings object. On updates it is merged with the existing props, with the same handling of multiple-choice `exclusiveOptions` as [Update question](/api-reference/questions/update-question#editing-multiple-choice-options) and the same validation of `earlierAnswerChecks` ([checks against earlier answers](/api-reference/questions/update-question#checks-against-earlier-answers)).
   - `interviewer_notes` — private AI guidance.
   - `assets` — media assets array.
   - `display_order` — position (new questions are auto-ordered if omitted).

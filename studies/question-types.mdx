@@ -20,12 +20,26 @@ The signature Versive question: an open-ended question where the AI interviewer 
 | Limit follow-up questions | Cap the number of AI follow-ups (1–10, default 5 when enabled). Leave off for unlimited. |
 | Add instructions | Guidance shown to the AI interviewer for this question (also displayed as a subtitle to participants). |
 | Interviewer notes | Private notes that steer the AI's probing — Versive can also suggest these automatically. |
-| Duration tracker | Show an on-screen timer with a target response window (`min`/`max` duration). The timer is yellow before the minimum, green in range, and red past the maximum. |
-| Follow-up durations | Separate min/max duration targets for follow-up answers (defaults to 50% of the main question's targets). |
+| Duration tracker | Show an on-screen timer with a target response window (`min`/`max` duration). The timer is yellow before the minimum, green in range, and red from the maximum on. |
+| Follow-up durations | Separate min/max duration targets for follow-up answers (defaults to 50% of the main question's targets, with a 15-second minimum). |
 
 ### Exploratory
 
 A goal-driven, multi-turn AI conversation. Instead of a fixed question, you give the AI a **research goal** and a **turn budget** (default 8 turns), and it explores the topic conversationally until the goal is covered or the budget runs out.
+
+Exploratory questions support the same **duration tracker** settings as AI Questions:
+
+| Setting | Description |
+| --- | --- |
+| Enable duration tracker | Show participants an elapsed-time timer for each response. |
+| Response duration range (optional) | Set min/max targets in seconds for the opening response. The timer changes color after the participant starts typing or recording: yellow below the minimum, green within range, and red at the maximum. |
+| Follow-up response duration (optional) | Override min/max targets for later responses. Each unset target defaults to 50% of the corresponding opening target, with a 15-second minimum. |
+
+The timer resets for each new question or follow-up. It pauses after 30 seconds without an initial response and resumes when the participant types or records; stopping a recording also pauses it. Reaching the maximum shows a reminder to wrap up, without forcing the participant to advance. These targets apply to individual responses, not the entire exploratory conversation.
+
+Targets must be non-negative whole seconds, and the minimum cannot exceed the maximum when both bounds of a response range are explicitly set. A single follow-up override is allowed even if it falls outside the automatic bound; in that case the timer may have no green interval.
+
+Turning the tracker off in the editor clears its duration targets; disabling it through the assistant or MCP preserves them for reuse. Ask the assistant to clear a specific target to remove it, or clear a follow-up override to restore automatic timing. MCP callers can pass `clear_duration_fields` to `edit_question` with a list containing `min_duration`, `max_duration`, `follow_up_min_duration`, or `follow_up_max_duration`; passing `null` for a duration argument keeps its stored value unchanged.
 
 ### Open Text
 
@@ -37,7 +51,7 @@ A brief, single-line text answer. Supports an optional **character limit** with 
 
 ### Message
 
-Not a question — displays information, instructions, or media between questions. Settings: custom button text (default "Sounds good"), an optional **timer** that participants must wait out before continuing, and a duration tracker.
+Not a question — displays information, instructions, or media between questions. Settings: custom button text (default "Sounds good") and an optional **timer** that participants must wait out before continuing.
 
 ## Choices & sorting
 
@@ -67,7 +81,11 @@ Rank options across multiple **criteria** (e.g. rank features by importance *and
 
 ### Allocation
 
-Distribute a fixed budget of points across options (default total: 100). Options can optionally be pulled from a previous question's answers, and you can enforce the total as a hard limit.
+Distribute a fixed budget of points across options (default total: 100). Options can optionally be pulled from a previous question's answers, and you can enforce the total as a hard limit. Turn on **custom options** to let participants add their own options, each with a name and a value; their values count in the total, and a name that is already in the list is refused. With the limit off, each option is a separate value, and an optional **maximum per option** caps every value (for example 100, for a percentage per option). The total, or each option, can also be checked against an earlier answer — see [Checks against earlier answers](#checks-against-earlier-answers).
+
+### Matrix Allocation
+
+A grid of values: **rows** are the things being split, **columns** are scenarios or time points (up to 8), and each column is filled in on its own. With **Has allocation limit** on (the default), every column must add up to the **total allocation** (default 100), and participants see a live total under each column. With the limit off, each cell is a separate value, an optional **maximum per option** caps every cell, and columns don't need to add up. Participants type a number in each cell, with up to two decimal places. Columns never affect each other. Supports randomized row order; columns keep their order. Results show one Allocation-style breakdown per column.
 
 ### Conjoint
 
@@ -157,7 +175,7 @@ Capture a valid email address.
 
 ### Number
 
-Numeric input, with an optional min/max range validation.
+Numeric input, with an optional min/max range validation. The number can also be checked against an earlier answer — see [Checks against earlier answers](#checks-against-earlier-answers).
 
 ### Date
 
@@ -170,3 +188,19 @@ External Calendly booking — share a scheduling link (e.g. for a follow-up sess
 ## Referencing earlier answers
 
 Questions can reference earlier answers with **mentions** — type `@` in the question editor to pipe a previous answer into the question text. See [Reusing earlier answers](/studies/logic#reusing-earlier-answers-mentions).
+
+## Checks against earlier answers
+
+A Number or Allocation question can require its answer to compare with an earlier answer — for example, "patients who started treatment this year" must be at most "patients under your care", or an age-group allocation must total exactly that number. Open the question card and turn on **Checks against earlier answers**, then pick the earlier question (a Number question, or an Allocation question and one of its options) and the comparison: less than, less than or equal to, equal to, greater than or equal to, or greater than.
+
+| Question | What receives the checks |
+| --- | --- |
+| Number | The typed number. |
+| Allocation, **By total allocation** | The total. While the total has a check, **Has allocation limit** is off. |
+| Allocation, **By allocation option** | One option of this question per check (e.g. "2025" must be at least "4Q25"). Options without a check stay free. |
+
+A Number answer, and each Allocation option, can carry several checks; the Allocation total carries one. Several checks on one answer are joined with "and": every check must pass. The builder does not stop you from writing checks that no answer can satisfy, such as "equal to Q1" together with "less than Q1"; a participant who meets such a pair is stuck on the question, so check each pair against the answers you expect.
+
+Participants see the check as a hint ("Enter a number 78 or less"; for a total with an "equal to" or "less than or equal to" check, "78 remaining") and cannot continue while a typed answer fails a check (an optional question can still be left blank). A check that fails prints one line under the answer, in the participant's language, such as "The number must be at most 100." or "The total must be at least 1200."; an "equal to" or "less than or equal to" check on an Allocation total shows the remaining count instead. If the earlier question was skipped, or answered with something other than a number, the check does not apply — the card warns you when the earlier question is not required. When a participant goes back and changes an earlier answer that a check reads, the later answers stay; the later question is checked again against the new value when the participant reaches it, and it blocks until the answer fits.
+
+Renaming an option keeps its checks; deleting one drops them. If the earlier question is deleted, changes type, or ends up after the question it checks (including through randomization), the card flags the check so you can fix it. To also show the earlier value in the question text, add a [mention](#referencing-earlier-answers). Simulated interviews respect these checks too.
