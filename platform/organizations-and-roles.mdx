@@ -22,6 +22,15 @@ If Google sign-in fails, Versive shows a general sign-in error. Retry signing in
 
 Only owners and admins can add, change, or remove members.
 
+## Single sign-on (SAML)
+
+Enterprise organizations can sign in through their own identity provider (Okta, Microsoft Entra ID, Google Workspace, and other SAML 2.0 providers).
+
+- **How it works** — enter your work email on the login page, or choose **Continue with SSO**. If your email domain is set up for single sign-on, Versive sends you to your identity provider and back; no Versive password is needed. Sign-in starts from the Versive login page; to add Versive to your identity provider's app dashboard, add it as a bookmark to the login page.
+- **Membership** — people who sign in through SSO for the first time join your organization automatically with the default role your organization chose (Creator unless configured otherwise). Existing members who switch to SSO keep their role. Who can sign in is decided by who your IT team assigns to Versive in your identity provider. To remove someone, remove them in both places: in your identity provider, so they can't sign in again, and from your organization in Versive, which ends their access right away (removing them in the identity provider doesn't end a session they already have). People removed only in Versive rejoin on their next SSO sign-in.
+- **Invitations** — people at your SSO domain aren't invited: they join by signing in, and an owner or admin can change their role on the Team page afterwards. Invite people outside your SSO domain, such as contractors, as usual.
+- **Setup** — your IT team creates a SAML app for Versive in the identity provider and shares its metadata URL; Versive registers it against your email domain. Contact [support@getversive.com](mailto:support@getversive.com) to get started.
+
 ## Organization settings
 
 Organization settings are split across tabs:

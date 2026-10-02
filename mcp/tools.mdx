@@ -84,6 +84,27 @@ Randomizers are weighted split tests: each participant is routed to exactly one 
 | `get_study_stats` | Completion funnel, drop-off by question, weekly trends, or per-question answer aggregates | `interviews:read` |
 | `export_study_data` | Interview responses as CSV — one row per interview, one column per question | `interviews:read` |
 
+### Recruiting panels
+
+Panels recruit participants through Prolific or Respondent. The tools create and edit **drafts**; paying and publishing always happen in the Versive dashboard, so no tool charges money or publishes a panel.
+
+For a study with screen-out logic, a Prolific panel must pay screened-out participants: the create tool takes a screen-out reward and the number of screen-outs to pay for, and the estimate includes that budget. Buying more screen-out slots after publishing is done in the dashboard.
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_panel_projects` | Recruiting panels with status and dashboard links — one study, or the whole organization when no study is given | `studies:read` |
+| `get_panel_project` | One panel with its provider targeting and screener questions | `studies:read` |
+| `estimate_panel_project_cost` | Advisory cost for a participant count and incentive on either provider | `studies:read` |
+| `search_prolific_filters` | Search the Prolific participant-filter catalog for filter and choice ids, or list one filter's choices with `filter_id` | `studies:read` |
+| `get_prolific_eligible_count` | How many Prolific participants match a set of filters | `studies:read` |
+| `get_respondent_lookups` | Respondent targeting vocabularies (countries, demographics, industries, topics) | `studies:read` |
+| `search_respondent_options` | Search Respondent job titles and skills | `studies:read` |
+| `create_prolific_panel_project` | Create a draft Prolific panel | `studies:write` |
+| `update_prolific_panel_project` | Edit a draft Prolific panel | `studies:write` |
+| `create_respondent_panel_project` | Create a draft Respondent panel | `studies:write` |
+| `update_respondent_panel_project` | Edit a draft Respondent panel | `studies:write` |
+| `publish_panel_project` | Check a draft is ready and get the dashboard link where you pay and publish | `studies:write` |
+
 ### Capabilities
 
 | Tool | Description | Scope |
