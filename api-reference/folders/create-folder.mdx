@@ -10,18 +10,22 @@ Creates a folder. Returns `201`.
 <ParamField body="access_policy" type="string" default="FULL_ACCESS">
   `FULL_ACCESS`, `CAN_EDIT`, `CAN_VIEW`, `INVITE_ONLY`, or `CAN_EDIT_SURVEY_ONLY`.
 </ParamField>
+<ParamField body="retention_policy_days" type="integer | null" default="null">
+  Days to keep interview transcripts in this folder's studies, from 1 to 36500, counted from each interview's last message. After that the transcript and the study memory learned from it are deleted. `null` keeps transcripts indefinitely. Over an MCP connection, only the organization owner can set it. See [Transcript retention](/platform/folders-and-permissions#transcript-retention).
+</ParamField>
 
 ### Response
 
 <ResponseField name="id" type="string" />
 <ResponseField name="name" type="string" />
 <ResponseField name="created_at" type="string" />
+<ResponseField name="retention_policy_days" type="integer | null" />
 
 <RequestExample>
 ```bash cURL
 curl -X POST https://api.getversive.com/api/v1/folders \
   -H "Authorization: Bearer $VERSIVE_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "name": "Q3 churn research" }'
+  -d '{ "name": "Q3 churn research", "retention_policy_days": 30 }'
 ```
 </RequestExample>

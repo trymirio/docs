@@ -1,7 +1,7 @@
 ---
 title: "Set up the MCP server"
 sidebarTitle: "Setup"
-description: "Connect Versive to Claude, ChatGPT, Cursor, Claude Code, or any other MCP client"
+description: "Connect Versive to Claude, ChatGPT, Cursor, Claude Code, Codex, or any other MCP client"
 ---
 
 Every client uses the same server URL:
@@ -101,6 +101,15 @@ permissions.
     ```
 
     Then open **Cursor Settings → MCP** and click the authentication prompt next to Versive to sign in and approve access.
+  </Tab>
+  <Tab title="Codex">
+    Add the server from your terminal:
+
+    ```bash
+    codex mcp add versive --url https://mcp.getversive.com/mcp
+    ```
+
+    Then run `codex mcp login versive` to sign in to Versive and approve access. The Codex CLI and IDE extension share this configuration, so one setup covers both.
   </Tab>
   <Tab title="Other clients">
     Versive works with any MCP client that supports **remote servers over Streamable HTTP with OAuth** — just add `https://mcp.getversive.com/mcp` wherever your client accepts a remote MCP server and complete the sign-in when prompted. A legacy SSE endpoint is available at `https://mcp.getversive.com/sse` for older clients.

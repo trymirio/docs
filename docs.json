@@ -153,6 +153,7 @@
               "api-reference/interviews/create-interview",
               "api-reference/interviews/get-interview",
               "api-reference/interviews/get-interview-by-vid",
+              "api-reference/interviews/get-interview-media",
               "api-reference/interviews/update-interview"
             ]
           },
@@ -174,7 +175,8 @@
             "group": "Folders",
             "pages": [
               "api-reference/folders/create-folder",
-              "api-reference/folders/list-folders"
+              "api-reference/folders/list-folders",
+              "api-reference/folders/update-folder"
             ]
           }
         ]

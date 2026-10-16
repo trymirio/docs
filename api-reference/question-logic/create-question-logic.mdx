@@ -9,7 +9,7 @@ Creates a logic rule. Rules on a question are evaluated top to bottom; the first
 <ParamField body="study_id" type="string" required>The study.</ParamField>
 <ParamField body="question_id" type="string" required>The question the rule attaches to (must belong to the study).</ParamField>
 <ParamField body="operation" type="string" required>
-  `==`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `ALWAYS`, or `SMART_CONDITION`. (`INCLUDE_RESPONSE_IN_NEXT_QUESTION` is accepted for backwards compatibility but is legacy — use question mentions instead.)
+  `==`, `!=`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `NOT_INCLUDES`, `ALWAYS`, or `SMART_CONDITION`. (`INCLUDE_RESPONSE_IN_NEXT_QUESTION` is accepted for backwards compatibility but is legacy — use question mentions instead.)
 </ParamField>
 <ParamField body="comparison_value_type" type="string" required>
   `string`, `int`, or `smart_condition`.

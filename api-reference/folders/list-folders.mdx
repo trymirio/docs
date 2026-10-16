@@ -8,7 +8,7 @@ Returns all folders in your organization.
 
 ### Response
 
-An array of `{ id, name, created_at }`.
+An array of `{ id, name, created_at, retention_policy_days }`. `retention_policy_days` is `null` when the folder has no [retention policy](/platform/folders-and-permissions#transcript-retention).
 
 <RequestExample>
 ```bash cURL

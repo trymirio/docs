@@ -45,6 +45,8 @@ Good to know:
 - Only completed live interviews contribute — simulated interviews don't feed memory.
 - Findings are treated carefully: a pattern needs multiple independent confirmations before the interviewer treats it as established, and when participants disagree, the interviewer probes to resolve the disagreement rather than assuming.
 - The interviewer never reveals or attributes what earlier participants said — memory shapes which questions get asked, not what gets shared.
+- In a folder with a [transcript retention policy](/platform/folders-and-permissions#transcript-retention), what memory learned from an interview is deleted along with its transcript.
+- Memory can also be set through the API: `enableMemory`, `memoryFocus`, and `memoryUsageRules` in the study `config` ([Create study](/api-reference/studies/create-study), [Update study](/api-reference/studies/update-study)).
 
 ## Question rephrasing
 
@@ -63,4 +65,4 @@ Under **Advanced → Keywords**, add domain-specific terms — company names, pr
 
 ## Voice settings
 
-For realtime voice-to-voice studies, tune the **silence threshold** (0.5–5 seconds, default 1.5) that controls how long the AI waits after the participant stops speaking before responding.
+For studies in the Voice to voice Realtime conversation mode, tune the **silence threshold** (0.5–5 seconds, default 1.5) that controls how long the AI waits after the participant stops speaking before responding.

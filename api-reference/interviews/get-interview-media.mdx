@@ -1,0 +1,79 @@
+---
+title: "Get interview media"
+api: "GET /interviews/{id}/media"
+description: "List a participant's recordings and uploaded files, each with a time-limited access link"
+---
+
+Lists the media captured during an interview: participant audio, screen recordings, camera video, and files uploaded in media-upload questions. Each item carries a link you can open or download from.
+
+Links point back at the Versive API (`/api/v1/media/{token}`) rather than at storage. Opening one re-checks that the key that requested it is still active and still has access to the study, then redirects to a short-lived download URL. Each link expires after 24 hours, stops working after about 500 opens, and dies as soon as the key is deactivated. Links carry no readable information, so they are safe to pass to other tools, but treat them like any other credential and do not post them publicly.
+
+<Note>
+Organization API keys can call this endpoint with no extra setup. Apps connected over [MCP](/mcp/overview) cannot use it yet: it requires the `media:read` scope, which the MCP server does not issue today.
+</Note>
+
+<ParamField path="id" type="string" required>The interview ID.</ParamField>
+<ParamField query="types" type="string">
+  Comma-separated subset of `audio`, `screen`, `video`, `uploaded`. Defaults to all.
+</ParamField>
+
+### Response
+
+<ResponseField name="interview_id" type="string" />
+<ResponseField name="study_id" type="string" />
+<ResponseField name="counts" type="object">Item counts keyed by `media_type`.</ResponseField>
+<ResponseField name="items" type="object[]">
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">The media ID.</ResponseField>
+    <ResponseField name="media_type" type="string">
+      `audio`, `screen`, `video`, `uploaded_image`, or `uploaded_video`.
+    </ResponseField>
+    <ResponseField name="question_id" type="string | null">The question the media was captured for.</ResponseField>
+    <ResponseField name="question_index" type="integer | null">1-based position of that question in the study.</ResponseField>
+    <ResponseField name="question_title" type="string | null">Short label derived from the question text.</ResponseField>
+    <ResponseField name="message_id" type="string | null">The transcript message it belongs to, when linked.</ResponseField>
+    <ResponseField name="duration" type="number | null">Seconds. Only set for audio recordings.</ResponseField>
+    <ResponseField name="mime_type" type="string | null">Only set for uploaded files.</ResponseField>
+    <ResponseField name="file_name" type="string | null">Only set for uploaded files.</ResponseField>
+    <ResponseField name="file_size" type="integer | null">Bytes. Only set for uploaded files.</ResponseField>
+    <ResponseField name="ready" type="boolean">Whether streaming playback has finished processing. The link works either way.</ResponseField>
+    <ResponseField name="created_at" type="string" />
+    <ResponseField name="url" type="string">Time-limited access link. Answers with a redirect to the file.</ResponseField>
+    <ResponseField name="expires_at" type="string">When the link stops working.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/interviews/5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f/media?types=audio,uploaded" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "interview_id": "5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f",
+  "study_id": "0f1e2d3c-4b5a-4c6d-8e7f-9a0b1c2d3e4f",
+  "counts": { "audio": 2, "uploaded_image": 1 },
+  "items": [
+    {
+      "id": "8d2a1c0e-3f4b-4a5c-9d6e-7f8a9b0c1d2e",
+      "media_type": "audio",
+      "question_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "question_index": 1,
+      "question_title": "How did you first hear about the product?",
+      "message_id": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+      "duration": 42.7,
+      "mime_type": null,
+      "file_name": null,
+      "file_size": null,
+      "ready": true,
+      "created_at": "2026-09-10T14:03:11.402Z",
+      "url": "https://api.getversive.com/api/v1/media/Zk3f...",
+      "expires_at": "2026-09-11T14:05:00.118Z"
+    }
+  ]
+}
+```
+</ResponseExample>

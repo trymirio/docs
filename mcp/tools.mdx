@@ -79,10 +79,31 @@ Randomizers are weighted split tests: each participant is routed to exactly one 
 
 | Tool | Description | Scope |
 | --- | --- | --- |
-| `list_interviews` | List interviews with status filters; simulated interviews excluded by default | `interviews:read` |
-| `get_interview` | One interview with its question-and-answer conversation | `interviews:read` |
+| `list_interviews` | List interviews with status filters and each interview's metadata. Simulated interviews are included by default; set `include_simulations` to `false` to see real participants only | `interviews:read` |
+| `get_interview` | One interview with its question-and-answer conversation and metadata | `interviews:read` |
 | `get_study_stats` | Completion funnel, drop-off by question, weekly trends, or per-question answer aggregates | `interviews:read` |
-| `export_study_data` | Interview responses as CSV — one row per interview, one column per question | `interviews:read` |
+| `export_study_data` | Interview responses as CSV — one row per interview, one column per question, plus a `metadata:<name>` column per metadata field | `interviews:read` |
+
+### Recruiting panels
+
+Panels recruit participants through Prolific or Respondent. The tools create and edit **drafts**; paying and publishing always happen in the Versive dashboard, so no tool charges money or publishes a panel.
+
+For a study with screen-out logic, a Prolific panel must pay screened-out participants: the create tool takes a screen-out reward and the number of screen-outs to pay for, and the estimate includes that budget. Buying more screen-out slots after publishing is done in the dashboard.
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_panel_projects` | Recruiting panels with status and dashboard links — one study, or the whole organization when no study is given | `studies:read` |
+| `get_panel_project` | One panel with its provider targeting and screener questions | `studies:read` |
+| `estimate_panel_project_cost` | Advisory cost for a participant count and incentive on either provider | `studies:read` |
+| `search_prolific_filters` | Search the Prolific participant-filter catalog for filter and choice ids, or list one filter's choices with `filter_id` | `studies:read` |
+| `get_prolific_eligible_count` | How many Prolific participants match a set of filters | `studies:read` |
+| `get_respondent_lookups` | Respondent targeting vocabularies (countries, demographics, industries, topics) | `studies:read` |
+| `search_respondent_options` | Search Respondent job titles and skills | `studies:read` |
+| `create_prolific_panel_project` | Create a draft Prolific panel | `studies:write` |
+| `update_prolific_panel_project` | Edit a draft Prolific panel | `studies:write` |
+| `create_respondent_panel_project` | Create a draft Respondent panel | `studies:write` |
+| `update_respondent_panel_project` | Edit a draft Respondent panel | `studies:write` |
+| `publish_panel_project` | Check a draft is ready and get the dashboard link where you pay and publish | `studies:write` |
 
 ### Capabilities
 
@@ -99,10 +120,11 @@ Randomizers are weighted split tests: each participant is routed to exactly one 
 
 ## Prompts
 
-Prompts are ready-made analysis workflows. Most clients surface them in a prompt or command menu (in Claude, look under the connector's entry in the tools menu).
+Prompts are ready-made workflows. Most clients surface them in a prompt or command menu (in Claude, look under the connector's entry in the tools menu).
 
 | Prompt | What it does |
 | --- | --- |
+| `get-started` | Turns your research goal into a first study: plans the questions with you, creates the study, and hands back the share link (needs `studies:write`) |
 | `study-summary` | Structured research summary: themes with supporting quotes, contradictions, confidence, and follow-up questions |
 | `study-insights` | Per-question thematic insights, mirroring the dashboard's Insights tab |
 | `study-insights-summary` | Executive summary for stakeholders: overview, takeaways, participants, recommendations |
@@ -120,6 +142,8 @@ Prompts are ready-made analysis workflows. Most clients surface them in a prompt
 Your agent handles fetching and pagination on its own — there's nothing to configure. A few things to know:
 
 - **Question media links expire.** `get_question_details` returns each asset's stable `url` plus a usable `download_url`. Private download links last one hour, with their UTC expiry in `download_url_expires_at`. Fetch details again to refresh a link. A `null` download URL means the private file is currently unavailable.
+
+- **Response metadata lets your agent split results and follow up.** Each interview's metadata comes back with it and as `metadata:<name>` columns in the CSV export: the [hidden fields](/studies/launch-and-sharing#hidden-fields--participant-tracking) on the participant's link (for example `source`, `segment`, or a market code) and fields from uploaded contact lists or the API, such as email. The participant's session token (the `vid` on invite links) is always left out. Sharing is off until an owner or admin turns on **Share participant metadata** in [organization settings](/platform/organizations-and-roles#ai-apps); until then, your agent receives no metadata.
 
 - **Numbers can differ from a casual dashboard glance.** Mock and archived interviews are never exposed over MCP, and simulated interviews are always reported separately from real ones — so MCP counts reflect real research activity only.
 - **A few things still happen in the dashboard.** Figma prototype tasks, tree tests, and conjoint questions are configured there (their text stays editable via MCP), and stimulus media is attached there. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.

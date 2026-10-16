@@ -13,7 +13,7 @@ Updates only the fields you send. `config` is **merged** into the stored configu
 <ParamField body="title" type="string">New title.</ParamField>
 <ParamField body="description" type="string">New description.</ParamField>
 <ParamField body="config" type="object">
-  Configuration changes, merged into the existing config.
+  Configuration changes, merged into the existing config. For example, turn on [memory](/studies/ai-interviewer#memory) with `{ "enableMemory": true, "memoryFocus": "...", "memoryUsageRules": "..." }`; `enableMemory` must be a boolean, and the two text fields take up to 300 characters each.
 </ParamField>
 <ParamField body="welcome_message" type="object">Replaces the welcome message.</ParamField>
 <ParamField body="thank_you_message" type="object">Replaces the thank-you message.</ParamField>
