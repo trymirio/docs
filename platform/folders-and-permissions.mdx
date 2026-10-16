@@ -5,9 +5,38 @@ description: "Organize work into folders and control access per folder and per s
 
 ## Folders
 
-Folders organize studies and AI test projects, and can be **nested** for hierarchy (e.g. *Client A → Q3 Discovery*). Your dashboard shows folders, studies, and AI test projects together, with search, filtering, and sorting.
+Folders organize studies and AI test projects, and can be **nested** for hierarchy (e.g. *Client A → Q3 Discovery*). Your dashboard shows folders, studies, and AI test projects together, with search, filtering, and sorting. AI personas have their own folders on the **AI Personas** page, and they work the same way.
 
-Archiving a folder archives the studies and AI test projects inside it.
+### Moving items
+
+- **One item:** open its **⋮** menu and choose **Move to folder**, or drag its row onto a folder. Folders move the same way, with everything inside them.
+- **Many items:** hover a row and tick the checkbox that appears to the left of its icon (on phones and tablets the checkboxes always show). Once a row is ticked, every row shows its checkbox and the **Name** header gets a checkbox that selects the whole page. Hold **Shift** to tick every row between two clicks, and press **Esc** to clear the selection. Then choose **Move** in the bar at the bottom of the list. You can mix folders and projects in one move.
+- The folder picker shows each folder's full path (e.g. *Europe › UK*). A folder can't be moved into itself or one of its own subfolders.
+
+Inside a folder, the folder controls sharing: a study or AI test project moved into a folder takes that folder's access policy. Before the move, Versive warns you when the folder's policy is more open than the project's own. It also warns you when people invited to a study aren't invited to a folder that isn't **Full access**, because inside a folder only the folder's invites count. When a study or AI test project leaves a folder and ends up **Invite only**, Versive also warns you about people invited to that folder who aren't invited where it lands: they lose access. A drag onto a folder asks you to confirm in those cases. Moving a study or AI test project back to the top level keeps its current policy.
+
+A moved folder keeps its own policy and its own invited people, and so do the studies inside it: moving a folder under an **Invite only** folder hides it from the dashboard for people who aren't invited there, but anyone who could open its studies before can still open them. To restrict those studies, set the moved folder's own policy to Invite only.
+
+### Deleting a folder
+
+Open the folder's **⋮** menu and choose **Delete**, or use the trash icon at the top of the folder's page. Deleting a folder also deletes all its subfolders and every study, AI test project, or persona inside them. Organization owners and admins can delete any folder. People with other roles can delete a folder they created, as long as every subfolder inside it is theirs too.
+
+To delete many items at once, select them and choose **Delete** in the bar at the bottom of the list. When the selection includes a folder, you type **DELETE FOLDER** to confirm. Items that can't be deleted stay selected, and the dialog says why.
+
+## Transcript retention
+
+A folder can have a retention policy: the number of days to keep interview transcripts in its studies, counted from each interview's last message (or from when the interview was created, if it has no messages). Set it with the API when you [create a folder](/api-reference/folders/create-folder) or [update one](/api-reference/folders/update-folder). Only the organization owner, or an organization API key, can set or change it.
+
+Versive checks for expired transcripts every hour. For each interview past the window it deletes:
+
+- the transcript: the conversation history, the transcript text, and its translations, and
+- the [memory](/studies/ai-interviewer#memory) observations learned from it. The study's memory is then rebuilt from the interviews that remain.
+
+The study, its questions, and its settings are kept, so you can keep running it. These are not deleted by retention: audio and video recordings, clips, transcript files stored with the interview (imported transcripts and raw transcription output), the per-interview summary on the results page, and the study's [insights](/studies/results-and-insights), which can quote participants.
+
+<Warning>
+Setting a policy on a folder that already has studies applies it to every interview in them: transcripts older than the window are deleted at the next hourly check. The policy covers studies directly in the folder; a subfolder follows its own policy.
+</Warning>
 
 ## Folder access policies
 

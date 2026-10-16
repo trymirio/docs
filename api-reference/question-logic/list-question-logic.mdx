@@ -18,7 +18,7 @@ An array of logic rules:
 <ResponseField name="study_id" type="string">The study.</ResponseField>
 <ResponseField name="question_id" type="string">The question the rule belongs to.</ResponseField>
 <ResponseField name="operation" type="string">
-  Condition operator: `==`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `ALWAYS`, or `SMART_CONDITION` (AI-evaluated natural-language rule). `INCLUDE_RESPONSE_IN_NEXT_QUESTION` is a legacy operator that may appear on older studies — use question mentions instead.
+  Condition operator: `==`, `!=`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `NOT_INCLUDES`, `ALWAYS`, or `SMART_CONDITION` (AI-evaluated natural-language rule). `INCLUDE_RESPONSE_IN_NEXT_QUESTION` is a legacy operator that may appear on older studies — use question mentions instead.
 </ResponseField>
 <ResponseField name="comparison_value" type="string | null">
   The value to compare against — or the natural-language condition for `SMART_CONDITION`.

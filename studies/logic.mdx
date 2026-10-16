@@ -11,10 +11,12 @@ The conditions available depend on the question type:
 
 | Question type | Available conditions |
 | --- | --- |
-| Multiple Choice | Always · Equals · Includes (multi-select) · Fewer than N selections |
-| Rating Scale, NPS, Star Rating, Number | Always · `=` · `>` · `>=` · `<` · `<=` |
+| Multiple Choice | Always · Equals · Is not (single-select) · Includes, Does not include, Fewer than N selections (multi-select) |
+| Rating Scale, NPS, Star Rating, Number | Always · `=` · `≠` · `>` · `>=` · `<` · `<=` |
 | AI Question, Exploratory, Open Text, Short Text | Always · **AI rule** |
 | All other types | Always |
+
+**Is not** and **Does not include** need an answer to compare: a question the participant skipped matches neither, so the next rule (or the next question in order) applies.
 
 ### AI rules (smart conditions)
 
@@ -49,9 +51,9 @@ The target pickers only offer valid destinations, so you don't need to memorize 
 
 Branching decides where the interview goes next; a **display condition** decides whether a question is shown at all. Open the question's logic settings, and under **Display logic** choose **Add display condition**: pick an earlier question as the source and set the condition on its answer. A question is shown only when **all** of its display conditions are met; otherwise the participant skips it and the interview continues with the next question that can be shown.
 
-- **Sources** come from earlier in the study and use the same conditions as branching: Multiple Choice (Equals; Includes and Fewer than N selections for multi-select), Rating Scale, NPS, Star Rating and Number (`=` `>` `>=` `<` `<=`), or an open-ended question with an AI rule. The picker only offers eligible questions.
+- **Sources** come from earlier in the study and use the same conditions as branching: Multiple Choice (Equals; Is not for single-select; Includes, Does not include and Fewer than N selections for multi-select), Rating Scale, NPS, Star Rating and Number (`=` `≠` `>` `>=` `<` `<=`), or an open-ended question with an AI rule. The picker only offers eligible questions.
 - A source can't be one the participant might not see before the question — for example a question inside a randomized group that could shuffle it after, or one inside a randomizer arm the participant may skip. The editor flags saved conditions that no longer hold (a renamed or removed option, a source moved after the question), and the study can't be saved until they're fixed.
-- If the participant never answered the source — a branch skipped it, or the source was itself hidden — the condition doesn't pass and the question is hidden.
+- If the participant never answered the source — a branch skipped it, or the source was itself hidden — the condition doesn't pass and the question is hidden. This holds for **Is not** and **Does not include** too: they need an answer to compare.
 - AI rules on display conditions are evaluated as soon as the participant leaves the source question, so later questions don't wait on them. If an evaluation fails, the question is shown rather than silently skipped.
 - Branching and display conditions work together: branching picks the next question, then display conditions decide whether it and the questions after it are shown. When every remaining question is hidden, the interview ends with the thank-you message.
 

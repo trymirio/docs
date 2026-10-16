@@ -26,6 +26,8 @@ Creates a study in your organization. Versive applies sensible default configura
   Study configuration overrides, merged over Versive's defaults (AI interviewer settings, branding, languages, device rules, and so on).
 
   Branding you omit here is filled in from your organization's [study branding defaults](/platform/organizations-and-roles#study-branding-defaults); branding you send explicitly is kept as-is.
+
+  [Memory](/studies/ai-interviewer#memory) is set with `enableMemory` (boolean, off by default), `memoryFocus` and `memoryUsageRules` (strings, up to 300 characters each).
 </ParamField>
 <ParamField body="welcome_message" type="object">
   Welcome screen: `{ title, body, ctaText }`.

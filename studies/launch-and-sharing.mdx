@@ -23,7 +23,7 @@ Append URL parameters to pass metadata into the response without asking the part
 https://getversive.com/s/{studyId}?source=newsletter&cohort=beta
 ```
 
-Parameters are stored as response metadata and available in results, filters, and CSV exports. If you've configured a [unique identifier](/studies/settings#sharing--participants), include it the same way to track individual participants and enable cross-device resume.
+Parameters are stored as response metadata and available in results, filters, and CSV exports, and to AI apps connected through the [MCP server](/mcp/tools) if your organization [shares participant metadata with AI apps](/platform/organizations-and-roles#ai-apps). If you've configured a [unique identifier](/studies/settings#sharing--participants), include it the same way to track individual participants and enable cross-device resume.
 
 <Warning>
 URL parameters are visible to participants and can end up in browser history, logs, and analytics. Use non-sensitive values like `source=newsletter` or an opaque internal ID — never emails, names, or secrets. For individually tracked invitations, prefer [personal links](#send-email-outreach) or the [API](/api-reference/interviews/create-interview), which keep metadata server-side.
