@@ -1,0 +1,62 @@
+---
+title: "Complete asset upload"
+api: "POST /asset-uploads/{upload_id}/complete"
+description: "Verify an uploaded file so it can be attached to a question"
+---
+
+Checks what arrived for an upload ticket and reports its state. The call is idempotent: repeat it while `status` is `pending`, and stop once it is `ready`. `rejected` and `expired` are final, so create a new ticket instead of calling again. On the first successful check the file is verified by content (a PNG declared as JPEG is rejected), PDFs are sanitized, and the verified type and size are recorded. Only a `ready` ticket can be used as `asset.upload_id` on a question.
+
+<ParamField path="upload_id" type="string" required>The ticket id from [Create asset upload](/api-reference/asset-uploads/create-asset-upload).</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  `pending` while no file has been uploaded; `ready` once verified; `rejected` when the bytes failed verification (the file is deleted, create a new ticket); `expired` when completion is requested after the two-hour window; a file uploaded in time but completed late is not registered either, so create a new ticket.
+</ResponseField>
+<ResponseField name="asset_type" type="string | null">`image`, `video`, or `pdf` once ready.</ResponseField>
+<ResponseField name="asset_url" type="string | null">The asset's stable identifier once ready, the same `url` [List questions](/api-reference/questions/list-questions) returns for existing assets.</ResponseField>
+<ResponseField name="download_url" type="string">A one-hour signed link to preview the verified file. Present only when ready. It grants access to the file on its own, so do not log or share it; use `asset_url` as the identifier.</ResponseField>
+<ResponseField name="download_url_expires_at" type="string">When `download_url` stops working.</ResponseField>
+<ResponseField name="mime_type" type="string | null">The verified media type once ready.</ResponseField>
+<ResponseField name="size_bytes" type="integer | null">The verified size once ready.</ResponseField>
+<ResponseField name="error" type="string | null">Why the upload was rejected or expired.</ResponseField>
+
+`asset_url` is the stable, unsigned identifier of the file; `download_url` is the only link that can fetch it. Only the caller that created the ticket can complete it: the same user for an MCP ticket, the same API key for an organization key's ticket. Anyone else, another organization, or an unknown id gets `404`.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.getversive.com/api/v1/asset-uploads/5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f/complete" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json Ready
+{
+  "upload_id": "5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f",
+  "status": "ready",
+  "file_name": "concept-a.png",
+  "mime_type": "image/png",
+  "size_bytes": 184320,
+  "asset_type": "image",
+  "asset_url": "https://xyz.supabase.co/storage/v1/object/public/interview_media/questions/2f6c….png",
+  "error": null,
+  "expires_at": "2026-09-23T14:05:00.118Z",
+  "created_at": "2026-09-23T12:05:00.118Z",
+  "completed_at": "2026-09-23T12:06:41.002Z",
+  "max_bytes": 52428800,
+  "allowed_mime_types": ["application/pdf", "image/bmp", "image/gif", "image/jpeg", "image/png", "image/webp", "image/x-ms-bmp", "video/mp4", "video/quicktime", "video/webm"],
+  "download_url": "https://xyz.supabase.co/storage/v1/object/sign/interview_media/questions/2f6c….png?token=…",
+  "download_url_expires_at": "2026-09-23T13:06:41.002Z"
+}
+```
+```json Rejected
+{
+  "upload_id": "5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f",
+  "status": "rejected",
+  "error": "File content is not a supported format",
+  "asset_type": null,
+  "asset_url": null
+}
+```
+</ResponseExample>

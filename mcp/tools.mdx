@@ -45,6 +45,17 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | `remove_questions` | Remove questions (soft delete); reports logic rules left dangling | `studies:write` |
 | `reorder_questions` | Reorder all questions in an ungrouped study | `studies:write` |
 
+### Assets
+
+Show an image, video, or PDF beside a question. The file never travels through the MCP connection: the tool hands back an upload ticket, the file is uploaded directly, and the upload is verified before it can be attached.
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `create_asset_upload` | Start an upload. Returns `upload_page_url`, the page where you pick the file. Does not return a signed storage URL | `studies:write` |
+| `complete_asset_upload` | Verify the uploaded file and report `pending`, `ready`, `rejected`, or `expired`; safe to call repeatedly. Results carry ticket state and file metadata, not a storage path or a signed media link | `studies:write` |
+
+Attach a ready upload with `add_questions` or `edit_question` using `asset: { upload_id, layout }` (videos also take `autoplay` and `loop`); `asset: null` removes a question's media. Two more ways to set a question's media need no upload: `asset: { copy_from_question_id }` reuses another question's media in the same study, and `embedded_website_url` frames an `https` page beside the question (Figma links are refused there). Figma prototypes are not uploads: pass `figma_prototype_url` (a public prototype link) on any question except `websiteTest` and `calendar` to show the prototype beside it, or on a `prototypeTask`, where it is the task itself. See [Question media](/studies/question-media) for what participants see.
+
 ### Question groups
 
 | Tool | Description | Scope |
@@ -142,8 +153,10 @@ Prompts are ready-made workflows. Most clients surface them in a prompt or comma
 Your agent handles fetching and pagination on its own — there's nothing to configure. A few things to know:
 
 - **Question media links expire.** `get_question_details` returns each asset's stable `url` plus a usable `download_url`. Private download links last one hour, with their UTC expiry in `download_url_expires_at`. Fetch details again to refresh a link. A `null` download URL means the private file is currently unavailable.
+- **Uploading media takes two steps.** The assistant gives you `upload_page_url`; sign in, pick the file, wait for "Upload complete", then go back to the chat and reply **uploaded**. `create_asset_upload` returns that page link and does not return a signed storage URL. `complete_asset_upload` then reports whether the file is pending, ready, rejected, or expired, without a storage path or a signed media link. Review the attached file in the study editor. Files up to 50 MB; JPEG, PNG, GIF, WebP, BMP, MP4, WebM, MOV, PDF. Tickets expire after two hours.
+- **Figma prototypes via MCP are embed-only.** `figma_prototype_url` embeds the prototype (share it as *anyone with the link can view*): beside an ordinary question as its asset, or as the task on a `prototypeTask`, which also records completion and duration. Goal frames, heatmaps, and per-frame descriptions still need the Figma import in the study editor. Replacing the link on a prototype task that already has a goal clears that goal.
 
 - **Response metadata lets your agent split results and follow up.** Each interview's metadata comes back with it and as `metadata:<name>` columns in the CSV export: the [hidden fields](/studies/launch-and-sharing#hidden-fields--participant-tracking) on the participant's link (for example `source`, `segment`, or a market code) and fields from uploaded contact lists or the API, such as email. The participant's session token (the `vid` on invite links) is always left out. Sharing is off until an owner or admin turns on **Share participant metadata** in [organization settings](/platform/organizations-and-roles#ai-apps); until then, your agent receives no metadata.
 
 - **Numbers can differ from a casual dashboard glance.** Mock and archived interviews are never exposed over MCP, and simulated interviews are always reported separately from real ones — so MCP counts reflect real research activity only.
-- **A few things still happen in the dashboard.** Figma prototype tasks, tree tests, and conjoint questions are configured there (their text stays editable via MCP), and stimulus media is attached there. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.
+- **A few things still happen in the dashboard.** Tree tests and conjoint questions are configured there (their text stays editable via MCP), as are Figma goal frames and heatmaps, per-language media variants, and embedded websites for `websiteTest` questions. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.

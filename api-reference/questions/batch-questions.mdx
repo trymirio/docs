@@ -15,7 +15,11 @@ Creates and/or updates questions in a single study in one request. Items **with*
   - `type` — question type (see [List questions](/api-reference/questions/list-questions) for values).
   - `props` — type-specific settings object. On updates it is merged with the existing props, with the same handling of multiple-choice `exclusiveOptions` as [Update question](/api-reference/questions/update-question#editing-multiple-choice-options) and the same validation of `earlierAnswerChecks` ([checks against earlier answers](/api-reference/questions/update-question#checks-against-earlier-answers)).
   - `interviewer_notes` — private AI guidance.
+  - `display_condition_match` — `all` or `any`, as in [Update question](/api-reference/questions/update-question); any other value returns `400`.
   - `assets` — media assets array.
+  - `asset` — attach a verified upload (`{ "upload_id", "layout", "sizing", "max_width_percent", "autoplay", "loop" }`) or copy another question's media in the same study (`{ "copy_from_question_id", "layout" }`), see [Update question](/api-reference/questions/update-question); `null` removes the default-language asset (translated-language variants are kept). Cannot be combined with `assets`, `embedded_website_url`, or `figma_prototype_url` on the same item.
+  - `embedded_website_url` — an `https://` page framed beside the question; not on `websiteTest`, `prototypeTask`, or `calendar`. Figma links are refused (pass them as `figma_prototype_url`), as are v0 share links.
+  - `figma_prototype_url` — a public Figma prototype link, stored embed-only under `https://www.figma.com/proto/…`: required on `prototypeTask` (the task's prototype), and on any other type except `websiteTest` and `calendar` it attaches the prototype as the question's asset. On a `prototypeTask`, replacing the link clears an existing `props.goalNode`, and a non-empty `goalNode` in the same item is refused.
   - `display_order` — position (new questions are auto-ordered if omitted).
 </ParamField>
 

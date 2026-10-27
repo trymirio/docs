@@ -8,7 +8,8 @@ Lists logic rules. Provide at least one of `question_id` or `study_id`.
 
 <ParamField query="study_id" type="string">All rules in a study.</ParamField>
 <ParamField query="question_id" type="string">Rules attached to one question.</ParamField>
-<ParamField query="language" type="string">Filter by language.</ParamField>
+<ParamField query="language" type="string">Filter by language, using its full name exactly as stored (e.g. `English`, not `en`). The match is case-sensitive.</ParamField>
+<ParamField query="logic_type" type="string">`branching` or `display`. Omit for both.</ParamField>
 
 ### Response
 
@@ -16,7 +17,9 @@ An array of logic rules:
 
 <ResponseField name="id" type="string">Rule ID.</ResponseField>
 <ResponseField name="study_id" type="string">The study.</ResponseField>
-<ResponseField name="question_id" type="string">The question the rule belongs to.</ResponseField>
+<ResponseField name="question_id" type="string">The question the rule belongs to: the answered question for a branching rule, the shown/hidden question for a display rule.</ResponseField>
+<ResponseField name="logic_type" type="string">`branching` (changes the path after `question_id` is answered) or `display` (shows `question_id` only when its condition on an earlier answer passes).</ResponseField>
+<ResponseField name="source_question_id" type="string | null">Display rules: the earlier question whose answer is tested. `null` for branching rules.</ResponseField>
 <ResponseField name="operation" type="string">
   Condition operator: `==`, `!=`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `NOT_INCLUDES`, `ALWAYS`, or `SMART_CONDITION` (AI-evaluated natural-language rule). `INCLUDE_RESPONSE_IN_NEXT_QUESTION` is a legacy operator that may appear on older studies — use question mentions instead.
 </ResponseField>
@@ -24,12 +27,12 @@ An array of logic rules:
   The value to compare against — or the natural-language condition for `SMART_CONDITION`.
 </ResponseField>
 <ResponseField name="comparison_value_type" type="string">`string`, `int`, or `smart_condition`.</ResponseField>
-<ResponseField name="action_type" type="string">`next_question_id`, `move_to_question_group`, `end_interview`, `redirect_url`, or `screen_out`.</ResponseField>
+<ResponseField name="action_type" type="string | null">`null` for display rules. Otherwise `next_question_id`, `move_to_question_group`, `end_interview`, `redirect_url`, or `screen_out`.</ResponseField>
 <ResponseField name="next_question_id" type="string | null">Jump target for `next_question_id` actions.</ResponseField>
 <ResponseField name="next_question_group_id" type="string | null">Jump target for `move_to_question_group` actions; the interview enters at the group's first question.</ResponseField>
 <ResponseField name="redirect_url" type="string | null">Target URL for `redirect_url` actions.</ResponseField>
 <ResponseField name="end_interview" type="boolean">Whether the rule ends the interview.</ResponseField>
-<ResponseField name="language" type="string">The language the rule applies to.</ResponseField>
+<ResponseField name="language" type="string">The language the rule applies to, by full name (e.g. `English`).</ResponseField>
 
 <RequestExample>
 ```bash cURL
