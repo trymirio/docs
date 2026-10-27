@@ -1,21 +1,38 @@
 ---
 title: "Create question logic"
 api: "POST /question-logic"
-description: "Add a branching rule to a question"
+description: "Add a branching or display rule to a question"
 ---
 
-Creates a logic rule. Rules on a question are evaluated top to bottom; the first match wins. Returns `201`.
+Creates a logic rule. Returns `201`.
+
+- **Branching** rules (the default) change the path after `question_id` is answered. Rules on a question are evaluated top to bottom; the first match wins. On a matrix selection question a branching rule must use `ALWAYS`; to act on one row's answer, use a display rule.
+- **Display** rules (`logic_type: "display"`) show `question_id` only when an earlier answer matches. They test `source_question_id`'s answer, so the operation and value follow the source question's type, and they take no action fields. A question with several display rules is shown when all of them pass, or when any one passes, per the question's `display_condition_match` (see [Update question](/api-reference/questions/update-question)).
+
+| Display source type | `operation` | `comparison_value` | `comparison_value_type` |
+| --- | --- | --- | --- |
+| Single-select multiple choice | `==`, `!=` | Exact option text | `string` |
+| Multi-select multiple choice | `==`, `INCLUDES`, `NOT_INCLUDES`, `COUNT_LT` | Exact option text (an integer for `COUNT_LT`) | `string` (`int` for `COUNT_LT`) |
+| Matrix selection (one row) | `==`, `!=` | `{"row": "<row label>", "value": "<answer label>"}` as a JSON string | `string` |
+| Rating scale, NPS, star rating, number | `==`, `!=`, `<`, `<=`, `>`, `>=` | An integer | `int` |
+| Text, short text, AI, exploratory | `SMART_CONDITION` | A natural-language condition | `smart_condition` |
+
+For a matrix selection source, `row` and `value` must be the exact labels in the study's default language. Translated labels don't match. A matrix selection with `isMultiSelect` on can't be a display source.
+
+The source must come before the target, outside any randomized group or Randomizer arm that could reverse that order or skip it. Rules that break these constraints are rejected with a `400` that says why.
 
 <ParamField body="study_id" type="string" required>The study.</ParamField>
-<ParamField body="question_id" type="string" required>The question the rule attaches to (must belong to the study).</ParamField>
+<ParamField body="question_id" type="string" required>The question the rule attaches to (must belong to the study): the answered question for a branching rule, the question to show or hide for a display rule.</ParamField>
+<ParamField body="logic_type" type="string" default="branching">`branching` or `display`.</ParamField>
+<ParamField body="source_question_id" type="string">Required for display rules, not allowed on branching rules: the earlier question whose answer is tested.</ParamField>
 <ParamField body="operation" type="string" required>
-  `==`, `!=`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `NOT_INCLUDES`, `ALWAYS`, or `SMART_CONDITION`. (`INCLUDE_RESPONSE_IN_NEXT_QUESTION` is accepted for backwards compatibility but is legacy — use question mentions instead.)
+  `==`, `!=`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `NOT_INCLUDES`, `ALWAYS`, or `SMART_CONDITION`. (`INCLUDE_RESPONSE_IN_NEXT_QUESTION` is accepted for backwards compatibility but is legacy — use question mentions instead.) Values are case-sensitive and must be sent exactly as listed: `includes`, `Always`, or `=` is rejected with a `422`.
 </ParamField>
 <ParamField body="comparison_value_type" type="string" required>
   `string`, `int`, or `smart_condition`.
 </ParamField>
-<ParamField body="action_type" type="string" required>
-  `next_question_id`, `move_to_question_group`, `end_interview`, `redirect_url`, or `screen_out`.
+<ParamField body="action_type" type="string">
+  Required for branching rules: `next_question_id`, `move_to_question_group`, `end_interview`, `redirect_url`, or `screen_out`. Display rules can't have an action (nor `next_question_id`, `next_question_group_id`, `redirect_url`, or `end_interview`).
 </ParamField>
 <ParamField body="comparison_value" type="string">
   The comparison value — or, for `SMART_CONDITION`, the natural-language condition (e.g. "the participant mentions pricing").
@@ -28,7 +45,7 @@ Creates a logic rule. Rules on a question are evaluated top to bottom; the first
 </ParamField>
 <ParamField body="redirect_url" type="string">Required for `redirect_url` actions.</ParamField>
 <ParamField body="end_interview" type="boolean" default="false">Set for `end_interview` actions.</ParamField>
-<ParamField body="language" type="string" default="English">The language this rule applies to.</ParamField>
+<ParamField body="language" type="string">The study's default language, which is also the value used when you omit it, so you can leave it out. If you send it, use the language's full name as stored in `config.lang.default.name` (e.g. `English`), not its code (`en`); case doesn't matter. Any other value is refused with a `400`: interviews apply rules in the default language, and translated interviews use translated copies of those rules, which the API doesn't create.</ParamField>
 
 ### Response
 
@@ -46,6 +63,21 @@ curl -X POST https://api.getversive.com/api/v1/question-logic \
     "comparison_value": "3",
     "comparison_value_type": "int",
     "action_type": "screen_out"
+  }'
+```
+
+```bash Display rule
+curl -X POST https://api.getversive.com/api/v1/question-logic \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+    "question_id": "q-456",
+    "logic_type": "display",
+    "source_question_id": "q-123",
+    "operation": "==",
+    "comparison_value": "{\"row\": \"Pricing\", \"value\": \"Falls short\"}",
+    "comparison_value_type": "string"
   }'
 ```
 </RequestExample>

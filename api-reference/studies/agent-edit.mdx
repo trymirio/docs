@@ -13,6 +13,15 @@ above the expected edit duration, or use [streaming](#streaming) for long edits.
 If the save completed before the connection was lost, its acknowledgement may
 be missing; inspect the study before retrying.
 
+<Tip>
+  To copy a fixed list of questions into a study exactly as written, use
+  [Batch create/update questions](/api-reference/questions/batch-questions). It
+  writes the text and settings you send without a model in between. The agent
+  writes every question through a model, so a long list takes minutes: use
+  [streaming](#streaming), and compare the returned `questions` with your source
+  before retrying.
+</Tip>
+
 <ParamField path="study_id" type="string" required>
   The study ID.
 </ParamField>

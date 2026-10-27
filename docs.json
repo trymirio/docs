@@ -139,6 +139,13 @@
             ]
           },
           {
+            "group": "Asset uploads",
+            "pages": [
+              "api-reference/asset-uploads/create-asset-upload",
+              "api-reference/asset-uploads/complete-asset-upload"
+            ]
+          },
+          {
             "group": "Question logic",
             "pages": [
               "api-reference/question-logic/list-question-logic",

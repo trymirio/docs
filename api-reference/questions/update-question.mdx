@@ -14,11 +14,24 @@ Updates a question. Only the fields you send change, and `props` is **merged** w
   New question text. `{{Q:...}}` references are validated (`422` on invalid references).
 </ParamField>
 <ParamField body="interviewer_notes" type="string">Private AI guidance.</ParamField>
+<ParamField body="display_condition_match" type="string">
+  How the question's display conditions combine: `all` shows it only when every condition is met, `any` when one is. Any other value, or `null`, returns `422`.
+</ParamField>
 <ParamField body="display_order" type="integer">New position.</ParamField>
-<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive options are kept in sync, and [Checks against earlier answers](#checks-against-earlier-answers) for `number` and `allocation` validation against an earlier answer.</ParamField>
+<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive options are kept in sync, [Matrix Allocation not-applicable cells](#matrix-allocation-not-applicable-cells) for `allocationWithMatrix`, and [Checks against earlier answers](#checks-against-earlier-answers) for `number` and `allocation` validation against an earlier answer.</ParamField>
 <ParamField body="assets" type="object[]">
   Replaces the media assets array. Keep each asset's stable `url` from [List questions](/api-reference/questions/list-questions).
   `download_url` and `download_url_expires_at` are read-only and are discarded if sent back.
+  A file from [Create asset upload](/api-reference/asset-uploads/create-asset-upload) can't be referenced here until it is verified: attach it with `asset: { "upload_id" }` instead, or the request returns `400`.
+</ParamField>
+<ParamField body="asset" type="object | null">
+  Set the question's media, replacing the default-language asset (translated variants are kept). Either a verified upload, `{ "upload_id": "…", "layout": "fullScreen" | "inline", "sizing": "fit" | "scroll", "max_width_percent": 1–100, "autoplay": bool, "loop": bool }`, or a copy of another question's media in the same study, `{ "copy_from_question_id": "…", "layout": … }` (omit `layout` to keep the source's layout and width; an upload defaults to `fullScreen`). The ticket must be `ready` (see [Complete asset upload](/api-reference/asset-uploads/complete-asset-upload)) and created by the same caller (the same user for an MCP ticket, the same API key for an organization key's ticket). `autoplay` and `loop` apply to videos only. Send `null` to remove the asset. Not accepted on `websiteTest`, `prototypeTask`, or `calendar` questions. Uploaded images get an automatic description the AI interviewer uses; a copy keeps the source's. Cannot be combined with `assets`, `embedded_website_url`, or `figma_prototype_url` in the same request.
+</ParamField>
+<ParamField body="embedded_website_url" type="string">
+  Show an `https://` page in a frame beside the question, replacing the default-language asset. `http://` is refused. Figma links (`figma.com`) are refused too: pass a Figma prototype as `figma_prototype_url` instead, while a published Figma Make app's `figma.site` URL is fine. v0 share links are refused as well (deploy the app and use its `vercel.app` URL). Not accepted on `websiteTest` (use `props.url`), `prototypeTask`, or `calendar` questions. Remove it with `"asset": null`.
+</ParamField>
+<ParamField body="figma_prototype_url" type="string">
+  A public Figma prototype link (`https://www.figma.com/proto/…`; other `https://*.figma.com` hosts are accepted and stored under that prefix). Required on `prototypeTask`, where it is the task's prototype. On any other type except `websiteTest` and `calendar` it attaches the prototype as the question's asset, the same as Add asset > Figma Prototype in the editor, replacing the default-language asset. Stored as an embed-only prototype. On a `prototypeTask`, replacing the link clears an existing `props.goalNode`, because an embed-only prototype has no frames to check a goal against, and sending a non-empty `goalNode` in the same request is refused.
 </ParamField>
 
 ### Adding an earlier answer
@@ -72,6 +85,22 @@ The earlier question must be a `number` or `allocation` question that comes befo
       "target": "total",
       "checks": [{ "operation": "==", "source": { "questionId": "8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d" } }]
     }
+  }
+}
+```
+
+### Matrix Allocation not-applicable cells
+
+`allocationWithMatrix` questions can mark cells as not applicable in `props.naCells`, a list of `{"row": ..., "column": ...}` objects. `row` and `column` must exactly match an entry in `props.options` and `props.columns`, otherwise the request is rejected with `400`. Participants see these cells as N/A and can't enter a value; they don't count toward the column's total, and answers store `"N/A"` in them.
+
+Like `exclusiveOptions`, you don't need to resend `naCells` when you edit `options` or `columns`: renaming one row or column keeps its cells, and removing one drops them. Send an empty list to clear all N/A cells.
+
+```json
+{
+  "props": {
+    "options": ["Product A", "Product B"],
+    "columns": ["2026", "2027"],
+    "naCells": [{ "row": "Product B", "column": "2026" }]
   }
 }
 ```

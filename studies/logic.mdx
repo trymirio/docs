@@ -49,12 +49,19 @@ The target pickers only offer valid destinations, so you don't need to memorize 
 
 ## Showing a question conditionally (display logic)
 
-Branching decides where the interview goes next; a **display condition** decides whether a question is shown at all. Open the question's logic settings, and under **Display logic** choose **Add display condition**: pick an earlier question as the source and set the condition on its answer. A question is shown only when **all** of its display conditions are met; otherwise the participant skips it and the interview continues with the next question that can be shown.
+Branching decides where the interview goes next; a **display condition** decides whether a question is shown at all. Open the question's logic settings, and under **Display logic** choose **Add display condition**: pick an earlier question as the source and set the condition on its answer. When the question isn't shown, the participant skips it and the interview continues with the next question that can be shown.
 
-- **Sources** come from earlier in the study and use the same conditions as branching: Multiple Choice (Equals; Is not for single-select; Includes, Does not include and Fewer than N selections for multi-select), Rating Scale, NPS, Star Rating and Number (`=` `≠` `>` `>=` `<` `<=`), or an open-ended question with an AI rule. The picker only offers eligible questions.
-- A source can't be one the participant might not see before the question — for example a question inside a randomized group that could shuffle it after, or one inside a randomizer arm the participant may skip. The editor flags saved conditions that no longer hold (a renamed or removed option, a source moved after the question), and the study can't be saved until they're fixed.
-- If the participant never answered the source — a branch skipped it, or the source was itself hidden — the condition doesn't pass and the question is hidden. This holds for **Is not** and **Does not include** too: they need an answer to compare.
-- AI rules on display conditions are evaluated as soon as the participant leaves the source question, so later questions don't wait on them. If an evaluation fails, the question is shown rather than silently skipped.
+With two or more display conditions, choose **Show this question when all / any of these conditions are met**:
+
+- **all** (the default): the question is shown only when every condition is met.
+- **any**: one met condition is enough. Use it when the conditions are alternatives — for example, show a follow-up when *Which device do you use?* is Phone, Tablet, or Laptop. A single-select question has one answer, so several **Equals** conditions on it can never all be met.
+
+If the conditions can never all be met under **all** — two different **Equals** values on the same single-select question, or number conditions (`=` `>` `>=` `<` `<=`) whose ranges don't overlap, such as `> 8` and `< 3` — the editor warns that the question is never shown and offers **Switch to any**. **Any** applies to every condition of the question, so when some conditions read another question, the warning says that switching makes them optional too. The warning doesn't block saving.
+
+- **Sources** come from earlier in the study and use the same conditions as branching: Multiple Choice (Equals; Is not for single-select; Includes, Does not include and Fewer than N selections for multi-select), Rating Scale, NPS, Star Rating and Number (`=` `≠` `>` `>=` `<` `<=`), an open-ended question with an AI rule, or one row of a Matrix Selection (pick the row, then **Is** or **Is not** an answer — for example *Pricing* is *Falls short*; not available while the matrix has Multi selection on). In a translated interview, a matrix row condition still matches the participant's answer, because answers are saved against the original row and answer labels. The picker only offers eligible questions.
+- A source can't be one the participant might not see before the question — for example a question inside a randomized group that could shuffle it after, or one inside a randomizer arm the participant may skip. The editor flags saved conditions that no longer hold (a renamed or removed option or matrix row, a source moved after the question), and the study can't be saved until they're fixed.
+- If the participant never answered the source — a branch skipped it, or the source was itself hidden — that condition isn't met. Under **all** the question is hidden; under **any** another condition can still show it. This holds for **Is not** and **Does not include** too: they need an answer to compare — and for a matrix row the participant left blank.
+- AI rules on display conditions are evaluated as soon as the participant leaves the source question, so later questions don't wait on them. If an evaluation fails, that condition counts as met rather than silently hiding the question: under **any** the question is shown, under **all** the other conditions still decide.
 - Branching and display conditions work together: branching picks the next question, then display conditions decide whether it and the questions after it are shown. When every remaining question is hidden, the interview ends with the thank-you message.
 
 ## Screening participants
@@ -65,7 +72,7 @@ To build a screener, put your qualifying questions first and add **Screen out** 
 
 To pipe an earlier answer into a later question, use **mentions**: type `@` in the question editor and pick a previous question to insert a reference to its answer — or to a specific option or property of it. Each participant sees their own earlier answer woven into the question text ("Why did you choose the *Pro* plan?").
 
-Answers from these types can be referenced: Open Text, Short Text, Number, Multiple Choice, Matrix Rating Scale, Card Sort, Ranking, and Allocation.
+Answers from these types can be referenced: Open Text, Short Text, Number, Multiple Choice, Matrix Rating Scale, Matrix Selection, Card Sort, Ranking, and Allocation.
 
 ## Good to know
 

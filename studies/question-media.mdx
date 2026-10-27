@@ -17,11 +17,11 @@ Most questions can include rich media that participants see alongside (or instea
 
 ### Supported formats and limits
 
-Uploaded files must be one of these formats and at most 50 MB each:
+Uploaded files must be one of these formats:
 
-- **Images** — JPEG, PNG, GIF, WebP, BMP, TIFF
-- **Videos** — MP4, WebM, QuickTime (MOV)
-- **Documents** — PDF
+- **Images** — JPEG, PNG, GIF, WebP, BMP, TIFF, up to 50 MB each
+- **Videos** — MP4, WebM, QuickTime (MOV), up to 800 MB each in the study builder
+- **Documents** — PDF, up to 50 MB each
 
 SVG is not accepted; export it as PNG first. Organization logos accept the same image formats up to 10 MB.
 
@@ -49,7 +49,25 @@ Paste a Figma link to embed an interactive prototype. Versive reads the file and
 The Figma file needs link sharing enabled ("Anyone with the link can view") for Versive to import it. Versive shows specific guidance if your file's sharing settings block the import.
 </Callout>
 
+On an [AI Question or an Exploratory question](/studies/question-types), the AI interviewer knows what the participant did in the prototype: the screens they visited, how long they stayed on each, how many times they clicked on each screen, and whether those clicks hit something interactive. It uses this to ask more specific follow-up questions, such as why the participant went back to a screen. This needs a prototype imported from Figma in the editor, which gives Versive the screen names and descriptions; a prototype attached as an embed-only link (through the assistant, the MCP server or the API) is shown to the participant but sends the interviewer no interaction summary.
+
 For task-based prototype testing with automatic completion detection, use the dedicated [Prototype Task](/studies/question-types#prototype-task) question type instead of a media attachment.
+
+## Embedded websites
+
+On an [AI Question or an Exploratory question](/studies/question-types), the AI interviewer knows which pages the participant opened in a website shown in the secure virtual browser while answering that question, how long they stayed on each, and what each page shows. It uses this to ask more specific follow-up questions, such as what the participant looked for on the pricing page. The first time a study's participants open a page, Versive opens it in its own browser, asks an AI model to describe it, and keeps the description for the rest of the study; the picture is not stored. Versive's browser is not signed in, so a page behind a login is described as it shows to a signed-out visitor. Pages on other websites are not described, and each interview adds at most 30 new pages, each study at most 200. This does not apply to directly embedded prototypes (Figma Make, v0, Lovable, Bolt, Replit, Framer) or to Realtime AI studies.
+
+## Attaching media with the assistant
+
+The AI assistant can attach media for you. In the assistant panel, use the image, video, or PDF button to attach a file, then say where it goes — for example "add this to Q3" or "create a rating question that shows this image inline". The assistant attaches the file to the question with the layout, sizing, and (for videos) autoplay and loop settings you ask for.
+
+You can also:
+
+- **Paste a public Figma prototype link** ("Anyone with the link can view") and ask the assistant to show it on a question. The prototype is embedded as pasted, without importing frames, so a goal frame, heatmaps, and per-frame descriptions need the Figma import in the builder.
+- **Give an `https://` URL** to embed a website beside a question.
+- **Reuse media from another question** ("use the same image as Q1 on Q4").
+
+Each question shows one asset. Files attached through the assistant can be up to 50 MB each (upload larger videos in the builder) and must be JPEG, PNG, GIF, WebP, BMP, MP4, WebM, MOV, or PDF. Media cannot be attached to Calendar, Website Test, or Prototype Task questions (a Prototype Task takes a Figma prototype link instead). Attaching, replacing, or removing media through the assistant only changes the default-language media; per-language variants you uploaded stay in place unless you ask for the media to be removed in every language. In the study builder, the assistant's edits become part of your draft and are published when you save the study.
 
 ## Per-language variants
 

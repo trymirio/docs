@@ -1,0 +1,75 @@
+---
+title: "Create asset upload"
+api: "POST /asset-uploads"
+description: "Start uploading an image, video, or PDF to show beside a question"
+---
+
+Creates an upload ticket for a question's stimulus asset. Files never go through this endpoint: when `mime_type` is sent the response carries `upload_url`, a signed URL that accepts one `PUT` of the raw file within two hours. Upload the file, call [Complete asset upload](/api-reference/asset-uploads/complete-asset-upload) while its `status` is `pending` (stop at `ready`; `rejected` and `expired` are final, so create a new ticket), then reference the ticket as `asset.upload_id` when you [create](/api-reference/questions/batch-questions) or [update](/api-reference/questions/update-question) a question. Returns `201`.
+
+<Note>
+MCP sessions get the same ticket through the `create_asset_upload` tool, plus a hosted page for uploading in the browser. Organization API keys use the direct upload only.
+</Note>
+
+<ParamField body="file_name" type="string">
+  Original file name with extension, for example `concept-a.png`. Shown on the hosted upload page; the stored object's extension comes from `mime_type` (the file name's extension is used only when the type is unknown).
+</ParamField>
+<ParamField body="mime_type" type="string">
+  One of `image/jpeg`, `image/png`, `image/gif`, `image/webp`, `image/bmp`, `image/x-ms-bmp`, `video/mp4`, `video/webm`, `video/quicktime`, `application/pdf`. Both BMP media types accept `.bmp` images. Excel spreadsheets (`.xls`, `.xlsx`) are not supported.
+</ParamField>
+<ParamField body="size_bytes" type="integer">
+  Size of the file when known. Anything above 50 MB is refused before a ticket is created.
+</ParamField>
+
+### Response
+
+<ResponseField name="upload_id" type="string">The ticket id.</ResponseField>
+<ResponseField name="status" type="string">`pending` on creation.</ResponseField>
+<ResponseField name="upload_url" type="string">
+  Signed URL for one `PUT` of the raw file, only present when `mime_type` was sent. Send the `Content-Type` header from `headers`. The URL is a credential: do not log or share it.
+</ResponseField>
+<ResponseField name="method" type="string">`PUT`.</ResponseField>
+<ResponseField name="headers" type="object">Headers to send with the upload (`Content-Type`).</ResponseField>
+<ResponseField name="expires_at" type="string">When the ticket and the signed URL stop working (two hours).</ResponseField>
+<ResponseField name="max_bytes" type="integer">The size limit, 52428800.</ResponseField>
+<ResponseField name="allowed_mime_types" type="string[]">The accepted media types.</ResponseField>
+
+### Limits
+
+- At most 30 tickets per API key per hour.
+- 50 MB per file. The bucket also enforces the type list on the upload itself.
+- Tickets that never receive a file expire after two hours.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.getversive.com/api/v1/asset-uploads" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"file_name": "concept-a.png", "mime_type": "image/png", "size_bytes": 184320}'
+
+# then upload the file to the returned upload_url
+curl -X PUT -H "Content-Type: image/png" --data-binary @concept-a.png "$UPLOAD_URL"
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "upload_id": "5c8e2f1a-7d4b-4e9c-a1f3-6b2d8c4e0a9f",
+  "status": "pending",
+  "file_name": "concept-a.png",
+  "mime_type": "image/png",
+  "size_bytes": null,
+  "asset_type": null,
+  "asset_url": null,
+  "error": null,
+  "expires_at": "2026-09-23T14:05:00.118Z",
+  "created_at": "2026-09-23T12:05:00.118Z",
+  "completed_at": null,
+  "max_bytes": 52428800,
+  "allowed_mime_types": ["application/pdf", "image/bmp", "image/gif", "image/jpeg", "image/png", "image/webp", "image/x-ms-bmp", "video/mp4", "video/quicktime", "video/webm"],
+  "upload_url": "https://xyz.supabase.co/storage/v1/object/upload/sign/interview_media/questions/…?token=…",
+  "method": "PUT",
+  "headers": { "Content-Type": "image/png" }
+}
+```
+</ResponseExample>
