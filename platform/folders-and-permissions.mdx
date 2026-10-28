@@ -23,19 +23,22 @@ Open the folder's **⋮** menu (on the Projects page, the one on its card) and c
 
 To delete many items at once, select them and choose **Delete** in the bar at the bottom of the list. When the selection includes a folder, you type **DELETE FOLDER** to confirm. Items that can't be deleted stay selected, and the dialog says why.
 
-## Transcript retention
+## Interview data retention
 
-A folder can have a retention policy: the number of days to keep interview transcripts in its studies, counted from each interview's last message (or from when the interview was created, if it has no messages). Set it with the API when you [create a folder](/api-reference/folders/create-folder) or [update one](/api-reference/folders/update-folder). Only the organization owner, or an organization API key, can set or change it.
+A folder can have a retention policy: the number of days to keep interview transcripts and recordings in its studies, counted from each interview's last message (or from when the interview was created, if it has no messages). Set it with the API when you [create a folder](/api-reference/folders/create-folder) or [update one](/api-reference/folders/update-folder). Only the organization owner, or an organization API key, can set or change it.
 
-Versive checks for expired transcripts every hour. For each interview past the window it deletes:
+Versive checks for expired interviews every hour. For each interview past the window it deletes:
 
-- the transcript: the conversation history, the transcript text, and its translations, and
-- the [memory](/studies/ai-interviewer#memory) observations learned from it. The study's memory is then rebuilt from the interviews that remain.
+- the transcript: the conversation history, the transcript text, and its translations,
+- the [memory](/studies/ai-interviewer#memory) observations learned from it (the study's memory is then rebuilt from the interviews that remain),
+- its recordings: participant audio, video, and screen recordings, the full-interview recording, and files participants uploaded,
+- clips made from the interview, and
+- files stored with the interview: imported audio, video, and transcripts, and raw transcription output.
 
-The study, its questions, and its settings are kept, so you can keep running it. These are not deleted by retention: audio and video recordings, clips, transcript files stored with the interview (imported transcripts and raw transcription output), the per-interview summary on the results page, and the study's [insights](/studies/results-and-insights), which can quote participants.
+The study, its questions, and its settings are kept, so you can keep running it. The per-interview summary on the results page and the study's [insights](/studies/results-and-insights), which can quote participants, are not deleted by retention.
 
 <Warning>
-Setting a policy on a folder that already has studies applies it to every interview in them: transcripts older than the window are deleted at the next hourly check. The policy covers studies directly in the folder; a subfolder follows its own policy.
+Setting a policy on a folder that already has studies applies it to every interview in them: transcripts and recordings older than the window are deleted at the next hourly check, and can't be recovered. The policy covers studies directly in the folder; a subfolder follows its own policy.
 </Warning>
 
 ## Folder access policies

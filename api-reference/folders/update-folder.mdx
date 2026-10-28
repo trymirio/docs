@@ -1,7 +1,7 @@
 ---
 title: "Update folder"
 api: "PATCH /folders/{id}"
-description: "Rename a folder or set its transcript retention policy"
+description: "Rename a folder or set its retention policy"
 ---
 
 Updates only the fields you send.
@@ -12,7 +12,7 @@ Updates only the fields you send.
 
 <ParamField body="name" type="string">New folder name.</ParamField>
 <ParamField body="retention_policy_days" type="integer | null">
-  Days to keep interview transcripts in this folder's studies, from 1 to 36500, counted from each interview's last message. Send `null` to turn retention off. Setting it on a folder with existing studies deletes their transcripts older than the window at the next hourly check. See [Transcript retention](/platform/folders-and-permissions#transcript-retention) for what is deleted and kept.
+  Days to keep interview transcripts and recordings in this folder's studies, from 1 to 36500, counted from each interview's last message. Send `null` to turn retention off. Setting it on a folder with existing studies deletes their transcripts and recordings older than the window at the next hourly check. See [Interview data retention](/platform/folders-and-permissions#interview-data-retention) for what is deleted and kept.
 
   Organization API keys can change this field. Over an MCP connection, only the organization owner can.
 </ParamField>
