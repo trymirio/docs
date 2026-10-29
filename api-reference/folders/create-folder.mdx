@@ -11,7 +11,7 @@ Creates a folder. Returns `201`.
   `FULL_ACCESS`, `CAN_EDIT`, `CAN_VIEW`, `INVITE_ONLY`, or `CAN_EDIT_SURVEY_ONLY`.
 </ParamField>
 <ParamField body="retention_policy_days" type="integer | null" default="null">
-  Days to keep interview transcripts in this folder's studies, from 1 to 36500, counted from each interview's last message. After that the transcript and the study memory learned from it are deleted. `null` keeps transcripts indefinitely. Over an MCP connection, only the organization owner can set it. See [Transcript retention](/platform/folders-and-permissions#transcript-retention).
+  Days to keep interview transcripts and recordings in this folder's studies, from 1 to 36500, counted from each interview's last message. After that the transcript, the study memory learned from it, and the interview's recordings and clips are deleted. `null` keeps them indefinitely. Over an MCP connection, only the organization owner can set it. See [Interview data retention](/platform/folders-and-permissions#interview-data-retention).
 </ParamField>
 
 ### Response
