@@ -37,24 +37,33 @@ Organization settings are split across tabs:
 
 - **Team** — your organization name, the logo shown in your workspace, and members.
 - **Plans** — your subscription and billing.
-- **Settings** — study branding defaults, embed domains, and AI apps, covered below.
+- **Settings** — study defaults, embed domains, AI apps, and uploaded file downloads, covered below.
 - **API** — organization-scoped keys for the [public API](/api-reference/introduction), available to enterprise organizations.
 
-### Study branding defaults
+### Study defaults
 
-Every study carries its own branding — the logo and color participants see. Rather than restyle each new study by hand, owners and admins can set the branding new studies start from under **Organization > Settings > Study defaults**:
+Every study carries its own settings — the branding participants see, the languages they can take it in, and how many responses it accepts. Rather than set up each new study by hand, owners and admins can set what new studies start from under **Organization > Settings > Study defaults**:
 
 | Default | Applies to |
 | --- | --- |
 | **Study logo** | The logo in the header participants see. New studies with no logo of their own get this one. |
-| **Primary color** | The accent color of the participant experience. Must be a 6-digit hex value like `#00786F`. |
+| **Study title** | The title shown next to the logo. Leave blank to use each study's name. |
+| **Primary color** | The accent color of the participant experience, a 6-digit hex value like `#00786F`. Leave blank to keep each study's own primary color. |
+| **Text color** | The color of the text participants read. Leave blank for the default dark gray. |
+| **Background color** | The page behind everything participants see. Leave blank for white. For a dark look, pick a dark background and a light text color. |
+| **Default language** | The language new studies start in. On the dashboard, the create dialog starts with it selected. Voice studies always stay in English. |
+| **Supported languages** | The other languages participants can choose in new studies. The study's questions and messages are translated into them when it is first saved in the builder, as with languages you add yourself; until then, participants see only the default language. If a creator picks a different default language for a study, the organization's default language isn't added to that study's supported languages; add it on the study's [Languages](/studies/languages) settings if you want it offered. |
+| **Total completes** | A response limit: new studies stop accepting participants after this many completes, as with a [Total completes quota](/studies/settings#quotas). Leave blank for no limit. |
 
-Two things are worth knowing about how these are applied:
+The card has the same colors and **Accessibility check** as a study's [Branding](/studies/settings#branding) tab: it warns when the text is hard to read on the background, or the primary color does not stand out from it. Saving still works.
 
-- **They are copied in at creation, not linked.** A study takes a snapshot of the defaults the moment it is created and owns its branding from then on, so changing a default later leaves existing studies alone. To restyle a study that already exists, edit its [Branding](/studies/settings#branding) tab.
-- **An explicit choice always wins.** Only branding the creator left unset is filled in from the defaults. This holds however the study is created — the dashboard, the [API](/api-reference/studies/create-study), or the AI agent. Studies duplicated or created from a template keep the source's branding and are not touched at all.
+Three things are worth knowing about how these are applied:
 
-Each study can still change or remove its branding in its own [Branding](/studies/settings#branding) tab.
+- **They are copied in at creation, not linked.** A study takes a snapshot of the defaults the moment it is created and owns its settings from then on, so changing a default later leaves existing studies alone. To change a study that already exists, edit its own [Branding](/studies/settings#branding), [Languages](/studies/languages), or [quota](/studies/settings#quotas) settings. To restyle every study at once, use **Apply to existing studies**.
+- **An explicit choice always wins.** Only settings the creator left unset are filled in from the defaults. This holds however the study is created — the dashboard, the [API](/api-reference/studies/create-study), the AI agent, or the Figma plugin. A study from the Figma plugin keeps the plugin's language, since its questions are written in it. Studies duplicated or created from a template keep the source's settings and are not touched at all.
+- **They are defaults, not locks.** Anyone who can edit a study can still change these values on that study — for example, raise its response limit — and the change affects that study only.
+
+**Apply to existing studies** writes the saved logo and colors into every study of the organization, after a confirmation that shows how many studies will change and the values they will get. A blank default leaves each study's own value alone, archived studies are skipped, and the change cannot be undone. Save your edits on the card first; the button applies what is saved. It doesn't change a study's title, languages, or response limit.
 
 ### Embed domains
 
@@ -65,6 +74,28 @@ The domain allow-list required before a study can be embedded with the [Embed SD
 Apps connected through the [MCP server](/mcp/overview), such as ChatGPT, Claude, and Cursor, can read each response's metadata: the [URL parameters](/studies/launch-and-sharing#hidden-fields--participant-tracking) on the participant's link and fields from uploaded contact lists or the API, such as email. Agents use it to split results by segment and to follow up with participants. The participant's session token (the `vid` on invite links) is never shared.
 
 This is off by default. Owners and admins turn it on with **Share participant metadata** under **Organization > Settings > AI apps**. While it's off, connected apps receive no participant metadata at all. The setting doesn't change what the assistant inside Versive can see.
+
+### Uploaded file downloads
+
+Uploaded files are the images and videos participants upload, the screens uploaded to AI tests, persona source files, and the images, videos, and PDFs uploaded to questions. Figma prototypes, embedded websites, and AI test screens from Figma or website tests aren't uploaded files, so they keep their links. When **Allow downloading uploaded files** is off, Versive offers no download for these files. People can still see them in Versive. Persona source files show by name only, and so do uploads in a file type that can carry code, such as SVG, or that the browser can't draw, such as HEIC in Chrome.
+
+This is on by default. Owners and admins can change it under **Organization > Settings > Uploaded files**.
+
+While it's off:
+
+- The download buttons for these files are gone, and a note says downloads are turned off.
+- Right-clicking, dragging, and long-pressing don't offer to save uploaded images in the dashboard.
+- The [public API](/api-reference/introduction) and the [MCP server](/mcp/overview) return no links to these files. See [List questions](/api-reference/questions/list-questions), [Get interview media](/api-reference/interviews/get-interview-media), and [Complete asset upload](/api-reference/asset-uploads/complete-asset-upload).
+
+Recordings (including audio and video files imported as interviews), clips, transcripts, the responses CSV, and insights, report, and AI test exports don't change.
+
+The setting removes Versive's ways to download these files. It has limits:
+
+- Anything shown in a browser can still be saved by the person looking at it.
+- Question media on a live study stays visible to anyone with the study link.
+- Members can still open question media from any signed-in browser.
+- A direct file link handed out before the setting was turned off works until it expires, up to 24 hours later. [Get interview media](/api-reference/interviews/get-interview-media) links to uploaded files stop working right away.
+- Public sharing links keep working. Anyone with the link can see the participant uploads on a shared interview, the screens on shared AI test results, and the question media on shared study insights, without signing in. [Revoke the link](/platform/collaboration#public-sharing-links) to stop that.
 
 ## Two permission layers
 

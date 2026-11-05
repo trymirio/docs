@@ -4,7 +4,7 @@ api: "PUT /studies/{id}"
 description: "Partially update a study"
 ---
 
-Updates only the fields you send. `config` is **merged** into the stored configuration (existing keys you don't send are preserved); all other fields are replaced.
+Updates only the fields you send. `config` is **merged** into the stored configuration (existing keys you don't send are preserved), and `config.tutorial` is merged switch by switch; all other fields are replaced.
 
 <ParamField path="id" type="string" required>
   The study ID.
@@ -14,8 +14,19 @@ Updates only the fields you send. `config` is **merged** into the stored configu
 <ParamField body="description" type="string">New description.</ParamField>
 <ParamField body="config" type="object">
   Configuration changes, merged into the existing config. For example, turn on [memory](/studies/ai-interviewer#memory) with `{ "enableMemory": true, "memoryFocus": "...", "memoryUsageRules": "..." }`; `enableMemory` must be a boolean, and the two text fields take up to 300 characters each.
+
+  Participant colors are `primaryColor`, `textColor` and `backgroundColor`, each a 6-digit hex value like `#18181B`; send an empty `textColor` or `backgroundColor` to go back to the default. For a dark look: `{ "textColor": "#F4F4F5", "backgroundColor": "#18181B" }`. A `primaryColor` sent back unchanged is accepted as stored, even an older value that is not a hex color; a new one that is not a 6-digit hex value returns a `422`.
+
+  `uniqueIdentifier`, the link parameter that carries your participant ID, must be a single word and can't be `vid`; otherwise the request returns `400`.
+
+  Changing `mode` also moves the study to the standard interview engine, as choosing a mode in the dashboard does: `conversational` is set to `false` (send `"conversational": true` with the new mode to keep the realtime engine), and the previous engine's `voiceEngine` and silence setting are cleared.
+
+  [Tutorial page](/studies/tutorial-page#with-the-api) switches go in `tutorial`: `{ enabled, requireMicCheck, showMicTest, showTimerColors, showTroubleshooting }`, all booleans. Only the switches you send change; for example, `{ "tutorial": { "enabled": false } }` turns the page off and keeps its checks. `null` counts as `false`. Unknown switches and any other value return `422`. Sending `"tutorial": null` instead of an object turns every switch off.
 </ParamField>
 <ParamField body="welcome_message" type="object">Replaces the welcome message.</ParamField>
+<ParamField body="tutorial_message" type="object">
+  Replaces the [tutorial page](/studies/tutorial-page#with-the-api) copy: `{ title, content, ctaText }`. Like the other messages it's replaced whole, so a field you omit reads as the default, not its previous value; send all three to change one. See [Copy](/studies/tutorial-page#copy) for the length limits, the HTML that's kept, and the `422` errors. Saving doesn't translate the page; call [Translate study](/api-reference/studies/translate-study) afterward.
+</ParamField>
 <ParamField body="thank_you_message" type="object">Replaces the thank-you message.</ParamField>
 <ParamField body="screen_out_message" type="object">Replaces the screen-out message.</ParamField>
 <ParamField body="folder_id" type="string">Move the study to a folder.</ParamField>

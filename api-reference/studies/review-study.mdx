@@ -1,0 +1,73 @@
+---
+title: "Review study"
+api: "GET /studies/{id}/review"
+description: "Check whether a study is ready to share, and how long it takes"
+---
+
+Checks a study before you share its link: whether participants can take it, how long the interview runs, and what could be improved. The checks are deterministic and read-only; nothing is changed.
+
+<ParamField path="id" type="string" required>
+  The study ID.
+</ParamField>
+
+### Response
+
+<ResponseField name="study_id" type="string">The study ID.</ResponseField>
+<ResponseField name="title" type="string">The study title.</ResponseField>
+<ResponseField name="status" type="string">The study status (e.g. `published`, `paused`).</ResponseField>
+<ResponseField name="mode" type="string">The interview mode (e.g. `TEXT_ONLY`, `VIDEO`).</ResponseField>
+<ResponseField name="ready" type="boolean">`false` while any finding has severity `blocker`.</ResponseField>
+<ResponseField name="question_count" type="integer">Active questions in the study.</ResponseField>
+<ResponseField name="estimated_minutes" type="object | null">
+  `{ min_minutes, max_minutes }`, or `null` when the study has no questions.
+</ResponseField>
+<ResponseField name="estimate_basis" type="string | null">
+  `longest_path` (the longest route through the study's branching) or `all_questions` (a sum of every question, used when no branching data exists yet).
+</ResponseField>
+<ResponseField name="findings" type="array">
+  <Expandable title="properties">
+    <ResponseField name="code" type="string">
+      `not_published`, `empty_study`, `prototype_goal_equals_start` (blockers); `empty_prompt`, `high_burden` (warnings); `over_length`, `desktop_only_recommended`, `mergeable_ai_questions` (suggestions).
+    </ResponseField>
+    <ResponseField name="severity" type="string">`blocker`, `warning`, or `suggestion`.</ResponseField>
+    <ResponseField name="message" type="string">What was found.</ResponseField>
+    <ResponseField name="suggestion" type="string">The suggested fix.</ResponseField>
+    <ResponseField name="question_ids" type="string[]">The questions involved, when the finding is about specific questions.</ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="judgment_checks" type="string[]">
+  Wording and design checks that need someone reading the questions (leading or double-barreled wording, order, sample size).
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/review \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+  "title": "Checkout feedback",
+  "status": "published",
+  "mode": "TEXT_ONLY",
+  "ready": true,
+  "question_count": 8,
+  "estimated_minutes": { "min_minutes": 4.4, "max_minutes": 11.7 },
+  "estimate_basis": "longest_path",
+  "findings": [
+    {
+      "code": "desktop_only_recommended",
+      "severity": "suggestion",
+      "message": "The study has content that is hard to use on a phone (websiteTest) but does not require a desktop.",
+      "suggestion": "Set the study's device requirement to desktop."
+    }
+  ],
+  "judgment_checks": [
+    "Wording: one ask per question (split double-barreled ones) and no leading or loaded phrasing."
+  ]
+}
+```
+</ResponseExample>

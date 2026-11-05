@@ -6,8 +6,12 @@ description: "Create and update questions in one call"
 
 Creates and/or updates questions in a single study in one request. Items **with** an `id` are updated; items **without** an `id` are created (appended after the existing questions in the order given). Returns `201`.
 
+<ParamField header="Idempotency-Key" type="string">
+  Optional, up to 255 characters. Makes the request safe to retry; see [Retries](#retries).
+</ParamField>
+
 <ParamField body="questions" type="object[]" required>
-  The questions to create or update. Every item must include the same `study_id`. Recognized fields per item:
+  The questions to create or update, at most 500 per request (more returns `422`). Every item must include the same `study_id`. Recognized fields per item:
 
   - `id` — include to update an existing question; omit to create.
   - `study_id` — **required** on every item.
@@ -40,8 +44,22 @@ Call [List available references](/api-reference/studies/available-references) fo
 
 ### Response
 
-<ResponseField name="created_question_ids" type="string[]">IDs of newly created questions, in input order.</ResponseField>
-<ResponseField name="updated_question_ids" type="string[]">IDs of updated questions.</ResponseField>
+<ResponseField name="created_question_ids" type="string[]">IDs of newly created questions, in request order: `created_question_ids[i]` is the ID of the i-th item **without** an `id`. Items with an `id` are skipped, and `display_order` or `question_group_id` on an item does not change its position in this list.</ResponseField>
+<ResponseField name="updated_question_ids" type="string[]">IDs of updated questions, in request order.</ResponseField>
+
+To map each ID back to the question you sent, walk your `questions` array and take the next ID from `created_question_ids` for each item without an `id`, and the next ID from `updated_question_ids` for each item with one.
+
+### Errors
+
+The batch is validated before anything is written. When one item is invalid, the request fails with `400`, `403`, or `404` and a `detail` that names the item by its zero-based position, for example `"questions[2]: Unknown question type 'notAType'. ..."`. Fix that item and resend the whole batch.
+
+Two checks run after the rows are written: `{{Q:...}}` references on every item, and checks against earlier answers on new questions. A `422` from either one leaves the batch written and does not return the new IDs. Retrying the same request with the same `Idempotency-Key` returns the same `422` without creating the questions again; fix the batch and send it with a new key.
+
+### Retries
+
+Send an `Idempotency-Key` header (a UUID you generate per batch works well) and you can resend the same request after a timeout, a network error, or a `5xx` without creating questions twice. A retry with the same key and the same body returns the same `created_question_ids` as the first attempt, and the questions are written once, even when the retries overlap.
+
+The key only covers that exact body: the same key with a different body is treated as a new batch. Without the header, every request creates new questions.
 
 The example below creates one new question and updates an existing one (`8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d`), piping that existing question's answer into the new question's text. References must point at questions that already exist in the study — use [List available references](/api-reference/studies/available-references) to discover valid templates.
 

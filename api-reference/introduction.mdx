@@ -35,8 +35,9 @@ API keys are created in your organization settings (**Organization → API keys*
 A missing or invalid bearer credential returns `401` with `{"detail": "Invalid authentication credentials"}`.
 
 The same public API routes also accept short-lived, scoped JWTs issued for authenticated
-[Versive MCP server](/mcp/overview) sessions. Each MCP connection is granted `studies:read`, `interviews:read`, and
-`studies:write` at consent time (or a narrower set if the client requests one). Those scopes are an upper bound:
+[Versive MCP server](/mcp/overview) sessions. Each MCP connection is granted `studies:read`, `interviews:read`,
+`studies:write`, `interviews:write`, and `media:read` at consent time (or a narrower set if the client requests one); `media:read` unlocks
+[interview media](/api-reference/interviews/get-interview-media) as time-limited links. Those scopes are an upper bound:
 organization roles and study access policies are still checked on every request. MCP clients manage these credentials
 automatically; do not copy MCP access tokens into direct REST API integrations.
 
