@@ -8,7 +8,7 @@ Returns every AI-moderated (`VERSIVE_STUDY`) study in your organization.
 
 ### Response
 
-An array of study objects: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `thank_you_message`, `screen_out_message`, `created_at`.
+An array of study objects: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `tutorial_message`, `thank_you_message`, `screen_out_message`, `status`, `quota`, `pause_url`, `access_policy`, `created_at`. `config.tutorial` always lists the five [tutorial page](/studies/tutorial-page#with-the-api) switches and `tutorial_message` its `title`, `content`, and `ctaText`, with defaults filled in.
 
 <RequestExample>
 ```bash cURL

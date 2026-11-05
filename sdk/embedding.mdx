@@ -47,6 +47,9 @@ When loaded via the script tag, the SDK automatically scans the page (and keeps 
 | `data-versive-mode` | `inline` (default) · `modal` | `modal` makes the element a click trigger. |
 | `data-versive-context-*` | any string | Everything after the prefix becomes a context key: `data-versive-context-plan="pro"` → `plan=pro`. |
 | `data-versive-preview` | presence | Enables [preview mode](#preview-mode). |
+| `data-versive-text-color` | hex color | Text color for this embed (e.g. `#F4F4F5`). See [matching your app's colors](#matching-your-apps-colors). |
+| `data-versive-primary-color` | hex color | Primary color for this embed. |
+| `data-versive-background-color` | hex color | Background color for this embed. |
 
 ## Passing context (identifying participants)
 
@@ -63,8 +66,24 @@ versive.open('study-id', {
 ```
 
 <Warning>
-Context values are appended to the study URL as query parameters, so they're visible to the participant. Never pass emails, names, tokens, or anything sensitive — use an opaque internal ID and join it to your data on your side. The keys `embed` and `mode` are reserved and ignored.
+Context values are appended to the study URL as query parameters, so they're visible to the participant. Never pass emails, names, tokens, or anything sensitive — use an opaque internal ID and join it to your data on your side. The keys `embed`, `mode`, `textColor`, `primaryColor` and `backgroundColor` are reserved and ignored with a console warning; pass colors with [`colors`](#matching-your-apps-colors) instead.
 </Warning>
+
+## Matching your app's colors
+
+A study uses the colors set on its Branding tab. To match your product, pass your own palette for the embed with `colors` (or the `data-versive-*-color` attributes). Each color you pass replaces the study's for this embed only; a color you leave out keeps the study's.
+
+If your app has its own light/dark switch, pass the active palette each time you open a study:
+
+```js
+const palette = isDarkMode
+  ? { text: '#F4F4F5', primary: '#A78BFA', background: '#18181B' }
+  : { text: '#09090B', primary: '#7C3AED', background: '#FFFFFF' };
+
+versive.open('study-id', { colors: palette });
+```
+
+The modal and its loading screen use the same background. See [Colors](/sdk/reference#colors) in the reference.
 
 ## Preview mode
 

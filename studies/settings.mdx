@@ -14,6 +14,7 @@ Study settings live in the settings panel on the study page, organized into tabs
 | Conversation mode | Text only, Text and voice, Voice only, Voice with preview, Video, or Voice to voice Realtime (a live spoken conversation on the realtime engine, 2 AI credits per completion). See [Conversation modes](/studies/overview#conversation-modes). |
 | Silence threshold | Voice to voice Realtime only: how long the AI waits after the participant stops speaking before replying (0.5–5 s, default 1.5 s). |
 | Require device | Any device, Desktop only, or Mobile only. |
+| Display tutorial page to participant before they start | Show a [tutorial page](/studies/tutorial-page) with setup tips, and optional checks such as a microphone test, between the welcome message and the first question. Off by default. |
 | Record user screens | Desktop only. Choose **Browser tab** or **Full screen** recording permissions. |
 
 ### Advanced settings
@@ -49,11 +50,13 @@ A quota stops the study from accepting new participants once you have enough com
 
 To cap individual answer options instead (for example 50 iPhone users and 50 Android users), use [question quotas](/studies/question-quotas). They work independently of the study quota and can be combined with it.
 
+Owners and admins can give every new study a starting **Total completes** cap under **Organization > Settings > Study defaults** — see [study defaults](/platform/organizations-and-roles#study-defaults). Each study can still change or remove its cap here.
+
 ### Per link parameter
 
 <Steps>
   <Step title="Name the parameter">
-    Enter the parameter name your links will carry, such as `group`. Letters, digits, underscores, and hyphens only.
+    Enter the parameter name your links will carry, such as `group`. Letters, digits, underscores, and hyphens only. You can't use `textColor`, `primaryColor` or `backgroundColor`: [embeds](/sdk/reference#colors) use them for colors.
   </Step>
   <Step title="Add a row per value">
     Each row pairs a link value with its number of completes. Every value can be used once, up to 50 values per study.
@@ -109,12 +112,22 @@ The study header shows a quota pill: `Quota 42/100` for a total cap, or the para
 | --- | --- |
 | Study logo | The logo shown in the header participants see. Upload your own, or remove it to go back to the default. |
 | Study title | The title shown next to the logo. Leave blank to use the study name. |
-| Primary color | The accent color of the participant experience (default `#00786F`). |
+| Text color | The color of the text participants read. Leave blank for the default dark gray. |
+| Primary color | The accent color of the participant experience: buttons, selected answers, the progress bar (default `#00786F`). |
+| Background color | The page behind everything participants see. Leave blank for white. |
 | Hide Versive branding | Removes "Powered by Versive" from the participant experience. Available on eligible plans. |
 
-Branding is per study, so what you set here affects this study only.
+Each color is a 6-digit hex value like `#18181B`. Every participant screen follows the three colors: the welcome and device check, every question type, the voice screens, and the completion and screen-out messages. Borders, cards and muted text are mixed from the text and background colors. Once Text or Background is set, or an [embed](/sdk/reference#colors) passes its own primary color, text on buttons turns black or white, whichever reads better on the primary color. Otherwise it stays white. Websites and Figma prototypes shown inside a task keep their own look.
 
-To avoid restyling every study by hand, owners and admins can set a default logo and primary color for the whole organization under **Organization > Settings > Study defaults** — see [study branding defaults](/platform/organizations-and-roles#study-branding-defaults). New studies start from those defaults; this tab always wins over them, and changing a default later leaves studies that already exist alone.
+There is no separate dark mode: for a dark look, pick a dark background and a light text color. On a dark background, your logo gets a light tile behind it so it stays visible.
+
+The **Accessibility check** under the colors follows [WCAG 2.2 level AA](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html). It warns when the text is hard to read on the background (below 4.5:1), or the primary color does not stand out from it (below 3:1), and confirms when both pass. Saving still works.
+
+A study with no text or background color looks exactly as it did before. The study editor's preview shows your colors as you change them: while the **Preview** tab is open, the colors button at the right of the tab row opens the three colors over the preview.
+
+Branding is per study, so what you set here affects this study only. A page that embeds the study with the [embed SDK](/sdk/embedding) can pass its own colors for that embed.
+
+To avoid restyling every study by hand, owners and admins can set a default logo, study title, and colors for the whole organization under **Organization > Settings > Study defaults** — see [study defaults](/platform/organizations-and-roles#study-defaults). New studies start from those defaults; this tab always wins over them, and changing a default later leaves studies that already exist alone.
 
 ## Study messages
 
@@ -123,6 +136,8 @@ Three fixed messages frame every study. Each is fully editable and translated al
 - **Welcome message** — title, body, and call-to-action button text shown before the study starts.
 - **Thank-you message** — title, body, and an optional CTA link shown on completion.
 - **Screen-out message** — what disqualified participants see, with an optional CTA link.
+
+You can also add an optional [tutorial page](/studies/tutorial-page) between the welcome message and the first question.
 
 ## Notifications
 

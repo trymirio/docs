@@ -30,6 +30,8 @@ An array of question objects:
   or downloading it. Private storage links last one hour; `download_url_expires_at` is their UTC expiry time.
   Request this endpoint again for a fresh link. External URLs are passed through and have no expiry time.
   If a private file cannot be signed, both download fields are `null`; the rest of the response remains available.
+  They are also `null` for private files when the organization turned off
+  [uploaded file downloads](/platform/organizations-and-roles#uploaded-file-downloads).
 </ResponseField>
 
 Use `download_url` to fetch the file. When updating a question, retain the asset's `url` identifier and omit

@@ -25,12 +25,21 @@ Creates a study in your organization. Versive applies sensible default configura
 <ParamField body="config" type="object">
   Study configuration overrides, merged over Versive's defaults (AI interviewer settings, branding, languages, device rules, and so on).
 
-  Branding you omit here is filled in from your organization's [study branding defaults](/platform/organizations-and-roles#study-branding-defaults); branding you send explicitly is kept as-is.
+  Branding and languages you omit here are filled in from your organization's [study defaults](/platform/organizations-and-roles#study-defaults); values you send explicitly are kept as-is. A `lang` you send keeps its default language, and an empty `support` list still takes the organization's supported languages. A `support` list you send stays, except for a language that becomes the study's default. When the organization's default language applies, the welcome, thank-you, and screen-out messages you omit (or send as Versive's English defaults) are written in that language. When the organization has a default response limit, the new study gets that Total completes quota (returned as `quota`); change it with `PUT /studies/{id}/quotas`. Participants see a supported language only once the study is translated: after adding questions, call [Translate a study](/api-reference/studies/translate-study).
+
+  Participant colors are `primaryColor`, `textColor` and `backgroundColor`, each a 6-digit hex value like `#18181B` (any other value returns a `422`). Leave `textColor` and `backgroundColor` out, or send an empty string, to take your organization's defaults; with no defaults set, participants see dark text on white. See [Branding](/studies/settings#branding).
+
+  [AI interviewer](/studies/ai-interviewer) settings you omit (`interviewerPersonality`, `guidelines`, `allowQuestionRephrasing`, `questionRephrasingInstructions`, `interviewMode`) use the same defaults as a study created in the dashboard, so the interviewer may [rephrase questions](/studies/ai-interviewer#question-rephrasing). Send `"allowQuestionRephrasing": false` to have questions asked word for word.
 
   [Memory](/studies/ai-interviewer#memory) is set with `enableMemory` (boolean, off by default), `memoryFocus` and `memoryUsageRules` (strings, up to 300 characters each).
+
+  The [tutorial page](/studies/tutorial-page#with-the-api) switches are set with `tutorial`: `{ enabled, requireMicCheck, showMicTest, showTimerColors, showTroubleshooting }`, all booleans. Switches you omit are off, so send `"enabled": true` to show the page. `null` counts as `false`. Unknown switches and any other value return `422`.
 </ParamField>
 <ParamField body="welcome_message" type="object">
   Welcome screen: `{ title, body, ctaText }`.
+</ParamField>
+<ParamField body="tutorial_message" type="object">
+  [Tutorial page](/studies/tutorial-page#with-the-api) copy: `{ title, content, ctaText }`, where `content` is HTML. Fields you omit use the default page (header **Before you begin**, three setup tips, button **Continue**). See [Copy](/studies/tutorial-page#copy) for the length limits, the HTML that's kept, and the `422` errors. The page is only shown once `config.tutorial.enabled` is `true`.
 </ParamField>
 <ParamField body="thank_you_message" type="object">
   Completion screen: `{ title, body, ctaText, ctaLink }`.
@@ -50,7 +59,7 @@ Creates a study in your organization. Versive applies sensible default configura
 
 ### Response
 
-Returns the created study (status `201`) with fields: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `thank_you_message`, `screen_out_message`, `access_policy`, and `created_at`.
+Returns the created study (status `201`) with fields: `id`, `title`, `description`, `metadata`, `type`, `mode`, `config`, `welcome_message`, `tutorial_message`, `thank_you_message`, `screen_out_message`, `status`, `quota`, `pause_url`, `access_policy`, and `created_at`.
 
 <RequestExample>
 ```bash cURL
@@ -79,11 +88,26 @@ curl -X POST https://api.getversive.com/api/v1/studies \
   "type": "VERSIVE_STUDY",
   "mode": "TEXT_AND_VOICE",
   "access_policy": "FULL_ACCESS",
-  "config": { "interviewMode": "quality", "lang": { "default": { "name": "English" } } },
+  "config": {
+    "interviewMode": "quality",
+    "lang": { "default": { "name": "English" } },
+    "tutorial": {
+      "enabled": false,
+      "requireMicCheck": false,
+      "showMicTest": false,
+      "showTimerColors": false,
+      "showTroubleshooting": false
+    }
+  },
   "welcome_message": {
     "title": "Quick chat about your first week?",
     "body": "This takes about 5 minutes.",
     "ctaText": "Start"
+  },
+  "tutorial_message": {
+    "title": "Before you begin",
+    "content": "<p>A few quick tips so the interview goes smoothly.</p><ul>...</ul>",
+    "ctaText": "Continue"
   },
   "thank_you_message": null,
   "screen_out_message": { "title": "Thanks for your interest!" },

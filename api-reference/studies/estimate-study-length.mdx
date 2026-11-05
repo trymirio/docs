@@ -1,0 +1,79 @@
+---
+title: "Estimate study length"
+api: "POST /studies/length-estimate"
+description: "How long a planned study will take, before you build it"
+---
+
+Estimates how long a study will take from its interview mode and planned questions, before the study exists. Nothing is created. Requires the `studies:read` scope.
+
+Timings come from Versive's per-question timing model, calibrated on production interviews. The estimate adds up every planned question in order, plus a one-time setup allowance for the mode. A plan has no logic yet, so participants who skip questions through branching finish sooner. Optional questions count at 60% of their time.
+
+Once the study is built, its estimated length follows the longest path through its logic.
+
+### Body
+
+<ParamField body="mode" type="string" required>
+  The interview mode: `TEXT_ONLY`, `TEXT_AND_VOICE`, `VOICE_ONLY`, `VOICE_WITH_PREVIEW`, `VIDEO`, `VOICE_AND_VIDEO`, or `VOICE_TO_VOICE`.
+</ParamField>
+<ParamField body="questions" type="array" required>
+  The planned questions in order, 1 to 200.
+  <Expandable title="properties">
+    <ParamField body="type" type="string" required>The question type, e.g. `question`, `exploratory`, `multipleChoice`, `nps`, `websiteTest`.</ParamField>
+    <ParamField body="required" type="boolean">`false` for an optional question. Defaults to `true`.</ParamField>
+    <ParamField body="props" type="object">
+      Timing inputs only: `turnBudget` (2–25) for an `exploratory` question, defaulting to 8 turns; `requireTimer` and `timer` (1–3600 seconds) for a `message` with a required wait.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### Response
+
+<ResponseField name="mode" type="string">The mode the estimate used.</ResponseField>
+<ResponseField name="question_count" type="integer">Number of planned questions.</ResponseField>
+<ResponseField name="estimated_minutes" type="object">
+  `{ min_minutes, max_minutes }`: the estimated length range in minutes.
+</ResponseField>
+<ResponseField name="mode_overhead_seconds" type="integer">The one-time setup allowance included for the mode.</ResponseField>
+<ResponseField name="questions" type="array">
+  One `{ index, type, required, min_seconds, max_seconds }` per planned question, in order.
+</ResponseField>
+<ResponseField name="note" type="string">How to read the estimate.</ResponseField>
+
+An unknown question type or mode, an empty plan, or a timing value out of range returns `422`.
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/length-estimate \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "TEXT_ONLY",
+    "questions": [
+      { "type": "question" },
+      { "type": "multipleChoice" },
+      { "type": "exploratory", "props": { "turnBudget": 12 } },
+      { "type": "message", "props": { "requireTimer": true, "timer": 30 } },
+      { "type": "nps", "required": false }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "mode": "TEXT_ONLY",
+  "question_count": 5,
+  "estimated_minutes": { "min_minutes": 4.6, "max_minutes": 11.5 },
+  "mode_overhead_seconds": 10,
+  "questions": [
+    { "index": 0, "type": "question", "required": true, "min_seconds": 55, "max_seconds": 150 },
+    { "index": 1, "type": "multipleChoice", "required": true, "min_seconds": 10, "max_seconds": 25 },
+    { "index": 2, "type": "exploratory", "required": true, "min_seconds": 165, "max_seconds": 450 },
+    { "index": 3, "type": "message", "required": true, "min_seconds": 35, "max_seconds": 45 },
+    { "index": 4, "type": "nps", "required": false, "min_seconds": 3, "max_seconds": 9 }
+  ],
+  "note": "A straight sum over every planned question: there is no branching at plan time, so participants who skip questions through logic finish sooner. Optional questions count at 60%. Once the study is built, review_study gives the estimate for its longest path."
+}
+```
+</ResponseExample>

@@ -8,15 +8,17 @@ You don't call these tools yourself — your AI assistant picks the right ones b
 
 ## Permission scopes
 
-The consent screen shows exactly which scopes will be granted when you connect. Every client covered in the [setup guide](/mcp/setup) receives all three scopes, including connectors with no configurable scope field. If you're building your own client, you can request a read-only connection by sending an explicit `scope` with just the read scopes.
+The consent screen shows exactly which scopes will be granted when you connect. Every client covered in the [setup guide](/mcp/setup) receives all five scopes, including connectors with no configurable scope field. If you're building your own client, you can request a narrower connection by sending an explicit `scope`: just the read scopes for a read-only agent, or everything except `media:read` for an agent that should see transcripts but not recordings.
 
 | Scope | Grants |
 | --- | --- |
 | `studies:read` | Read your studies, questions, groups, logic, and settings |
 | `interviews:read` | Read interviews and results in your studies |
 | `studies:write` | Create and edit studies, questions, groups, and logic (includes `studies:read`) |
+| `interviews:write` | Create participant links, draft email invites, and run AI simulations, which use interview or survey credits (includes `studies:read` and `interviews:read`) |
+| `media:read` | Read participant recordings and uploaded files in your studies, as time-limited links |
 
-Scopes are fixed when a client connects. To change them (for example, to add write access to a connection that was approved read-only), disconnect the client and connect it again so the consent screen runs with the new scopes.
+Scopes are fixed when a client connects. To change them (for example, to add write access to a connection that was approved read-only, or to add `media:read` to a connection made before recordings were available over MCP), disconnect the client and connect it again so the consent screen runs with the new scopes. Connections approved before `interviews:write` existed don't have it: reconnect to get the simulation, participant link, and email invite tools.
 
 Scopes are an upper bound, not a bypass: every request is also checked against your organization role and each study's access policy, so an agent can never see or change more than you can in the dashboard.
 
@@ -28,9 +30,11 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | --- | --- | --- |
 | `list_studies` | List your studies newest-first, with status filters, search, and optional activity counts | `studies:read` |
 | `get_study` | Full study detail: settings, quota, branding, messages, languages, and share links | `studies:read` |
+| `review_study` | Check a study before you share it: estimated length, anything that stops participants from taking it, and methodology suggestions | `studies:read` |
+| `estimate_study_length` | Estimate how long a planned study will take before you build it, from the interview mode and the planned questions, with a per-question breakdown | `studies:read` |
 | `create_study` | Create a new study (requires an owner, admin, or creator organization role) | `studies:write` |
-| `edit_study_settings` | Edit title, description, status, mode, quota (a total cap, or per-link-parameter buckets with a matching-value policy), pause URL, access policy, branding, study context, or languages | `studies:write` |
-| `edit_interview_message` | Edit the welcome, thank-you, or screen-out message | `studies:write` |
+| `edit_study_settings` | Edit title, description, status, mode (changing it moves a realtime study to the standard engine), quota (a total cap, or per-link-parameter buckets with a matching-value policy), pause URL (http(s), or a redirect template starting with a placeholder such as `{RLINK}`), access policy, branding (including the participant `primary_color`, `text_color` and `background_color`), study context, AI interviewer settings (guidelines, interview mode, question rephrasing, memory, keywords), participant ID parameter, support email, screen recording, required participant device, or languages | `studies:write` |
+| `edit_interview_message` | Edit the welcome, thank-you, or screen-out message, or the [tutorial page](/studies/tutorial-page) | `studies:write` |
 | `archive_study` | Archive a study — the only removal MCP offers; reversible in the dashboard | `studies:write` |
 
 ### Questions
@@ -38,10 +42,11 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 | Tool | Description | Scope |
 | --- | --- | --- |
 | `list_questions` | List questions in display order with type, group, notes, and logic flags | `studies:read` |
-| `get_question_details` | One question's full configuration, media download links, logic rules, and quotas | `studies:read` |
-| `add_questions` | Add questions at a position or append them to a group | `studies:write` |
-| `edit_question` | Edit any question field, including its type | `studies:write` |
+| `get_question_details` | One question's full configuration, media download links, logic rules, quotas, and the earlier answers its text pipes in | `studies:read` |
+| `add_questions` | Add questions at a position or append them to a group. Text can pipe in an earlier answer with a `{{Q:<question_id>}}` reference to a question that comes before it (not when appending to a group: add the question, then set the reference with `edit_question`) | `studies:write` |
+| `edit_question` | Edit a question's text, type, and settings. Renaming an option keeps its question quota; the result lists quotas dropped with removed options and logic rules left pointing at old option text | `studies:write` |
 | `set_question_quotas` | Cap completes per option on a multiple choice question (`equals` or `includes` match, 0 closes an option); pass the full list, an empty list clears it | `studies:write` |
+| `validate_question_mentions` | Find earlier-answer references that broke after questions were removed, reordered, or edited | `studies:read` |
 | `remove_questions` | Remove questions (soft delete); reports logic rules left dangling | `studies:write` |
 | `reorder_questions` | Reorder all questions in an ungrouped study | `studies:write` |
 
@@ -82,7 +87,7 @@ Randomizers are weighted split tests: each participant is routed to exactly one 
 | Tool | Description | Scope |
 | --- | --- | --- |
 | `get_logic_rules` | Logic rules for one question or the whole study | `studies:read` |
-| `add_logic_rule` | Add a conditional rule: skip to a question, move to a group, end the interview, screen the participant out, or redirect | `studies:write` |
+| `add_logic_rule` | Add a conditional rule: skip to a question, move to a group, end the interview, screen the participant out, or redirect (http(s), or a panel template such as `{RLINK}&xStatus=QF`). Greater/less-than rules always compare numbers | `studies:write` |
 | `edit_logic_rule` | Edit an existing rule | `studies:write` |
 | `delete_logic_rule` | Delete a rule | `studies:write` |
 
@@ -94,6 +99,7 @@ Randomizers are weighted split tests: each participant is routed to exactly one 
 | `get_interview` | One interview with its question-and-answer conversation and metadata | `interviews:read` |
 | `get_study_stats` | Completion funnel, drop-off by question, weekly trends, or per-question answer aggregates | `interviews:read` |
 | `export_study_data` | Interview responses as CSV — one row per interview, one column per question, plus a `metadata:<name>` column per metadata field | `interviews:read` |
+| `get_interview_media` | One interview's participant audio, screen recordings, camera video, and uploaded files, each with a time-limited access link that opens the file (`null` for uploaded files when the organization turned off [uploaded file downloads](/platform/organizations-and-roles#uploaded-file-downloads)) | `media:read` |
 
 ### Recruiting panels
 
@@ -116,11 +122,34 @@ For a study with screen-out logic, a Prolific panel must pay screened-out partic
 | `update_respondent_panel_project` | Edit a draft Respondent panel | `studies:write` |
 | `publish_panel_project` | Check a draft is ready and get the dashboard link where you pay and publish | `studies:write` |
 
+### AI simulations
+
+AI personas take your study the way a participant would, and their answers show up as simulated interviews next to real ones (the same as **Simulate** on the Launch tab). Each completed simulation uses credits like a real interview: one credit, or two on a Realtime study; survey studies use survey credits when your plan has them. Versive tells your assistant to show you the cost and wait for your yes before it runs anything. Versive can't see that conversation, so it also checks every request itself: it refuses a run your credits can't cover. Personas skip Prototype Task, Website Task, Tree Test, Conjoint, Media Upload, Website Link, and Calendar questions, so those aren't tested. Up to 20 simulations per request; you need the Owner or Full access role on the study and a plan with AI credits. Archived and paused studies are refused.
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `list_personas` | Your organization's saved AI personas | `interviews:write` |
+| `estimate_simulation_cost` | Credits a run needs, credits left, and the question types personas skip | `interviews:write` |
+| `simulate_study` | Run saved or described personas through a study | `interviews:write` |
+
+### Participant links & email invites
+
+Your assistant can create one private link per participant from a list you give it (the same as **Add Participants → New participants** on the Send tab). Each link opens that person's own interview, so the links are shown once, when they're created, and never read back later. New email addresses are added to your Audience contacts, and an email that's already in the study is skipped. Up to 50 participants per request; you need the Owner or Full access role on the study. Archived and paused studies are refused.
+
+For email invites, your assistant drafts the template and you send it: open the study's Send tab, choose **Send Emails**, pick the template, choose the recipients, and send. No tool sends email.
+
+| Tool | Description | Scope |
+| --- | --- | --- |
+| `create_participant_links` | Create one private interview link per participant from your list | `interviews:write` |
+| `list_email_templates` | Your organization's email invite templates, as plain text | `interviews:write` |
+| `create_email_template` | Draft an email invite template with merge fields such as `{{first_name}}` and `{{interview_link}}` | `interviews:write` |
+| `update_email_template` | Edit a template; a new body replaces the whole body | `interviews:write` |
+
 ### Capabilities
 
 | Tool | Description | Scope |
 | --- | --- | --- |
-| `get_capabilities` | The ground truth on what Versive supports: question types with defaults, logic and group rules, and unsupported features with workarounds | `studies:read` |
+| `get_capabilities` | The ground truth on what Versive supports: question types with defaults, logic and group rules, unsupported features with workarounds, and a study-planning guide | `studies:read` |
 
 ### Help center
 
@@ -135,7 +164,7 @@ Prompts are ready-made workflows. Most clients surface them in a prompt or comma
 
 | Prompt | What it does |
 | --- | --- |
-| `get-started` | Turns your research goal into a first study: plans the questions with you, creates the study, and hands back the share link (needs `studies:write`) |
+| `get-started` | Turns your research goal into a first study: plans it with you, creates it once you approve the plan, reviews it, and hands back the share link with the estimated length (needs `studies:write`) |
 | `study-summary` | Structured research summary: themes with supporting quotes, contradictions, confidence, and follow-up questions |
 | `study-insights` | Per-question thematic insights, mirroring the dashboard's Insights tab |
 | `study-insights-summary` | Executive summary for stakeholders: overview, takeaways, participants, recommendations |
@@ -152,11 +181,12 @@ Prompts are ready-made workflows. Most clients surface them in a prompt or comma
 
 Your agent handles fetching and pagination on its own — there's nothing to configure. A few things to know:
 
-- **Question media links expire.** `get_question_details` returns each asset's stable `url` plus a usable `download_url`. Private download links last one hour, with their UTC expiry in `download_url_expires_at`. Fetch details again to refresh a link. A `null` download URL means the private file is currently unavailable.
+- **Interview media links expire too.** `get_interview_media` returns each recording or upload with a link that points back at Versive and redirects to the file. A link works for 24 hours (its UTC expiry is in `expires_at`) or 500 opens, whichever comes first, and stops working as soon as the connection is disconnected, so an agent should fetch a fresh listing rather than reuse an old link. Treat links like credentials: open them, don't post them. An uploaded file has a `null` `url` when the organization turned off [uploaded file downloads](/platform/organizations-and-roles#uploaded-file-downloads).
+- **Question media links expire.** `get_question_details` returns each asset's stable `url` plus a usable `download_url`. Private download links last one hour, with their UTC expiry in `download_url_expires_at`. Fetch details again to refresh a link. A `null` download URL means the private file is currently unavailable, or the organization turned off [uploaded file downloads](/platform/organizations-and-roles#uploaded-file-downloads).
 - **Uploading media takes two steps.** The assistant gives you `upload_page_url`; sign in, pick the file, wait for "Upload complete", then go back to the chat and reply **uploaded**. `create_asset_upload` returns that page link and does not return a signed storage URL. `complete_asset_upload` then reports whether the file is pending, ready, rejected, or expired, without a storage path or a signed media link. Review the attached file in the study editor. Files up to 50 MB; JPEG, PNG, GIF, WebP, BMP, MP4, WebM, MOV, PDF. Tickets expire after two hours.
 - **Figma prototypes via MCP are embed-only.** `figma_prototype_url` embeds the prototype (share it as *anyone with the link can view*): beside an ordinary question as its asset, or as the task on a `prototypeTask`, which also records completion and duration. Goal frames, heatmaps, and per-frame descriptions still need the Figma import in the study editor. Replacing the link on a prototype task that already has a goal clears that goal.
 
 - **Response metadata lets your agent split results and follow up.** Each interview's metadata comes back with it and as `metadata:<name>` columns in the CSV export: the [hidden fields](/studies/launch-and-sharing#hidden-fields--participant-tracking) on the participant's link (for example `source`, `segment`, or a market code) and fields from uploaded contact lists or the API, such as email. The participant's session token (the `vid` on invite links) is always left out. Sharing is off until an owner or admin turns on **Share participant metadata** in [organization settings](/platform/organizations-and-roles#ai-apps); until then, your agent receives no metadata.
 
 - **Numbers can differ from a casual dashboard glance.** Mock and archived interviews are never exposed over MCP, and simulated interviews are always reported separately from real ones — so MCP counts reflect real research activity only.
-- **A few things still happen in the dashboard.** Tree tests and conjoint questions are configured there (their text stays editable via MCP), as are Figma goal frames and heatmaps, per-language media variants, and embedded websites for `websiteTest` questions. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.
+- **A few things still happen in the dashboard.** Tree tests and conjoint questions are configured there (their text stays editable via MCP), as are Figma goal frames and heatmaps, per-language media variants, and embedded websites for `websiteTest` questions. Sending email invites is always your own click on the Send tab. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.

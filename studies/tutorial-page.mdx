@@ -1,0 +1,184 @@
+---
+title: "Tutorial page"
+description: "Show participants a setup guide and microphone check before the first question"
+---
+
+The tutorial page is an optional page between the welcome message and the first question. Use it to get participants ready before they start answering: where to sit, how to allow microphone access, how recording and the timer work, and what to do if something goes wrong. It's most useful for voice and video studies, and for participants who don't take online interviews often.
+
+The tutorial page is off by default.
+
+## Turn it on
+
+Open **Settings → General** and turn on **Display tutorial page to participant before they start**, or ask the assistant to turn it on. The tutorial page then shows as **T · Before you begin** in the question list.
+
+The question list only shows the tutorial page while it's on. If you turn it off from the tutorial page itself, it stays in the list with an **Off** label until you select something else.
+
+Participants only see the tutorial page when they start a new interview. If they leave and come back to finish an interview they already started, they go straight back to where they left off.
+
+## Edit the content
+
+Select the tutorial page in the question list to edit it:
+
+| Field | Description |
+| --- | --- |
+| **Header** | The page title. Up to 200 characters. |
+| **Content** | Rich text: headings, bold, italic, bulleted and numbered lists, and links. Images and videos aren't supported. |
+| **Button Text** | The button that continues to the interview. Up to 100 characters. |
+| **Checks** | Switches for the [checks](#checks) shown after the content. |
+
+New tutorial pages, and studies created before the tutorial page existed, start with a short default: a few setup tips (a quiet place, a stable connection, a recent browser), no checks, and a **Continue** button. Edit it freely, or select **Restore default** to go back to the default content. The **Preview** tab shows the page as participants see it.
+
+### Checks
+
+Turn on the checks you want participants to go through. They appear after the content, in this order, under a **Check your setup** heading in the participant's language.
+
+| Check | What participants see |
+| --- | --- |
+| **Microphone test** | A button that listens for a few seconds and tells participants whether their microphone works. |
+| **Timer colors** | The timer's colors with hover explanations, as they look during the interview: yellow while an answer is shorter than the minimum duration, green within the range, red past the maximum, plus the reminder shown when time runs over. The timer only changes color on AI and Exploratory questions with the [duration tracker](/studies/question-types) on and a minimum or maximum duration, so participants only see this check if at least one question has that, and only the states those durations can produce (yellow needs a minimum; red and the reminder need a maximum). |
+| **Troubleshooting** | The no-audio, low-audio, and transcription error messages with what to do about each, plus a link to your [support email](/studies/settings#advanced-settings). |
+
+Under **Microphone test**, turn on **Require a working microphone to continue** to keep participants on the page until the test passes. It isn't available in text-only studies.
+
+## Microphone test
+
+The microphone test asks for microphone access, listens for about five seconds, and shows one of these results:
+
+- **Your microphone is working** — Versive heard the participant speak clearly.
+- **We can barely hear you** — the microphone works but the sound is quiet. Participants get tips to move closer or speak louder.
+- **No audio detected** — no sound came through. Participants get tips to check mute, the selected microphone, and other apps.
+- **Microphone access is blocked** — the browser refused access. Participants get step-by-step instructions to allow it again.
+
+With **Require a working microphone to continue** on, the continue button stays disabled until the test reports that the microphone is working. Leave it off if some participants may type their answers instead of speaking. Turning off the microphone test also turns off the requirement. Text-only studies never use the microphone, so the requirement doesn't apply to them.
+
+## Languages
+
+The default tutorial copy is in English. If your study's default language is another one, rewrite the header, content, and button text in that language before turning the page on.
+
+In a [multi-language study](/studies/languages), the tutorial page's header, content, and button text are translated along with the rest of the study when you save it in the dashboard. Through the API, call [translate](#walkthrough) after changing it. Switch the builder's language selector to that language to review or edit the translation. Manual edits are kept when the study is translated again, like other [reviewed translations](/studies/languages#reviewing-translations), unless you change the default-language tutorial: saving then asks before translating it again, which replaces your edits. The checks are shown in the participant's language automatically.
+
+## With the assistant and MCP
+
+- **Assistant and [MCP](/mcp/tools)** — ask to turn the tutorial page on or off, rewrite it, turn checks on or off, or require a working microphone. The `edit_interview_message` tool takes `message_type: "tutorial"` with any of `title`, `body` (HTML), `cta_text`, `enabled`, `require_mic_check`, `show_mic_test`, `show_timer_colors`, and `show_troubleshooting`. Fields you leave out keep their current value.
+- **Workspace assistant and MCP `create_study`** — when creating a study, ask for a tutorial page and it's set up from the start. The `tutorial` parameter takes the same fields, with `content` instead of `body`.
+
+Duplicating a study or creating one from a template copies its tutorial page.
+
+## With the API
+
+The tutorial page is two fields on the [study](/api-reference/studies/get-study), the same way the dashboard stores it:
+
+- **`tutorial_message`** — the copy: `{ title, content, ctaText }`, like `welcome_message`.
+- **`config.tutorial`** — the switches: `{ enabled, requireMicCheck, showMicTest, showTimerColors, showTroubleshooting }`.
+
+```json
+{
+  "config": {
+    "tutorial": {
+      "enabled": true,
+      "requireMicCheck": true,
+      "showMicTest": true,
+      "showTimerColors": false,
+      "showTroubleshooting": true
+    }
+  },
+  "tutorial_message": {
+    "title": "Before you begin",
+    "content": "<p>A few quick tips so the interview goes smoothly.</p>",
+    "ctaText": "Continue"
+  }
+}
+```
+
+Reading a study ([get](/api-reference/studies/get-study) or [list](/api-reference/studies/list-studies)) always returns all five switches and all three copy fields, with defaults filled in. Studies created before the tutorial page existed read as the default page, switched off.
+
+### Switches
+
+All switches are `true` or `false`, and all start off.
+
+| Switch | Effect |
+| --- | --- |
+| `enabled` | Shows the tutorial page between the welcome message and the first question. |
+| `showMicTest` | Adds the [microphone test](#microphone-test). |
+| `requireMicCheck` | Keeps participants on the page until the microphone test passes. It also shows the test, so you don't need `showMicTest` with it. Ignored in `TEXT_ONLY` studies. |
+| `showTimerColors` | Adds the timer colors check. Participants only see it if at least one AI or Exploratory question has the duration tracker on with a minimum or maximum duration. |
+| `showTroubleshooting` | Adds the troubleshooting check. |
+
+On [update](/api-reference/studies/update-study), `config.tutorial` is merged switch by switch: switches you don't send keep their current value. `null` counts as `false`. Unknown switch names and any other value (such as `"true"` or `1`) are rejected with `422`. Sending `"tutorial": null` instead of an object turns every switch off.
+
+### Copy
+
+| Field | Description |
+| --- | --- |
+| `title` | The page header. Up to 200 characters. |
+| `content` | The page body, as HTML. Up to 100,000 characters. |
+| `ctaText` | The continue button. Up to 100 characters. |
+
+On update, `tutorial_message` is **replaced whole**, like the other messages. Any field you leave out reads as the default for that field, not its previous value. To change one field, read the study, change that field in its `tutorial_message`, and send all three back. On [create](/api-reference/studies/create-study), the fields you send are applied over the default page.
+
+`content` is cleaned every time it's saved. Only these tags are kept, with no attributes except a link's `href`:
+
+- Headings: `h2` and `h3` (`h1` becomes `h2`; `h4`, `h5`, and `h6` become `h3`)
+- Paragraphs and line breaks: `p`, `br`
+- Lists: `ul`, `ol`, `li`
+- Formatting: `strong` (or `b`), `em` (or `i`), `u`, `s` (or `strike`, `del`)
+- Links: `a` with an `http`, `https`, or `mailto` `href`. Saved links get `target="_blank" rel="noopener noreferrer"`, so they open in a new tab. Links with any other scheme are removed, keeping their text.
+
+Everything else is removed, including images, videos, iframes, scripts, styles, and comments. The text inside a removed tag is kept, except inside scripts, styles, iframes, SVG, math, form fields (`select`, `textarea`), and a few other embedded or hidden elements (`object`, `embed`, `noscript`, `template`, `title`, `head`), which are dropped with their text. Reading the study back returns the HTML participants see.
+
+A `null` field, or a blank `ctaText`, reads as the default, the same as leaving it out. A field over its limit, or a `title`, `ctaText` or `content` that isn't a string or `null`, is rejected with `422` and nothing is saved. So is any other field, such as a welcome-message `body` sent instead of `content`.
+
+### Walkthrough
+
+These examples use the [update study](/api-reference/studies/update-study) endpoint. Replace `{id}` with the study ID and `$VERSIVE_API_KEY` with your [API key](/api-reference/introduction#authentication).
+
+**1. Turn the page on.** This shows the copy the study already has. On a study whose copy was never changed, that's the default page: a **Before you begin** header, three setup tips (a quiet place, a stable connection, a recent browser), and a **Continue** button. To check first, [get the study](/api-reference/studies/get-study) and look at `tutorial_message`.
+
+```bash
+curl -X PUT https://api.getversive.com/api/v1/studies/{id} \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "config": { "tutorial": { "enabled": true } } }'
+```
+
+**2. Replace the copy.** Send all three fields.
+
+```bash
+curl -X PUT https://api.getversive.com/api/v1/studies/{id} \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tutorial_message": {
+      "title": "Before your interview",
+      "content": "<p>This interview is <strong>voice only</strong>. Please:</p><ul><li>Sit somewhere quiet.</li><li>Use headphones if you can.</li></ul><p>Questions? <a href=\"mailto:research@example.com\">Email us</a>.</p>",
+      "ctaText": "Start the interview"
+    }
+  }'
+```
+
+**3. Require a working microphone and add troubleshooting.** The other switches keep their value.
+
+```bash
+curl -X PUT https://api.getversive.com/api/v1/studies/{id} \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "config": { "tutorial": { "requireMicCheck": true, "showTroubleshooting": true } } }'
+```
+
+**4. Translate it.** Saving through the API doesn't translate the study. If the study has other languages, call [translate](/api-reference/studies/translate-study) after changing the page or turning it on. Only a page that's turned on is translated, so translate before turning it off. Translations you edited by hand are kept: a language whose tutorial page was edited by hand keeps its old text after you change the copy, so edit it again in the builder.
+
+```bash
+curl -X POST https://api.getversive.com/api/v1/studies/{id}/translate \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+
+**5. Turn the page off.** The copy and the other switches are kept, so turning it back on restores the same page. Translation runs in the background after the translate call returns, and skips a page that's off by the time it runs, so don't turn the page off right after calling translate.
+
+```bash
+curl -X PUT https://api.getversive.com/api/v1/studies/{id} \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "config": { "tutorial": { "enabled": false } } }'
+```
+
+You can also set the page up when you [create the study](/api-reference/studies/create-study), by sending `config.tutorial` and `tutorial_message` in the create request.

@@ -15,7 +15,7 @@ Checks what arrived for an upload ticket and reports its state. The call is idem
 </ResponseField>
 <ResponseField name="asset_type" type="string | null">`image`, `video`, or `pdf` once ready.</ResponseField>
 <ResponseField name="asset_url" type="string | null">The asset's stable identifier once ready, the same `url` [List questions](/api-reference/questions/list-questions) returns for existing assets.</ResponseField>
-<ResponseField name="download_url" type="string">A one-hour signed link to preview the verified file. Present only when ready. It grants access to the file on its own, so do not log or share it; use `asset_url` as the identifier.</ResponseField>
+<ResponseField name="download_url" type="string">A one-hour signed link to preview the verified file. Present only when ready, and left out when the organization turned off [uploaded file downloads](/platform/organizations-and-roles#uploaded-file-downloads). It grants access to the file on its own, so do not log or share it; use `asset_url` as the identifier.</ResponseField>
 <ResponseField name="download_url_expires_at" type="string">When `download_url` stops working.</ResponseField>
 <ResponseField name="mime_type" type="string | null">The verified media type once ready.</ResponseField>
 <ResponseField name="size_bytes" type="integer | null">The verified size once ready.</ResponseField>

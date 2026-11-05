@@ -60,6 +60,8 @@ You don't need to resend `exclusiveOptions` when you edit `options`. If you omit
 
 To change which options are exclusive, send the new `exclusiveOptions` list explicitly, matching the final `options`.
 
+[Question quotas](/studies/question-quotas) on the options follow the same rule: renaming one option moves its quota to the new text, and removing an option drops its quota. Rename options one at a time, without adding or removing others in the same request, so a quota is never mistaken for a removed option's.
+
 ```json
 {
   "props": {

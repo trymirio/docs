@@ -8,8 +8,10 @@ Lists the media captured during an interview: participant audio, screen recordin
 
 Links point back at the Versive API (`/api/v1/media/{token}`) rather than at storage. Opening one re-checks that the key that requested it is still active and still has access to the study, then redirects to a short-lived download URL. Each link expires after 24 hours, stops working after about 500 opens, and dies as soon as the key is deactivated. Links carry no readable information, so they are safe to pass to other tools, but treat them like any other credential and do not post them publicly.
 
+When the organization turned off [uploaded file downloads](/platform/organizations-and-roles#uploaded-file-downloads), uploaded files stay in the list with a `null` `url` and `expires_at`, and links issued earlier answer `404`. Recordings keep their links.
+
 <Note>
-Organization API keys can call this endpoint with no extra setup. Apps connected over [MCP](/mcp/overview) cannot use it yet: it requires the `media:read` scope, which the MCP server does not issue today.
+Organization API keys can call this endpoint with no extra setup. Apps connected over [MCP](/mcp/overview) use it through the `get_interview_media` tool, available when the connection holds the `media:read` scope. New connections receive that scope by default; a connection made before it existed needs to be disconnected and connected again to pick it up.
 </Note>
 
 <ParamField path="id" type="string" required>The interview ID.</ParamField>
@@ -38,8 +40,8 @@ Organization API keys can call this endpoint with no extra setup. Apps connected
     <ResponseField name="file_size" type="integer | null">Bytes. Only set for uploaded files.</ResponseField>
     <ResponseField name="ready" type="boolean">Whether streaming playback has finished processing. The link works either way.</ResponseField>
     <ResponseField name="created_at" type="string" />
-    <ResponseField name="url" type="string">Time-limited access link. Answers with a redirect to the file.</ResponseField>
-    <ResponseField name="expires_at" type="string">When the link stops working.</ResponseField>
+    <ResponseField name="url" type="string | null">Time-limited access link. Answers with a redirect to the file. `null` for an uploaded file when the organization turned off uploaded file downloads.</ResponseField>
+    <ResponseField name="expires_at" type="string | null">When the link stops working. `null` when `url` is `null`.</ResponseField>
   </Expandable>
 </ResponseField>
 

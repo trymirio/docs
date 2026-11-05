@@ -13,7 +13,7 @@ Replaces the study's quota configuration. Modes are mutually exclusive: send the
   Required in `fixed` mode, not allowed otherwise. `0` closes the study to new participants.
 </ParamField>
 <ParamField body="param_name" type="string">
-  Required in `url_param` mode, not allowed otherwise. Letters, digits, underscores, and hyphens only; up to 64 characters.
+  Required in `url_param` mode, not allowed otherwise. Letters, digits, underscores, and hyphens only; up to 64 characters. `textColor`, `primaryColor` and `backgroundColor` return a `422`: [embeds](/sdk/reference#colors) use those parameters for colors.
 </ParamField>
 <ParamField body="buckets" type="array">
   Required in `url_param` mode, not allowed otherwise. One `{ value, limit }` per link value, up to 50, with unique values. Matching is exact and case-sensitive. A `limit` of `0` closes that value.

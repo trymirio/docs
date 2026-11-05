@@ -24,6 +24,9 @@ const versive = Versive.init({
 <ParamField path="display" type="VersiveDisplayConfig">
   Default modal display options, merged with per-call options.
 </ParamField>
+<ParamField path="colors" type="VersiveColors">
+  Default [colors](#colors) for every study this client opens or embeds, merged with per-call colors.
+</ParamField>
 <ParamField path="on" type="Partial<VersiveCallbacks>">
   Default event callbacks. Both global and per-call callbacks fire.
 </ParamField>
@@ -39,10 +42,13 @@ Opens a study in a **modal** overlay. Closes any previously open modal session. 
   Preview mode for this session.
 </ParamField>
 <ParamField path="options.context" type="Record<string, string>">
-  Key/value pairs attached to the response as metadata. Appended to the study URL as query parameters — don't pass sensitive data. Keys `embed` and `mode` are reserved.
+  Key/value pairs attached to the response as metadata. Appended to the study URL as query parameters — don't pass sensitive data. Keys `embed`, `mode`, `textColor`, `primaryColor` and `backgroundColor` are reserved and ignored with a console warning.
 </ParamField>
 <ParamField path="options.display" type="VersiveDisplayConfig">
   Modal display options for this session.
+</ParamField>
+<ParamField path="options.colors" type="VersiveColors">
+  [Colors](#colors) for this session. Each key overrides the one from `init`.
 </ParamField>
 <ParamField path="options.on" type="Partial<VersiveCallbacks>">
   Event callbacks for this session.
@@ -56,7 +62,7 @@ Embeds a study **inline**. Returns a [`StudySession`](#studysession). Throws if 
   A CSS selector or element to render into.
 </ParamField>
 
-`options` accepts `preview`, `context`, and `on` (as above).
+`options` accepts `preview`, `context`, `colors`, and `on` (as above).
 
 ## `versive.close()` / `versive.destroy()`
 
@@ -73,6 +79,18 @@ Modal-only, passed via `display`:
 | `closeOnOverlayClick` | `boolean` | `true` |
 | `closeOnEscape` | `boolean` | `true` |
 | `zIndex` | `number` | `999999` |
+
+## Colors
+
+`colors` takes `{ text, primary, background }`, each a 6-digit hex value like `'#18181B'`. Each key replaces the study's own color for this embed only; a key you leave out keeps the study's color. The modal and its loading screen use `background` too. A value that is not `#RRGGBB` is ignored with a console warning.
+
+| Key | Colors |
+| --- | --- |
+| `text` | The text participants read |
+| `primary` | Buttons, selected answers, the progress bar; text on the buttons turns black or white, whichever reads better |
+| `background` | The page, the modal and the loading screen |
+
+The colors travel as reserved query parameters on the study URL (`textColor`, `primaryColor`, `backgroundColor`), and the study honors them only inside an embed. They style the study and are not stored with the response. Changing colors in the middle of an interview is not supported: pass the palette when you open or embed the study.
 
 ## `StudySession`
 
