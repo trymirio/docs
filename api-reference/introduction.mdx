@@ -30,7 +30,7 @@ curl https://api.getversive.com/api/v1/studies \
   -H "Authorization: Bearer $VERSIVE_API_KEY"
 ```
 
-API keys are created in your organization settings (**Organization → API keys**) by an owner or admin. Each key is scoped to one organization and grants full API access to that organization's data — there are no per-key scopes, so treat keys like passwords: store them in a secrets manager, never in client-side code, and deactivate keys you no longer use.
+The API is available to organizations on the Enterprise plan; [talk to sales](https://www.getversive.com/demo?intent=enterprise&source=docs_api) to get access. API keys are created in your organization settings (**Organization → API keys**) by an owner or admin. Each key is scoped to one organization and grants full API access to that organization's data — there are no per-key scopes, so treat keys like passwords: store them in a secrets manager, never in client-side code, and deactivate keys you no longer use.
 
 A missing or invalid bearer credential returns `401` with `{"detail": "Invalid authentication credentials"}`.
 
