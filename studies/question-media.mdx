@@ -5,6 +5,15 @@ description: "Attach images, Figma prototypes, videos, PDFs, and embedded websit
 
 Most questions can include rich media that participants see alongside (or instead of) the question text — the backbone of concept tests, design feedback, and stimulus-based research.
 
+## Several assets on one question
+
+A question can show up to 5 images, videos, and PDFs together, for example a video and two images. In the builder, choose **Add asset** again to add another; each asset has its own row, with its layout next to the file name and the rest of its settings behind the settings button. Drag a row by its handle to change the order. Participants see them in that order:
+
+- **Inline** assets stack in the question column.
+- **Full-screen** assets show one at a time beside the question, with previous and next buttons. On a phone, the **View media** button opens them.
+
+A Figma prototype, an embedded website, or the picture picked in an earlier question is always the only asset on its question. The AI interviewer is told about every asset the participant sees, in order, with the description of each image.
+
 ## Media types
 
 | Type | Notes |
@@ -69,8 +78,12 @@ You can also:
 - **Give an `https://` URL** to embed a website beside a question.
 - **Reuse media from another question** ("use the same image as Q1 on Q4").
 
-Each question shows one asset. Files attached through the assistant can be up to 50 MB each (upload larger videos in the builder) and must be JPEG, PNG, GIF, WebP, BMP, MP4, WebM, MOV, or PDF. Media cannot be attached to Calendar, Website Test, or Prototype Task questions (a Prototype Task takes a Figma prototype link instead). Attaching, replacing, or removing media through the assistant only changes the default-language media; per-language variants you uploaded stay in place unless you ask for the media to be removed in every language. In the study builder, the assistant's edits become part of your draft and are published when you save the study.
+Ask the assistant to put several files on one question ("show both images and the video on Q2") to attach up to 5 images, videos, and PDFs together. Files attached through the assistant can be up to 50 MB each (upload larger videos in the builder) and must be JPEG, PNG, GIF, WebP, BMP, MP4, WebM, MOV, or PDF. Media cannot be attached to Calendar, Website Test, or Prototype Task questions (a Prototype Task takes a Figma prototype link instead). Attaching or replacing media through the assistant only changes the default-language media; per-language variants you uploaded stay in place. When the assistant removes one of several files, its per-language variants go with it, as when you remove it in the builder, and the assistant says which ones. In the study builder, the assistant's edits become part of your draft and are published when you save the study.
+
+## Showing the picture someone picked
+
+After an [Image Choice](/studies/question-types#image-choice) question, a later question can show only the picture the participant picked: choose **Add asset > The picture picked in question N**. The AI interviewer reads that picture's description. You set this in the study builder; the assistant and API can't set it.
 
 ## Per-language variants
 
-If your study runs in [multiple languages](/studies/languages), you can attach different media per language — German participants see the German screenshot while French participants see the French one.
+If your study runs in [multiple languages](/studies/languages), you can attach different media per language — German participants see the German screenshot while French participants see the French one. On a language tab, each asset of the default language shows as a slot: **Replace for this language** gives it a different file in that language, and an asset you don't replace shows the default-language file. The limit of 5 assets applies to what each language shows.

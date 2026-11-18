@@ -21,7 +21,7 @@ Updates only the fields you send. `config` is **merged** into the stored configu
 
   Changing `mode` also moves the study to the standard interview engine, as choosing a mode in the dashboard does: `conversational` is set to `false` (send `"conversational": true` with the new mode to keep the realtime engine), and the previous engine's `voiceEngine` and silence setting are cleared.
 
-  [Tutorial page](/studies/tutorial-page#with-the-api) switches go in `tutorial`: `{ enabled, requireMicCheck, showMicTest, showTimerColors, showTroubleshooting }`, all booleans. Only the switches you send change; for example, `{ "tutorial": { "enabled": false } }` turns the page off and keeps its checks. `null` counts as `false`. Unknown switches and any other value return `422`. Sending `"tutorial": null` instead of an object turns every switch off.
+  [Tutorial page](/studies/tutorial-page#with-the-api) switches go in `tutorial`: `{ enabled, requireMicCheck, showMicTest, showCameraCheck, showTimerColors, showTroubleshooting }`, all booleans. Only the switches you send change; for example, `{ "tutorial": { "enabled": false } }` turns the page off and keeps its checks. `null` counts as `false`. Unknown switches and any other value return `422`. Sending `"tutorial": null` instead of an object turns every switch off.
 </ParamField>
 <ParamField body="welcome_message" type="object">Replaces the welcome message.</ParamField>
 <ParamField body="tutorial_message" type="object">

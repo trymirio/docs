@@ -1,0 +1,32 @@
+---
+title: "Connectors overview"
+sidebarTitle: "Overview"
+description: "Connect Versive to the tools your team already uses"
+---
+
+Connectors link your Versive organization to other tools, so study activity reaches your team where they already work. You connect a tool, then choose on each study how to use it.
+
+## Available connectors
+
+<CardGroup cols={2}>
+  <Card title="Slack" icon="brand-slack" href="/connectors/slack">
+    Post a message to a channel every time an interview is completed. Pick the channel per study.
+  </Card>
+</CardGroup>
+
+## Manage connectors
+
+Connectors live in **Organization → Connectors**. Organization-wide connectors (Slack, Webhooks) are connected once for the whole organization by owners and admins; see [Organizations & roles](/platform/organizations-and-roles). Google Sheets is a personal connection: any member connects their own Google account, and only they can disconnect it.
+
+Select a connector to open its panel. Each connected tool shows the account it's connected to and its status:
+
+| Status | What it means |
+| --- | --- |
+| **Connected** | Versive can use the tool. |
+| **Reconnect needed** | The tool stopped accepting Versive's access, for example because someone removed the app. Open the connector and reauthorize it. |
+
+Before you disconnect a tool, its panel lists the studies that use it. Disconnecting removes Versive's access to the tool. Studies keep their settings and pick up again when you reconnect the same account.
+
+## Security
+
+Versive asks each tool for the smallest set of permissions it needs, and stores access tokens encrypted. Disconnecting deletes them.

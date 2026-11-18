@@ -7,27 +7,28 @@ An **organization** is your team's workspace — it owns all studies, AI tests, 
 
 ## Inviting members
 
-Owners and admins can invite teammates by email from the organization settings. Members sign in with email/password or Google, and can secure their account with **multi-factor authentication** (TOTP authenticator apps). The number of seats is set by your plan.
+Owners and admins can invite teammates by email from the organization settings. Members sign in with email/password or Google, and can secure their account with **multi-factor authentication** (TOTP authenticator apps). The number of seats is set by your plan: members and pending invitations use a seat, except Viewers. When every seat is in use you can still invite Viewers, and changing a Viewer to another role needs a free seat.
 
 If Google sign-in fails, Versive shows a general sign-in error. Retry signing in; if the problem continues, contact support.
 
 ## Organization roles
 
-| Role | What they can do |
-| --- | --- |
-| **Owner** | Everything, including billing and subscription management — the only role that can change the plan. |
-| **Admin** | Manage everything except billing (can view it): members, org settings, studies, folders, and the Library. |
-| **Creator** | Create and manage studies, folders, and Library content. No access to org settings, members, or billing. |
-| **Member** | View studies and folders — read-only. |
+| Role | What they can do | Uses a seat |
+| --- | --- | --- |
+| **Owner** | Everything, including billing and subscription management — the only role that can change the plan. | Yes |
+| **Admin** | Manage everything except billing (can view it): members, org settings, studies, folders, and the Library. | Yes |
+| **Creator** | Create and manage studies, AI tests, folders, and Library content. No access to org settings, members, or billing. | Yes |
+| **Contributor** | Edit the studies, AI tests, and folders shared with them, as their access setting or their role there allows. Can't create studies, AI tests, or folders. | Yes |
+| **Viewer** | View the studies, AI tests, and folders they have access to, including results and reports. Can never edit, comment, recruit, send invites, simulate responses, generate insights, write reports, or share. | No |
 
-Only owners and admins can add, change, or remove members.
+Only owners and admins can add, change, or remove members, and only an owner can change or remove another owner.
 
 ## Single sign-on (SAML)
 
 Enterprise organizations can sign in through their own identity provider (Okta, Microsoft Entra ID, Google Workspace, and other SAML 2.0 providers).
 
 - **How it works** — enter your work email on the login page, or choose **Continue with SSO**. If your email domain is set up for single sign-on, Versive sends you to your identity provider and back; no Versive password is needed. Sign-in starts from the Versive login page; to add Versive to your identity provider's app dashboard, add it as a bookmark to the login page.
-- **Membership** — people who sign in through SSO for the first time join your organization automatically with the default role your organization chose (Creator unless configured otherwise). Existing members who switch to SSO keep their role. Who can sign in is decided by who your IT team assigns to Versive in your identity provider. To remove someone, remove them in both places: in your identity provider, so they can't sign in again, and from your organization in Versive, which ends their access right away (removing them in the identity provider doesn't end a session they already have). People removed only in Versive rejoin on their next SSO sign-in.
+- **Membership** — people who sign in through SSO for the first time join your organization automatically with the default role your organization chose (Creator unless configured otherwise; any role except Owner, including Viewer). Existing members who switch to SSO keep their role. Who can sign in is decided by who your IT team assigns to Versive in your identity provider. To remove someone, remove them in both places: in your identity provider, so they can't sign in again, and from your organization in Versive, which ends their access right away (removing them in the identity provider doesn't end a session they already have). People removed only in Versive rejoin on their next SSO sign-in.
 - **Invitations** — people at your SSO domain aren't invited: they join by signing in, and an owner or admin can change their role on the Team page afterwards. Invite people outside your SSO domain, such as contractors, as usual.
 - **Setup** — your IT team creates a SAML app for Versive in the identity provider and shares its metadata URL; Versive registers it against your email domain. SSO is part of the Enterprise plan: [talk to sales](https://www.getversive.com/demo?intent=enterprise&source=docs_sso) to add it, or contact [support@getversive.com](mailto:support@getversive.com) to set it up if you're already on Enterprise.
 
@@ -38,6 +39,7 @@ Organization settings are split across tabs:
 - **Team** — your organization name, the logo shown in your workspace, and members.
 - **Plans** — your subscription and billing.
 - **Settings** — study defaults, embed domains, AI apps, and uploaded file downloads, covered below.
+- **Connectors** — connect tools such as [Slack](/connectors/slack). Owners and admins connect and disconnect them. See [Connectors](/connectors/overview).
 - **API** — organization-scoped keys for the [public API](/api-reference/introduction), available to enterprise organizations.
 
 ### Study defaults
@@ -99,4 +101,7 @@ The setting removes Versive's ways to download these files. It has limits:
 
 ## Two permission layers
 
-Organization roles set what someone can do *globally*. Access to specific folders and studies is refined by a second layer — [folder & study roles](/platform/folders-and-permissions). A user's effective access to a study is the combination of both.
+Organization roles set what someone can do *globally*. Access to specific folders, studies, and AI tests is refined by a second layer — [folder & study roles](/platform/folders-and-permissions). A user's effective access to a study is the combination of both:
+
+- A **Viewer** gets at most the Viewer role anywhere: a Full access study, or a Full access or Owner role given to them directly, is view-only for them. On an Invite only study they aren't invited to, or one set to Everyone can edit (no results access), they have no access.
+- Every other role follows the study's or folder's access setting and the roles given there. Owners and admins act as owners of every folder, **Invite only** ones included, and of everything inside folders. A study or AI test that isn't in a folder and is set to **Invite only** stays hidden from them unless they're invited to it.

@@ -19,9 +19,9 @@ Fetches an interview created via the API.
 <ResponseField name="metadata" type="object">Your metadata from creation.</ResponseField>
 <ResponseField name="transcript" type="string | null">The interview transcript.</ResponseField>
 <ResponseField name="conversation_json" type="object[] | null">
-  The conversation as `{ role, content }` messages.
+  The conversation as `{ role, content }` messages. An AI follow-up on a closed question (its question and the participant's reply) also carries `ai_probe: true`.
 </ResponseField>
-<ResponseField name="parsed_conversation_json" type="object | null">Structured per-question responses.</ResponseField>
+<ResponseField name="parsed_conversation_json" type="object | null">Structured per-question responses. An AI follow-up turn carries the closed question's `question_id` and `ai_probe: true`, so the closed answer is the entry without it.</ResponseField>
 <ResponseField name="progress" type="integer">Completion progress.</ResponseField>
 <ResponseField name="language" type="string" />
 <ResponseField name="title" type="string | null" />

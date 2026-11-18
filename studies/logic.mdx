@@ -12,11 +12,13 @@ The conditions available depend on the question type:
 | Question type | Available conditions |
 | --- | --- |
 | Multiple Choice | Always · Equals · Is not (single-select) · Includes, Does not include, Fewer than N selections (multi-select) |
-| Rating Scale, NPS, Star Rating, Number | Always · `=` · `≠` · `>` · `>=` · `<` · `<=` |
+| Rating Scale, NPS, Star Rating, Number | Always · `=` · `≠` · `>` · `>=` · `<` · `<=` · Is N/A, Is not N/A (a slider Rating Scale or a Number with **N/A option** on) |
 | AI Question, Exploratory, Open Text, Short Text | Always · **AI rule** |
 | All other types | Always |
 
 **Is not** and **Does not include** need an answer to compare: a question the participant skipped matches neither, so the next rule (or the next question in order) applies.
+
+A slider Rating Scale or a Number answered N/A matches **Is N/A**, and `≠` (N/A is not that number); it never matches `=`, `>`, `>=`, `<` or `<=`. If you turn **N/A option** off on a question that has **Is N/A** or **Is not N/A** rules, the logic panel warns and the study can't be saved until you change those rules.
 
 ### AI rules (smart conditions)
 

@@ -24,9 +24,15 @@ An array of question objects:
   How the question's display conditions combine: `all` (every condition must be met) or `any` (one is enough).
 </ResponseField>
 <ResponseField name="display_order" type="integer">Position in the study.</ResponseField>
-<ResponseField name="props" type="object">Type-specific settings (options, scales, limits, and so on).</ResponseField>
+<ResponseField name="props" type="object">
+  Type-specific settings (options, scales, limits, and so on). On an Image Choice question, each picture in
+  `props.optionImages[].images[]` has the same `url`, `download_url` and `download_url_expires_at` fields as an asset.
+</ResponseField>
 <ResponseField name="assets" type="object[] | null">
-  Attached media assets. Each asset keeps its stable `url` identifier and includes `download_url` for viewing
+  Attached media assets, default-language ones first in the order participants see them. Each has an `id`
+  (`legacy-0`, `legacy-1`… for assets saved before ids; a language variant carries the `id` of the asset it
+  replaces, plus its `language`), which `media` on [Update question](/api-reference/questions/update-question)
+  keeps it by. Each asset keeps its stable `url` identifier and includes `download_url` for viewing
   or downloading it. Private storage links last one hour; `download_url_expires_at` is their UTC expiry time.
   Request this endpoint again for a fresh link. External URLs are passed through and have no expiry time.
   If a private file cannot be signed, both download fields are `null`; the rest of the response remains available.

@@ -33,7 +33,7 @@ Creates a study in your organization. Versive applies sensible default configura
 
   [Memory](/studies/ai-interviewer#memory) is set with `enableMemory` (boolean, off by default), `memoryFocus` and `memoryUsageRules` (strings, up to 300 characters each).
 
-  The [tutorial page](/studies/tutorial-page#with-the-api) switches are set with `tutorial`: `{ enabled, requireMicCheck, showMicTest, showTimerColors, showTroubleshooting }`, all booleans. Switches you omit are off, so send `"enabled": true` to show the page. `null` counts as `false`. Unknown switches and any other value return `422`.
+  The [tutorial page](/studies/tutorial-page#with-the-api) switches are set with `tutorial`: `{ enabled, requireMicCheck, showMicTest, showCameraCheck, showTimerColors, showTroubleshooting }`, all booleans. Switches you omit are off, so send `"enabled": true` to show the page. `null` counts as `false`. Unknown switches and any other value return `422`.
 </ParamField>
 <ParamField body="welcome_message" type="object">
   Welcome screen: `{ title, body, ctaText }`.
@@ -95,6 +95,7 @@ curl -X POST https://api.getversive.com/api/v1/studies \
       "enabled": false,
       "requireMicCheck": false,
       "showMicTest": false,
+      "showCameraCheck": false,
       "showTimerColors": false,
       "showTroubleshooting": false
     }

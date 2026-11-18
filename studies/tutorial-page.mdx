@@ -1,6 +1,6 @@
 ---
 title: "Tutorial page"
-description: "Show participants a setup guide and microphone check before the first question"
+description: "Show participants a setup guide, microphone test and camera check before the first question"
 ---
 
 The tutorial page is an optional page between the welcome message and the first question. Use it to get participants ready before they start answering: where to sit, how to allow microphone access, how recording and the timer work, and what to do if something goes wrong. It's most useful for voice and video studies, and for participants who don't take online interviews often.
@@ -34,22 +34,39 @@ Turn on the checks you want participants to go through. They appear after the co
 
 | Check | What participants see |
 | --- | --- |
-| **Microphone test** | A button that listens for a few seconds and tells participants whether their microphone works. |
+| **Microphone test** | A button that listens for a few seconds and tells participants whether their microphone works, with a list to choose which microphone the interview uses. Not shown in text-only studies. |
+| **Camera check** | Asks for camera access and shows a live preview. Only shown in video studies (**Video** and **Voice and video**). |
 | **Timer colors** | The timer's colors with hover explanations, as they look during the interview: yellow while an answer is shorter than the minimum duration, green within the range, red past the maximum, plus the reminder shown when time runs over. The timer only changes color on AI and Exploratory questions with the [duration tracker](/studies/question-types) on and a minimum or maximum duration, so participants only see this check if at least one question has that, and only the states those durations can produce (yellow needs a minimum; red and the reminder need a maximum). |
 | **Troubleshooting** | The no-audio, low-audio, and transcription error messages with what to do about each, plus a link to your [support email](/studies/settings#advanced-settings). |
 
 Under **Microphone test**, turn on **Require a working microphone to continue** to keep participants on the page until the test passes. It isn't available in text-only studies.
 
+The microphone test and camera check can only be turned on in studies that use that device. If you change the study's mode after turning one on, the builder marks it **Hidden from participants**.
+
+### Instead of the device check
+
+Voice and video studies show a device check before the first question, where participants allow their microphone (and camera, in video studies) and choose a microphone. With the tutorial page on, its microphone test and camera check take over those steps, so participants check each device once:
+
+- **Microphone test on** — the device check skips the microphone. In video studies without the camera check, it only checks the camera.
+- **Camera check on** — the device check skips the camera.
+- **Both on, or the microphone test on in a voice study** — there's no device check; the interview starts when participants continue from the tutorial page.
+
+With the microphone test or camera check on, the continue button waits until participants allow that device, in every study mode, like the device check does. They don't have to run the microphone test unless **Require a working microphone to continue** is on. If access is blocked, the check shows how to allow it again.
+
+Participants resuming an interview don't see the tutorial page, so they still get the device check.
+
 ## Microphone test
 
 The microphone test asks for microphone access, listens for about five seconds, and shows one of these results:
+
+Once microphone access is allowed, the test shows a list of the participant's microphones. Choosing another one runs the test again, and the interview records from that microphone.
 
 - **Your microphone is working** — Versive heard the participant speak clearly.
 - **We can barely hear you** — the microphone works but the sound is quiet. Participants get tips to move closer or speak louder.
 - **No audio detected** — no sound came through. Participants get tips to check mute, the selected microphone, and other apps.
 - **Microphone access is blocked** — the browser refused access. Participants get step-by-step instructions to allow it again.
 
-With **Require a working microphone to continue** on, the continue button stays disabled until the test reports that the microphone is working. Leave it off if some participants may type their answers instead of speaking. Turning off the microphone test also turns off the requirement. Text-only studies never use the microphone, so the requirement doesn't apply to them.
+Participants can't continue until they allow microphone access. With **Require a working microphone to continue** on, the continue button also waits until the test reports that the microphone is working. In a text-and-voice study where participants may only type, leave the microphone test off: it asks everyone for the microphone. Turning off the microphone test also turns off the requirement. Text-only studies never use the microphone, so the requirement doesn't apply to them.
 
 ## Languages
 
@@ -59,7 +76,7 @@ In a [multi-language study](/studies/languages), the tutorial page's header, con
 
 ## With the assistant and MCP
 
-- **Assistant and [MCP](/mcp/tools)** — ask to turn the tutorial page on or off, rewrite it, turn checks on or off, or require a working microphone. The `edit_interview_message` tool takes `message_type: "tutorial"` with any of `title`, `body` (HTML), `cta_text`, `enabled`, `require_mic_check`, `show_mic_test`, `show_timer_colors`, and `show_troubleshooting`. Fields you leave out keep their current value.
+- **Assistant and [MCP](/mcp/tools)** — ask to turn the tutorial page on or off, rewrite it, turn checks on or off, or require a working microphone. The `edit_interview_message` tool takes `message_type: "tutorial"` with any of `title`, `body` (HTML), `cta_text`, `enabled`, `require_mic_check`, `show_mic_test`, `show_camera_check`, `show_timer_colors`, and `show_troubleshooting`. Fields you leave out keep their current value.
 - **Workspace assistant and MCP `create_study`** — when creating a study, ask for a tutorial page and it's set up from the start. The `tutorial` parameter takes the same fields, with `content` instead of `body`.
 
 Duplicating a study or creating one from a template copies its tutorial page.
@@ -69,7 +86,7 @@ Duplicating a study or creating one from a template copies its tutorial page.
 The tutorial page is two fields on the [study](/api-reference/studies/get-study), the same way the dashboard stores it:
 
 - **`tutorial_message`** — the copy: `{ title, content, ctaText }`, like `welcome_message`.
-- **`config.tutorial`** — the switches: `{ enabled, requireMicCheck, showMicTest, showTimerColors, showTroubleshooting }`.
+- **`config.tutorial`** — the switches: `{ enabled, requireMicCheck, showMicTest, showCameraCheck, showTimerColors, showTroubleshooting }`.
 
 ```json
 {
@@ -78,6 +95,7 @@ The tutorial page is two fields on the [study](/api-reference/studies/get-study)
       "enabled": true,
       "requireMicCheck": true,
       "showMicTest": true,
+      "showCameraCheck": false,
       "showTimerColors": false,
       "showTroubleshooting": true
     }
@@ -90,7 +108,7 @@ The tutorial page is two fields on the [study](/api-reference/studies/get-study)
 }
 ```
 
-Reading a study ([get](/api-reference/studies/get-study) or [list](/api-reference/studies/list-studies)) always returns all five switches and all three copy fields, with defaults filled in. Studies created before the tutorial page existed read as the default page, switched off.
+Reading a study ([get](/api-reference/studies/get-study) or [list](/api-reference/studies/list-studies)) always returns all six switches and all three copy fields, with defaults filled in. Studies created before the tutorial page existed read as the default page, switched off.
 
 ### Switches
 
@@ -99,7 +117,8 @@ All switches are `true` or `false`, and all start off.
 | Switch | Effect |
 | --- | --- |
 | `enabled` | Shows the tutorial page between the welcome message and the first question. |
-| `showMicTest` | Adds the [microphone test](#microphone-test). |
+| `showMicTest` | Adds the [microphone test](#microphone-test). Not shown in `TEXT_ONLY` studies. |
+| `showCameraCheck` | Adds the camera check. Only shown in `VIDEO` and `VOICE_AND_VIDEO` studies. |
 | `requireMicCheck` | Keeps participants on the page until the microphone test passes. It also shows the test, so you don't need `showMicTest` with it. Ignored in `TEXT_ONLY` studies. |
 | `showTimerColors` | Adds the timer colors check. Participants only see it if at least one AI or Exploratory question has the duration tracker on with a minimum or maximum duration. |
 | `showTroubleshooting` | Adds the troubleshooting check. |
