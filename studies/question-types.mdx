@@ -3,7 +3,7 @@ title: "Question types"
 description: "Every question type in the study builder, with all available settings"
 ---
 
-Versive offers 20+ question types organized into four groups: **Open response**, **Choices & sorting**, **Ratings & feedback**, and **Other**. Every question type supports a **Required** toggle, and most support media attachments — see [Question media](/studies/question-media).
+Versive offers 20+ question types organized into four groups: **Open response**, **Choices & sorting**, **Ratings & feedback**, and **Other**. Most structured question types have a **Required** toggle (see [Required and request response](#required-and-request-response)), and most support media attachments — see [Question media](/studies/question-media).
 
 <Callout icon="info-circle" color="#71717a">
 **Surveys** (the no-AI engine) hide the conversational types (AI Question and Exploratory) and use structured types only.
@@ -47,7 +47,18 @@ Long-form free text (or voice) input. Supports optional instructions shown to pa
 
 ### Short Text
 
-A brief, single-line text answer. Supports an optional **character limit** with a live counter.
+A brief, single-line text answer. Supports an optional **character limit** with a live counter, a **minimum** number of characters, and an **answer format**.
+
+| Answer format | Accepts |
+| --- | --- |
+| Phone number | International format: a `+`, the country code and the number (7–15 digits in all; spaces, dashes, dots and parentheses allowed), like `+52 55 1234 5678`. |
+| Postal code | The format of the country you pick, from about 180 countries that use postal codes, like `06600` for Mexico or `SW1A 1AA` for the United Kingdom. |
+| Numbers only | Digits 0–9, no decimals or signs. |
+| Letters only | Letters in any language, plus spaces, hyphens and apostrophes. |
+| Website (URL) | A web address such as `example.com` or `https://example.com/page`. |
+| Custom pattern | A regular expression the **whole** answer must match (JavaScript syntax), e.g. `[A-Z]{2}[0-9]{4}`. Patterns are limited to 200 characters, and patterns that can match the same text in too many ways are rejected because they can hang the check: use at most 3 repeats (`+`, `*`), a limited number of optional parts and choices, and don't repeat a group that contains one, like `(a+)+` or `(a\|b)+`. |
+
+Add an **example answer** to show participants what you expect; it appears as the placeholder and in the error message (presets have their own default example). Use the **Try it** box in the card to test an answer before publishing. Participants can't continue while a typed answer breaks the format or the minimum; the reason appears under the answer, in the participant's language, once they leave the field. Leading and trailing spaces are ignored. On phones the keyboard matches the format (numeric keypad for numbers and numeric postal codes, phone pad for phone numbers). The rule is checked again on the server, and simulated participants answer in the requested format.
 
 ### Message
 
@@ -63,9 +74,31 @@ Single- or multi-select from a list of options.
 | --- | --- |
 | Multi-select | Allow choosing more than one option, with an optional **max selections** limit. |
 | Display format | Single-select only: show options as the classic list, or collapse long option lists into a **dropdown**. |
+| Columns | Show the list in **one**, **two** or **three** columns, or **Automatic** (one column up to 10 options, two up to 20, three above 20). The order reads down each column, then across. Phones always show one column. |
+| Searchable | Adds a search box: above the list, or inside the dropdown. Participants type part of an option to find it; case and accents don't matter. Options picked before a search stay picked. |
 | Exclusive options | Multi-select only: mark options like "None of the above" as exclusive — picking one clears every other selection, and picking any other option clears it. |
 | Include "Other" | Adds a free-text "Other" option, with an optional character limit for the field. |
 | Randomize order | Shuffle option order per participant to avoid order bias. |
+| Anchor position | With Randomize on: anchor an option so it keeps its place in the list while the other options shuffle, for example "None of these" last or "All of these" first. Each participant's order stays the same when they go back. Set anchors in the default language; translations keep them. "Other" always stays after the list. |
+
+### Image Choice
+
+Participants answer by tapping a picture, and can enlarge a picture first. Use it to compare packaging, logos, or concepts. Each answer has its own picture, and the answer is saved as that answer's text, so logic, quotas, filters, and exports work as they do for Multiple Choice.
+
+| Setting | Description |
+| --- | --- |
+| Pictures | One picture per answer, up to 6 (JPEG, PNG, GIF, WebP, or BMP). Add alt text for screen readers; without it, screen readers read the answer text. |
+| None of these | Always there, always last, with no picture. You can rename it. |
+| Randomize order | On by default. Only the pictures shuffle. |
+| Anchor position | With Randomize on: anchor a picture so it keeps its place while the other pictures shuffle. Set anchors in the default language. |
+| Multi selection | Allow choosing several pictures, with an optional **max selections** limit. None of these clears the others. |
+| Include "Other" | Adds a free-text "Other" answer below the pictures. |
+| Picture size | Small, Medium, or Large show 4, 3, or 2 columns on a desktop. Phones always show 2 columns. |
+| Show answer text | Show each answer's text under its picture. |
+
+To ask why, add an AI Question or Open Text question after it, then choose **Add asset > The picture picked in question N**. That question shows only the picture the participant picked, and the AI interviewer reads that picture's description, which is written when you save the study. If the participant picked None of these or Other, no picture shows. This needs a single-select Image Choice question.
+
+The study editor does not offer Image Choice in voice-only studies.
 
 ### Matrix Selection
 
@@ -89,6 +122,14 @@ Participants sort cards into categories — ideal for information architecture r
 
 Rank a list of options by preference, via **drag-and-drop** or **dropdown** format. Supports randomized order.
 
+Turn on **Rank top N** to ask for the top choices only, for example the top 3 of 15 vendors. Choose the number (from 1 to the number of options) and whether participants rank **exactly** that many or **up to** that many.
+
+- **Drag and drop:** the ranked options sit in numbered slots on top, and the other options wait in a list below. Participants tap an option to rank it, tap it again to take it back, and drag the handle to reorder. This works the same way on phones.
+- **Dropdown:** each option offers ranks 1 to N only.
+- Participants can continue once they have ranked N options (or at least one with **up to**), with no rank skipped or repeated. An optional question can still be skipped with nothing ranked.
+
+The answer holds only the ranked options. Results show, for each option, the share of responses that put it in the top N, the share that ranked it 1st, and its average rank among the people who ranked it. An option nobody ranked shows 0%. The CSV export keeps one column per option and leaves an unranked option's cell empty. A later question can quote 1st to Nth place with `optionAtRank` (see [Referencing earlier answers](#referencing-earlier-answers)).
+
 ### Matrix Ranking
 
 Rank options across multiple **criteria** (e.g. rank features by importance *and* by satisfaction). Same format options as Ranking.
@@ -97,9 +138,23 @@ Rank options across multiple **criteria** (e.g. rank features by importance *and
 
 Distribute a fixed budget of points across options (default total: 100). Options can optionally be pulled from a previous question's answers, and you can enforce the total as a hard limit. With the limit on, options left blank count as 0 (and are saved as 0) once the values add up to the total, so participants don't have to type 0 into the rest. The other rules below still apply: a custom option needs a name and a value, and a failing check against an earlier answer still blocks. Turn on **custom options** to let participants add their own options, each with a name and a value; their values count in the total, and a name that is already in the list is refused. With the limit off, each option is a separate value, and an optional **range** (a Min and a Max) applies to every value, including the options participants add: for example 0 to 100 for a percentage per option, or -100 to 100 for growth that can also be a decline. An empty Min means 0, an empty Max means no maximum. Participants see the range under the options and cannot continue while a value is outside it. With the limit on, every value must be 0 or more; when the total must equal an earlier answer that is negative, every value must be between that total and 0 instead, and when the total must be at most such an answer, every value must be that total or more. The total, or each option, can also be checked against an earlier answer — see [Checks against earlier answers](#checks-against-earlier-answers).
 
+Choose a **Display format**: **Number inputs** (the default, a number box per option) or **Sliders**, one per option with a number box beside it, for questions like "What share of your usage goes to each treatment? (total 100%)". Dragging a slider and typing in its box stay in sync, and a **Total** row under the options shows the running total while there is a total to reach. The sliders add:
+
+| Setting | Description |
+| --- | --- |
+| Step | How much a slider moves per step, a whole number. It must divide the range evenly, so a slider can reach its end. Default 1. |
+| Show value | Show a number box beside each slider (on by default). Turn it off to show the sliders alone. With a step above 1, the boxes stay when the question has checks against earlier answers or lets participants add options, since those can need a value between steps. |
+| Stop at the total | With **Has allocation limit** on: a slider can't go past the amount that's left. Off (the default), the total can go over; it shows in orange until it matches, and the participant can't continue until then. |
+
+With the limit on, every slider runs from 0 to the total. With the limit off, every slider runs from the range's Min to its Max, so the sliders need a Max. Every slider starts at 0 (or at the Min when the range starts above 0), and participants don't have to touch each one: once they move any slider, the rest count at their start value. Options participants add with **custom options** keep a number box. The answer is the same as with number inputs, so logic, quotas, references to earlier answers, results and exports work the same way. The sliders work with the keyboard (arrow keys) and on touch screens; on a phone, each option's name sits above its slider.
+
+Turn on **N/A option** to add a box at the end of each option row, with your own text in **N/A label** (for example "Unable to assess"; empty shows "N/A"). A participant enters a value or ticks the box, never both: ticking it clears and disables that option's field (or its slider). An option answered N/A counts as answered, adds 0 to the total, and skips the range and any check against an earlier answer; with the limit on, the other options must still add up to the total, and when every option is N/A there is nothing left to allocate. Answers store `"N/A"` for that option. Results and exports show your label, and Insights leave N/A out of the averages and show how many participants answered N/A per option.
+
 ### Matrix Allocation
 
 A grid of values: **rows** are the things being split, **columns** are scenarios or time points (up to 8), and each column is filled in on its own. With **Has allocation limit** on (the default), every column must add up to the **total allocation** (default 100), and participants see a live total under each column. With the limit off, each cell is a separate value, an optional **range** (a Min and a Max, the Min may be negative) applies to every cell, and columns don't need to add up. An empty Min means 0, an empty Max means no maximum. Participants type numbers with up to two decimal places. With the limit on, cells left blank count as 0 (and are saved as 0) once the column adds up to the total. With the limit off, every cell needs a value. Columns never affect each other. Click a cell in the **N/A cells** grid to mark it not applicable (for example, a product launching in 2027 has no 2026 value): participants see it greyed out as N/A and can't enter a value, it doesn't count toward the column's total, and a column whose cells are all N/A shows only N/A, with no total to reach. Supports randomized row order; columns keep their order. Results show one Allocation-style breakdown per column, leaving N/A cells out of the averages; exports show N/A in those cells.
+
+Turn on **N/A option** to let participants answer a whole row N/A, with your own text in **N/A label** (for example "Unable to assess"; empty shows "N/A"). Each row gets a box at its end; ticking it clears and disables the row in every column. The row's cells then work like N/A cells: they don't count toward any column's total, and answers store `"N/A"` in them. A row whose cells are all N/A cells has no box. Results and exports show your label for these rows (and N/A for the cells you marked), and Insights show how many participants answered each row N/A.
 
 ### Conjoint
 
@@ -133,6 +188,19 @@ Findability testing on a navigation tree. Participants complete tasks by locatin
 ### Rating Scale
 
 A Likert-style scale (default 1–5) with customizable labels for the low, middle, and high points.
+
+Choose a **Display format**: a row of **Buttons** (up to 20 points) or a **Slider** for wider or finer ranges, such as 0–100 % likelihood. The slider adds:
+
+| Setting | Description |
+| --- | --- |
+| Step | How much the value changes per move. Decimals are allowed (for example 0.5). It must divide the range evenly, so the slider can reach the max. Default 1. |
+| Start position | **None** (default) hides the handle until the participant touches the slider, so every answer is a deliberate choice. **Min** or **Middle** starts the handle there, and the participant can accept that value. That value counts as an answer, so an optional slider with a start position can't be skipped: use **None** to keep it skippable. |
+| Show value | Show the selected number above the slider (on by default). |
+| N/A option | Add an N/A answer, with your own label such as "Don't know". Picking it disables the slider. |
+
+A required slider needs a value or N/A. The slider works with the keyboard (arrow keys) and on touch screens.
+
+In results, the grid and CSV show the number, or your N/A label. Insights show a histogram, the average without N/A answers, and the N/A count. Logic can test the number with the usual operators, or use **Is N/A**. An N/A answer never matches =, <, <=, > or >=, but it does match ≠ (N/A is not 5).
 
 ### Star Rating
 
@@ -185,19 +253,43 @@ Participants upload images and/or videos. Configure allowed types, maximum numbe
 
 ### Email
 
-Capture a valid email address.
+Capture an email address. An answer must look like `name@example.com` before the participant can continue; an optional Email question can still be skipped empty.
 
 ### Number
 
 Numeric input, with an optional min/max range validation. The number can also be checked against an earlier answer — see [Checks against earlier answers](#checks-against-earlier-answers).
 
+Turn on **N/A option** to add a box under the field, with your own text in **N/A label** (for example "I don't use this product"; empty shows "N/A"). A participant types a number or ticks the box, never both: ticking it clears and disables the field. The range and the checks apply only to a typed number, and a check that compares with an N/A answer is skipped. Answers store `"N/A"`; results, exports and answer references show your label. Insights count N/A answers on their own row, outside the total and the percentages. Logic can test the answer with **Is N/A** and **Is not N/A**.
+
 ### Date
 
 Structured date entry with month/day selectors and a typed four-digit year. Full date is the default; authors can instead collect month & year or year only and choose MDY, DMY, or YMD display order. Optional earliest/latest limits restrict which dates participants can submit. Answers remain stored in sortable ISO partial-date format: `YYYY-MM-DD` for full dates, `YYYY-MM` for month and year, and `YYYY` for year only. Storage is independent of display order.
 
+Turn on **N/A option** to add a box under the date fields, with your own text in **N/A label** (empty shows "N/A"). Ticking it clears and disables the fields; the earliest/latest limits apply only to a picked date. Answers store `"N/A"`; results and exports show your label, and Insights count N/A answers on their own row.
+
 ### Calendly
 
 External Calendly booking — share a scheduling link (e.g. for a follow-up session) inside the study.
+
+## AI follow-ups on closed questions
+
+After a participant answers a closed question, the AI interviewer can ask why, so the reasons sit next to the number. Turn on **AI follow-up** on Multiple Choice, Rating Scale, Star Rating, NPS, Ranking, Matrix Rating Scale, Matrix Selection, Matrix Ranking or Matrix Allocation.
+
+| Setting | Description |
+|---|---|
+| Instructions | What the interviewer should find out. |
+| Limit follow-up questions | Cap the follow-ups for this question at 1, 2 or 3. Leave off and the interviewer decides when it has enough. |
+| Only for some answers | Ask only for the answers you choose, such as NPS detractors. Ranking and Matrix Ranking use positions, such as first and last. Matrix Allocation asks about the rows with the most and the fewest points in each column. |
+
+The follow-up replaces the question on screen, and participants answer in the study's response mode. If the answer sends the participant out of the study through logic or a full quota, or an optional question is skipped, there is no follow-up. Logic and quotas always use the closed answer, so a follow-up never changes where the participant goes next.
+
+Follow-ups appear under the question in the transcript and results grid, and in a "follow-up" column in the CSV. They aren't available on surveys.
+
+## Required and request response
+
+A required question can't be skipped. When **Required** is off, you can turn on **Request response**: if the participant tries to continue without answering, they see one reminder ("You haven't answered this question…") and the button changes to **Skip anyway**; the second click moves on. A skipped request-response question is stored as an empty answer, like any skipped optional question. Format rules still apply to anything the participant does type. **Ranking** questions don't offer Request response. Without **Rank top N** they are never left empty: drag and drop starts with an order, and dropdowns need every item ranked.
+
+Request response works the same in surveys and in AI-moderated interviews (text and voice), since the participant answers structured questions on screen in both.
 
 ## Referencing earlier answers
 

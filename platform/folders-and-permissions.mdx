@@ -13,13 +13,17 @@ Folders organize studies and AI test projects, and can be **nested** for hierarc
 - **Many items:** hover a row and tick the checkbox that appears to the left of its icon (on phones and tablets the checkboxes always show). Once a row is ticked, every row shows its checkbox and the **Name** header gets a checkbox that selects the whole page. Hold **Shift** to tick every row between two clicks, and press **Esc** to clear the selection. Then choose **Move** in the bar at the bottom of the list. On the Projects page the list holds projects; to move many folders at once, list them with **View all** or the **Folders** filter. On the AI Personas page you can mix folders and personas in one move.
 - The folder picker shows each folder's full path (e.g. *Europe › UK*). A folder can't be moved into itself or one of its own subfolders.
 
-Inside a folder, the folder controls sharing: a study or AI test project moved into a folder takes that folder's access policy. Before the move, Versive warns you when the folder's policy is more open than the project's own. It also warns you when people invited to a study aren't invited to a folder that isn't **Full access**, because inside a folder only the folder's invites count. When a study or AI test project leaves a folder and ends up **Invite only**, Versive also warns you about people invited to that folder who aren't invited where it lands: they lose access. A drag onto a folder asks you to confirm in those cases. Moving a study or AI test project back to the top level keeps its current policy.
+An item takes its access from where it lands (see [Access inheritance](#access-inheritance)). Inside a folder, a study or AI test project follows the folder: its own access policy and its own invites don't count there. A moved folder keeps its own policy and its own invited people, and it follows the folder it lands in.
 
-A moved folder keeps its own policy and its own invited people, and so do the studies inside it: moving a folder under an **Invite only** folder hides it from the dashboard for people who aren't invited there, but anyone who could open its studies before can still open them. To restrict those studies, set the moved folder's own policy to Invite only.
+Before a move, Versive warns you when the move opens an item up to everyone in your organization, when an item that was open lands in an **Invite only** folder (only that folder's invited people can open it there), when people invited to a top-level study or AI test project aren't invited to a folder that isn't **Full access** (inside a folder only the folder's invites count), when people invited to the folder an item leaves lose access because the item ends up **Invite only**, and when people invited to the folder a folder leaves for the top level get its access policy there instead of their invite (for example from Editor to Viewer on a **Can view** folder, or from Viewer to Editor on a **Can edit** folder when their invite restricted them). A drag onto a folder asks you to confirm in those cases. Personas get the same warnings: a persona has no access policy of its own, so it takes the folder's access, and at the top level it is visible to everyone in your organization.
+
+Moving a study, AI test project, or folder to the top level never opens it up to more of your organization: it keeps the access policy it had, or its own if that is stricter. Only the people invited to the item itself keep their invite; anyone else invited to a folder above gets the item's access policy instead, which is more than they had when their invite restricted them. When you move a folder to the top level, Versive adds an invite for you where you'd need one, so you keep the role you had on it. The owners of the folders it leaves get an Owner invite on it too.
+
+To move a folder you need an organization role that manages folders (owner, admin, or creator), plus **Owner** or **Full access** on the folder, and edit access to the folder you move it into. The same goes for a study, AI test project, or persona: you need **Owner** or **Full access** on it where it is now (inside a folder, on that folder), and edit access to the folder it goes into. Creating a folder, study, AI test project, or persona inside a folder also needs edit access there. The folder picker lists only the folders you can add to, and the dashboard offers **Move**, drag and drop, and **Create** only where you have these rights.
 
 ### Deleting a folder
 
-Open the folder's **⋮** menu (on the Projects page, the one on its card) and choose **Delete**, or use the trash icon at the top of the folder's page. Deleting a folder also deletes all its subfolders and every study, AI test project, or persona inside them. Organization owners and admins can delete any folder. People with other roles can delete a folder they created, as long as every subfolder inside it is theirs too.
+Open the folder's **⋮** menu (on the Projects page, the one on its card) and choose **Delete**, or use the trash icon at the top of the folder's page. Deleting a folder also deletes all its subfolders and every study, AI test project, or persona inside them. Organization owners and admins can delete any folder. Anyone else except Viewers can delete a folder they have **Owner** or **Full access** on, as long as they have Owner or Full access on every folder inside it too; an **Invite only** subfolder they can't open blocks the delete. Your role on a folder reaches the folders inside it, unless one of them is **Invite only** or gives you a different role.
 
 To delete many items at once, select them and choose **Delete** in the bar at the bottom of the list. When the selection includes a folder, you type **DELETE FOLDER** to confirm. Items that can't be deleted stay selected, and the dialog says why.
 
@@ -43,16 +47,30 @@ Setting a policy on a folder that already has studies applies it to every interv
 
 ## Folder access policies
 
-Every folder has an access policy that sets the default for organization members:
+Every folder has an access policy that sets the default for everyone in the organization:
 
 | Policy | Effect |
 | --- | --- |
-| **Full access** (default) | Members can view and edit everything inside. |
+| **Full access** (default) | Members can view and edit everything inside, and can share and delete the folder (a delete also needs that access on every folder inside). Members whose role creates folders can also move it. Viewers only view, and someone invited with a narrower role has that role instead. |
 | **Can edit** | Members can edit content but not manage sharing. |
+| **Can edit (no results access)** | Members can edit content but not see results or manage sharing. |
 | **Can view** | Read-only for members. |
-| **Invite only** | Hidden from everyone except people explicitly invited to the folder. |
+| **Invite only** | Hidden from everyone except people explicitly invited to the folder, and organization owners and admins. |
 
-Studies have the same set of access policies of their own.
+**Full access means full access**: everyone in your organization except Viewers can change the folder's sharing and delete it, and anyone whose role creates folders (owners, admins, and creators) can move it. For one person, an invite with a narrower role (Editor, for example) wins over the setting, and a delete also needs Owner or Full access on every folder inside (see [Deleting a folder](#deleting-a-folder)). To protect a folder, set it to **Can edit**, **Can view**, or **Invite only**. Organization owners and admins act as owners of every folder, so they can open, share, move, and delete any folder, **Invite only** ones included.
+
+Studies have the same set of access policies of their own. A study's own policy applies only when it isn't in a folder. Organization [Viewers](/platform/organizations-and-roles#organization-roles) are the exception: whatever the policy, they can only view.
+
+### Access inheritance
+
+A folder inside another folder follows the folder above it:
+
+- **Everything inside follows.** A subfolder and the studies, AI test projects, and personas in it follow the folders above: their access policy and their invited people reach every folder below, at any depth.
+- **A subfolder can only be stricter.** The strictest policy on the way up applies. In a subfolder, **Full access** reads **Same as** the parent folder. For example, a Can view folder inside a Full access folder is Can view, and a Full access folder inside an Invite only folder opens only to the people invited above.
+- **Invite only restricts a subfolder.** Only people invited to that folder itself can open it; invites on the folders above don't reach it. To follow the parent again, choose **Same as** the parent in the folder's Share dialog.
+- **An invite further down wins.** Inviting someone to a subfolder gives them that role there, even when a folder above gives them another one.
+
+The folder's Share dialog lists the people invited to the folders above, with the folder each invite comes from. It also says when a folder above is stricter than the folder's own policy. If you set a folder to **Invite only** and your own access came from a folder above, Versive adds an invite for you, so you keep your role. The owners of the folders above get an Owner invite on it too, because only an owner can remove an owner. Inviting someone below the role they already have from a folder above asks you to confirm, because the invite further down wins.
 
 ## Folder & study roles
 
@@ -61,15 +79,19 @@ On top of the default policy, you can grant individual people a role on a folder
 | Role | Permissions |
 | --- | --- |
 | **Owner** | Full control, including managing other people's roles. |
-| **Full access** | Everything except managing folder sharing. |
+| **Full access** | Everything except adding or removing a folder's owners. |
 | **Editor** | Edit the study, questions, and insights; view interviews; can't recruit panels or resolve comments. |
 | **Commenter** | Study-level only: view results and insights, and participate in [comments](/platform/collaboration#comments). |
 | **Viewer** | Read-only. |
 
-Roles granted on a folder flow down to the studies inside it. Folder-level roles are Owner, Full access, Editor, and Viewer; the Commenter role is granted on individual studies.
+Roles granted on a folder flow down to everything inside it, subfolders included, until an **Invite only** subfolder. Folder-level roles are Owner, Full access, Editor, Editor (no results access), and Viewer; the Commenter role is granted on individual studies and counts only for a study that isn't in a folder. Someone whose organization role is Viewer can only be given the Viewer role, and any higher role they already hold works as Viewer.
+
+Inviting people to a folder, changing or removing their roles, and changing the folder's access policy need **Owner** or **Full access** on the folder. Only an owner can add or remove another owner. When you create a folder you become its owner. In a project folder, members whose role limits them to surveys get Editor (no results access) instead, and the organization owner becomes the folder's owner.
+
+Duplicating a study or AI test needs a role that can edit it (Owner, Full access, Editor, or Editor (no results access)) and an organization role that creates studies; a Commenter or Viewer can't make a copy.
 
 ## Common setups
 
 - **Open team** — leave folders on Full access; use roles only for external collaborators.
-- **Agency** — one Invite-only folder per client; grant the account team Owner/Editor, and clients Commenter or Viewer on deliverables.
+- **Agency** — one Invite-only folder per client; grant the account team Owner or Editor on it, and invite the client as Viewer on that folder or on an Invite-only subfolder that holds the deliverables. Invites on a study count only when the study isn't in a folder.
 - **Sensitive research** — an Invite-only folder restricted to the core team, with results shared more broadly via [public sharing links](/platform/collaboration#public-sharing-links) when ready.

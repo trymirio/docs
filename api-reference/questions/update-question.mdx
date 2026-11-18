@@ -18,14 +18,27 @@ Updates a question. Only the fields you send change, and `props` is **merged** w
   How the question's display conditions combine: `all` shows it only when every condition is met, `any` when one is. Any other value, or `null`, returns `422`.
 </ParamField>
 <ParamField body="display_order" type="integer">New position.</ParamField>
-<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive options are kept in sync, [Matrix Allocation not-applicable cells](#matrix-allocation-not-applicable-cells) for `allocationWithMatrix`, and [Checks against earlier answers](#checks-against-earlier-answers) for `number` and `allocation` validation against an earlier answer.</ParamField>
+<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive and anchored options are kept in sync, [Matrix Allocation not-applicable cells](#matrix-allocation-not-applicable-cells) for `allocationWithMatrix`, and [Checks against earlier answers](#checks-against-earlier-answers) for `number` and `allocation` validation against an earlier answer.</ParamField>
 <ParamField body="assets" type="object[]">
   Replaces the media assets array. Keep each asset's stable `url` from [List questions](/api-reference/questions/list-questions).
-  `download_url` and `download_url_expires_at` are read-only and are discarded if sent back.
+  `download_url` and `download_url_expires_at` are read-only and are discarded if sent back, here and on the pictures in `props.optionImages`.
   A file from [Create asset upload](/api-reference/asset-uploads/create-asset-upload) can't be referenced here until it is verified: attach it with `asset: { "upload_id" }` instead, or the request returns `400`.
 </ParamField>
+<ParamField body="media" type="object[]">
+  Set the question's images, videos, and PDFs, in the order participants see them (at most 5). Replaces every default-language asset. Each item is one of:
+
+  - `{ "asset_id": "…" }` keeps an asset the question already shows, by the `id` in its `assets` from [List questions](/api-reference/questions/list-questions) (`legacy-0`, `legacy-1`… for assets saved before ids). A kept asset keeps its translated variants.
+  - `{ "upload_id": "…" }` attaches a verified upload, as in `asset`.
+  - `{ "copy_from_question_id": "…" }` copies another question's media in the same study.
+
+  Every item also takes `layout`, `sizing`, `max_width_percent`, `autoplay`, and `loop`, as in `asset`; on a kept asset an omitted setting stays as it is. `[]` removes every default-language asset. An asset left out of the list loses its translated variants too, as when you remove it in the builder. A Figma prototype or an embedded website is always the only asset on its question, so a list that mixes one with other assets is refused. Not accepted on `websiteTest`, `prototypeTask`, or `calendar` questions. Cannot be combined with `asset`, `assets`, `embedded_website_url`, or `figma_prototype_url` in the same request.
+</ParamField>
+
 <ParamField body="asset" type="object | null">
-  Set the question's media, replacing the default-language asset (translated variants are kept). Either a verified upload, `{ "upload_id": "…", "layout": "fullScreen" | "inline", "sizing": "fit" | "scroll", "max_width_percent": 1–100, "autoplay": bool, "loop": bool }`, or a copy of another question's media in the same study, `{ "copy_from_question_id": "…", "layout": … }` (omit `layout` to keep the source's layout and width; an upload defaults to `fullScreen`). The ticket must be `ready` (see [Complete asset upload](/api-reference/asset-uploads/complete-asset-upload)) and created by the same caller (the same user for an MCP ticket, the same API key for an organization key's ticket). `autoplay` and `loop` apply to videos only. Send `null` to remove the asset. Not accepted on `websiteTest`, `prototypeTask`, or `calendar` questions. Uploaded images get an automatic description the AI interviewer uses; a copy keeps the source's. Cannot be combined with `assets`, `embedded_website_url`, or `figma_prototype_url` in the same request.
+  Set the question's first asset, replacing the first default-language asset (its translated variants are kept, and so are the question's other images, videos, and PDFs). To set several, use `media`. Either a verified upload, `{ "upload_id": "…", "layout": "fullScreen" | "inline", "sizing": "fit" | "scroll", "max_width_percent": 1–100, "autoplay": bool, "loop": bool }`, or a copy of another question's media in the same study, `{ "copy_from_question_id": "…", "layout": … }` (omit `layout` to keep the source's layout and width; an upload defaults to `fullScreen`). The ticket must be `ready` (see [Complete asset upload](/api-reference/asset-uploads/complete-asset-upload)) and created by the same caller (the same user for an MCP ticket, the same API key for an organization key's ticket). `autoplay` and `loop` apply to videos only. Send `null` to remove every default-language asset, not only the first (translated variants are kept); to remove one and keep the others, use `media`. Not accepted on `websiteTest`, `prototypeTask`, or `calendar` questions. Uploaded images get an automatic description the AI interviewer uses; a copy keeps the source's. Cannot be combined with `assets`, `media`, `embedded_website_url`, or `figma_prototype_url` in the same request.
+</ParamField>
+<ParamField body="option_images" type="array">
+  Image Choice (`multipleChoice` with `props.format` `imageGrid`): set or replace answers' pictures, `[{ "option": "Package A", "upload_id": "…", "alt": "…" }]`. Each `upload_id` is a verified image upload. Other answers keep their pictures. Returns `400` for an answer that has no picture slot, such as `None of these`, and on a question type other than `multipleChoice`. A new `props.noneOption` renames `None of these` where it stands. When a later question shows the picture picked in this one, an edit that turns on several picks, changes the format or type, or moves this question after it returns `422` with an `errors` array.
 </ParamField>
 <ParamField body="embedded_website_url" type="string">
   Show an `https://` page in a frame beside the question, replacing the default-language asset. `http://` is refused. Figma links (`figma.com`) are refused too: pass a Figma prototype as `figma_prototype_url` instead, while a published Figma Make app's `figma.site` URL is fine. v0 share links are refused as well (deploy the app and use its `vercel.app` URL). Not accepted on `websiteTest` (use `props.url`), `prototypeTask`, or `calendar` questions. Remove it with `"asset": null`.
@@ -60,13 +73,40 @@ You don't need to resend `exclusiveOptions` when you edit `options`. If you omit
 
 To change which options are exclusive, send the new `exclusiveOptions` list explicitly, matching the final `options`.
 
+`multipleChoice` questions, single- or multi-select, can also **anchor** options in `props.anchoredOptions`. With `randomizeOrder` on, an anchored option keeps its position in `props.options` and only the other options shuffle, so "None of these" listed last stays last for every participant. Entries are the option *text* and must exactly match an entry in `props.options` (case-sensitive), otherwise the request is rejected with `400`. Anchors stay stored while `randomizeOrder` is off, where they have no effect. Like `exclusiveOptions`, renaming one option keeps its anchor and removing an option drops it when you omit `anchoredOptions` or send it unchanged; send an empty list to remove all anchors.
+
 [Question quotas](/studies/question-quotas) on the options follow the same rule: renaming one option moves its quota to the new text, and removing an option drops its quota. Rename options one at a time, without adding or removing others in the same request, so a quota is never mistaken for a removed option's.
 
 ```json
 {
   "props": {
     "options": ["Red", "Blue", "None of the above"],
-    "exclusiveOptions": ["None of the above"]
+    "exclusiveOptions": ["None of the above"],
+    "randomizeOrder": true,
+    "anchoredOptions": ["None of the above"]
+  }
+}
+```
+
+### Rank top N and long lists
+
+A `ranking` question can ask for the top N options only:
+
+- `props.rankLimit` — a whole number from 1 to the number of options, or `null` to rank every option.
+- `props.rankLimitMode` — `"exactly"` (the default) or `"upTo"`.
+
+The saved answer holds only the ranked options. A limit above the number of options is rejected with `400`; lower the limit before you remove options.
+
+A `multipleChoice` question can show a long list in columns and with a search box:
+
+- `props.optionColumns` — `"auto"`, `1`, `2` or `3`. Missing means one column; phones always show one.
+- `props.searchable` — `true` adds a search box above the list or inside the dropdown.
+
+```json
+{
+  "props": {
+    "rankLimit": 3,
+    "rankLimitMode": "exactly"
   }
 }
 ```
@@ -91,6 +131,21 @@ The earlier question must be a `number` or `allocation` question that comes befo
 }
 ```
 
+### Participant N/A
+
+`number`, `dateInput`, `allocation` and `allocationWithMatrix` questions can offer an N/A answer, exclusive with a value: set `props.showNotApplicable` to `true` and, optionally, `props.notApplicableLabel` to the text participants see (for example `"Unable to assess"`; empty or missing shows `"N/A"`). A Number or Date gets one box; an Allocation one per option; a Matrix Allocation one per row. `showNotApplicable` must be a boolean and `notApplicableLabel` a string, otherwise the request is rejected with `400`.
+
+Answers store `"N/A"`: the whole answer of a Number or Date, the option's value in an Allocation answer's `allocations`, and every cell of the row in a Matrix Allocation answer. The interview detail and the CSV export show the label for a Number or Date answered N/A. While a Number offers N/A, a branching rule or display condition can test its N/A with `operation` `==` or `!=`, `comparison_value` `"N/A"` and `comparison_value_type` `"string"`.
+
+```json
+{
+  "props": {
+    "showNotApplicable": true,
+    "notApplicableLabel": "Unable to assess"
+  }
+}
+```
+
 ### Matrix Allocation not-applicable cells
 
 `allocationWithMatrix` questions can mark cells as not applicable in `props.naCells`, a list of `{"row": ..., "column": ...}` objects. `row` and `column` must exactly match an entry in `props.options` and `props.columns`, otherwise the request is rejected with `400`. Participants see these cells as N/A and can't enter a value; they don't count toward the column's total, and answers store `"N/A"` in them.
@@ -103,6 +158,28 @@ Like `exclusiveOptions`, you don't need to resend `naCells` when you edit `optio
     "options": ["Product A", "Product B"],
     "columns": ["2026", "2027"],
     "naCells": [{ "row": "Product B", "column": "2026" }]
+  }
+}
+```
+
+### Answer format and request response
+
+`shortText` questions can require a format in `props.format` and a minimum length in `props.minLength` (a positive integer, at most `maxLength` when both are set). `format.type` is one of `phone`, `postalCode`, `digits`, `letters`, `email`, `url` or `regex`:
+
+- `phone` takes no `country`: the answer must be in international format, a `+` followed by the country code and number (7 to 15 digits in all; spaces, dashes, dots and parentheses allowed).
+- `postalCode` takes `country`, the ISO 3166-1 alpha-2 code of any country that uses postal codes (`US` when `null`), for example `MX`, `GB` or `DE`. Formats come from [Google's address data](https://chromium-i18n.appspot.com/ssl-address/data); letters are matched case-insensitively.
+- `regex` requires `pattern`, a regular expression (JavaScript syntax, at most 200 characters) that the whole answer must match. Patterns that don't compile, use inline flags such as `(?i)`, repeat a group that contains another repeat, an optional part or a choice (like `(a+)+`, `(a?)+` or `(a|b)+`), or can match the same text in more than a million ways are rejected. Each `*`, `+` or `{n,}` counts as 100 ways, each `?` as 2, each `{n,m}` as m−n+1 and each group of k choices as k, multiplied together, so at most 3 open-ended repeats fit. Answers longer than 1000 characters never match a pattern.
+- `example` (optional) is a valid answer, shown to participants as the placeholder.
+
+Any question type with `required` can also set `props.requestResponse` to `true`. It only applies while `required` is `false`: a participant who tries to skip the question is reminded once and can then continue.
+
+```json
+{
+  "props": {
+    "required": false,
+    "requestResponse": true,
+    "minLength": 5,
+    "format": { "type": "postalCode", "country": "MX", "example": "06600" }
   }
 }
 ```

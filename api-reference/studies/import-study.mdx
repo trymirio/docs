@@ -1,0 +1,93 @@
+---
+title: "Import study"
+api: "POST /studies/import"
+description: "Create a study from a Qualtrics survey file"
+---
+
+Reads a Qualtrics survey file and creates a Survey study from it. Send `dry_run=true` to read the report first: nothing is created or kept. The file is not kept after it is read. See [Moving from Qualtrics](/studies/moving-from-qualtrics) for what each question becomes and what stays behind.
+
+The request is `multipart/form-data`. No AI runs, so an import uses no credits.
+
+MCP sessions use the `import_study` [tool](/mcp/tools) instead, which gives the user a page to upload the file.
+
+<ParamField body="file" type="file" required>
+  A `.qsf` export, or a `.docx` or `.txt` file in the Qualtrics Advanced Format. Up to 10 MB.
+</ParamField>
+<ParamField body="title" type="string">
+  The study title. Defaults to the survey's name in a `.qsf` file, or to the file name for a `.docx` or `.txt` file.
+</ParamField>
+<ParamField body="folder_id" type="string">
+  The folder to create the study in.
+</ParamField>
+<ParamField body="access_policy" type="string" default="FULL_ACCESS">
+  Controls which organization members can access the study. Use `FULL_ACCESS`, `CAN_EDIT`,
+  `CAN_EDIT_SURVEY_ONLY`, `CAN_VIEW`, or `INVITE_ONLY`. This does not control participant access.
+</ParamField>
+<ParamField body="dry_run" type="boolean" default="false">
+  Answer with the report and create nothing.
+</ParamField>
+
+### Response
+
+<ResponseField name="report" type="object">
+  What the file holds and what becomes of it: `question_count`, `not_imported_count`, `group_count`, `randomizer_count`, `display_rule_count`, `branching_rule_count`, `question_quota_count`, `languages`, and `hidden_fields`. `questions` lists each question with its `source_type`, its `versive_type`, and its `notes`. `redirects` lists each rule that sends participants to another website: the question it hangs on (`source_label`), the answer that sets it off in words (`condition`, `null` when it applies to everyone who reaches that question), and the address (`url`). `not_carried_over` lists what stayed behind. `plan_limit_error` holds a sentence when your plan's limit on questions per study refuses the file, and is otherwise `null`.
+</ResponseField>
+<ResponseField name="study" type="object | null">
+  The new study, the same as [Create study](/api-reference/studies/create-study) returns. `null` on a dry run.
+</ResponseField>
+
+A file that cannot be read returns a `400` with the reason in `detail`, and so does a request over the 10 MB limit. A key without the `studies:write` scope gets a `403`, and a `folder_id` that is not in your organization gets a `404`. A file over your plan's limit returns a `422` when it is not a dry run. Its `detail` is an object: `code` is `question_limit_exceeded`, and `message` says why. To undo an import, [archive the study](/api-reference/studies/update-study) with `status: "archived"`.
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.getversive.com/api/v1/studies/import" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -F "file=@tracker.qsf" \
+  -F "dry_run=true"
+```
+</RequestExample>
+
+<ResponseExample>
+```json Dry run
+{
+  "report": {
+    "source_format": "qsf",
+    "file_name": "tracker.qsf",
+    "title": "Brand tracker",
+    "question_count": 2,
+    "imported_count": 2,
+    "not_imported_count": 1,
+    "deleted_questions": 1,
+    "system_questions": 1,
+    "group_count": 1,
+    "randomized_group_count": 0,
+    "randomizer_count": 0,
+    "display_rule_count": 1,
+    "branching_rule_count": 0,
+    "question_quota_count": 0,
+    "default_language": "English",
+    "languages": ["Spanish"],
+    "hidden_fields": ["source"],
+    "redirects": [],
+    "questions": [
+      {
+        "source_id": "QID1",
+        "source_label": "Q1",
+        "source_type": "Multiple Choice (single answer)",
+        "versive_type": "multipleChoice",
+        "question_ids": ["3f6d0a52-1c7e-4c55-9d1b-0e8a7b1c2d3e"],
+        "text": "Do you buy coffee?",
+        "status": "imported",
+        "notes": []
+      }
+    ],
+    "not_carried_over": [
+      { "kind": "question", "source_label": "Q3", "detail": "Heat Map has no match in Versive." }
+    ],
+    "max_questions": 40,
+    "plan_limit_error": null
+  },
+  "study": null
+}
+```
+</ResponseExample>

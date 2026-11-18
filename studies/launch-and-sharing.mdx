@@ -60,6 +60,19 @@ Invite specific people and track them individually. Each participant gets a pers
 
 Email sends count against your plan's monthly email allowance.
 
+### Automatic reminders
+
+Turn on **Send automatic reminders** in the Review & Send step to follow up with people who haven't responded. Reminders are set per send and are off by default; when you switch them on, the settings start from the last ones used for the study.
+
+- **How many and how often**: up to 5 reminders, each a set number of days after the invite or the previous reminder.
+- **Who gets them**: people who were invited but haven't started, people who started but didn't finish, or both. Each group has its own template, and you can pick a different template for each of the study's languages. Someone who hasn't started gets their language's template when their participant data has a `language` column (for example `Spanish` or `es`).
+- **When**: only inside a send window (9am to 5pm by default) in the participant's time zone when their metadata has a `timezone` (for example `America/New_York`), otherwise in yours.
+- **Resume where they stopped**: reminders use the participant's personal link, so someone who started picks up where they left off.
+
+Reminders stop for a participant once they finish or are screened out, unsubscribe or bounce, their link is paused or archived, or their quota (or the study's response goal) is full. No reminders go out while the study is paused or archived, or while your plan can't take more responses. Reminders are counted from a participant's last email in any send, so two sends with reminders don't double up. Only members who can edit the study can send or pause and stop reminders.
+
+Each reminder counts against your monthly email allowance. If the reminders that are due would go over it, they are paused and the sender gets an email; resume them from **Send history** once you have room. Send history also shows each send's reminders, their templates, what has gone out, and when the next ones are due (reminders keep the templates as they were when you sent, so editing or deleting a template later doesn't change them); the participant table shows each person's next reminder date.
+
 ## Recruit (participant panel)
 
 Recruit from a global pool of 4 million+ consumers and professionals across 150 countries, powered by Respondent. See [Recruiting participants](/studies/recruiting-participants) for the full workflow — screeners, incentives, statuses, and payments.

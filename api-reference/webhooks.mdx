@@ -1,20 +1,37 @@
 ---
 title: "Webhooks"
 sidebarTitle: "Webhooks"
-description: "Receive signed notifications when a Versive interview is completed"
+description: "Receive signed notifications when a Versive interview is completed or screened out"
 ---
 
-Versive can send an HTTPS webhook after an interview is completed. Webhooks are an organization-level integration
-provisioned with the Versive team; creating and rotating destinations is not part of the public `v1` REST API. Contact
-[support@getversive.com](mailto:support@getversive.com) to configure one for your organization.
+Versive can send an HTTPS webhook when an interview is completed or a participant is screened out. Webhooks are an
+organization-level integration, and organization owners and admins set them up themselves.
 
-## Event
+## Set up webhooks
 
-The current public event type is:
+1. Go to **Organization → Connectors** and open **Webhooks**.
+2. Select **Set up webhooks**.
+3. Select **Manage endpoints** to open the webhooks portal in a new tab. There you can add one or more HTTPS
+   endpoints, choose which events each endpoint receives, see delivery logs, replay messages, and rotate signing secrets.
+
+The portal link expires after one hour. Open the **Webhooks** panel again to get a new one (a panel left open refreshes it on its own). Turning webhooks off
+stops deliveries but keeps your endpoints, so they are used again when you turn webhooks back on. Events that happen
+while webhooks are off are not sent later. Creating and rotating destinations is not part of the public `v1` REST
+API.
+
+## Events
 
 | Event | Sent when |
 | --- | --- |
-| `interview.completed` | A participant completes an interview. Screened-out interviews are excluded. |
+| `interview.completed` | A participant completes an interview. |
+| `interview.screened_out` | A participant is screened out of an interview. |
+
+If the Versive team set up your webhooks before self-serve setup, you receive `interview.screened_out` only after an
+owner or admin turns webhooks off and back on in **Organization → Connectors → Webhooks**. Until then you receive
+`interview.completed` only. An endpoint with no event filter receives every event type, so if your receiver doesn't
+check `event_type`, subscribe that endpoint to `interview.completed` only in the portal before you turn webhooks back on.
+
+### `interview.completed`
 
 The HTTP request body contains the event type and the completed interview and study:
 
@@ -43,6 +60,31 @@ were used, or when no transcription was recorded. An attempt that fails and then
 does not set the flag, and transcribing an answer again later does not clear it. Text generation and speech synthesis
 do not affect the flag. Real-time voice interviews transcribe speech live on a separate path, so the flag is always
 `false` for them.
+
+### `interview.screened_out`
+
+A slim payload with identifiers, status, timestamps and the interview metadata. It never includes the transcript,
+conversation or recording.
+
+```json
+{
+  "event_type": "interview.screened_out",
+  "version": 1,
+  "interview": {
+    "id": "interview-uuid",
+    "status": "screened_out",
+    "vid": "participant-facing-id",
+    "is_mock": false,
+    "created_at": "2026-10-20T10:00:00.000Z",
+    "completed_at": "2026-10-20T10:05:00.000Z",
+    "metadata": {}
+  },
+  "study": {
+    "id": "study-uuid",
+    "title": "Onboarding research"
+  }
+}
+```
 
 ## Verify every request
 

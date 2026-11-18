@@ -1,0 +1,106 @@
+---
+title: "Moving from Qualtrics"
+description: "Import a Qualtrics survey file into a new study, and see what carries over before anything is created"
+---
+
+You can turn a Qualtrics survey into a Versive study in one step. Versive reads the file and shows you a report: what each question becomes, and what stays behind. The study is created only after you continue.
+
+No AI runs during an import, so it uses no credits and works on every plan. The new study is a [Survey](/studies/overview). On a plan with AI credits, you can switch it to an AI-moderated study later.
+
+## Get the file from Qualtrics
+
+Versive reads two kinds of file, up to 10 MB:
+
+- **A `.qsf` export.** In the Qualtrics survey builder, open **Tools > Import/Export > Export Survey**. This file holds the most: survey order, logic, randomizers, quotas, and translations.
+- **A Word (`.docx`) or text (`.txt`) file in the Qualtrics Advanced Format.** This is the tagged format Qualtrics uses for its own imports, with tags like `[[Question:MC]]` and `[[Block:Screener]]`. It holds questions, blocks, page breaks, and embedded data, but no logic.
+
+A free-form Word document has no tags, so the import refuses it. Attach it to the [assistant](/studies/overview#ways-to-create-a-study) instead, and the assistant drafts a study from it.
+
+**Export survey to Word** in Qualtrics gives a copy for reading, not a tagged file. The import refuses it and asks for the `.qsf` from **Export survey** instead.
+
+## Import the file
+
+1. On the **Projects** page, click **Create > New project**.
+2. Click **Import a survey from Qualtrics** and choose your file.
+3. Read the report. It lists every question with its Qualtrics type and its Versive type, and everything that did not carry over.
+4. Click **Continue**, name the study, and click **Create Project**.
+5. Click **Open study** to check it in the study editor, or click **Undo import** to remove it.
+
+If you change your mind later, delete the study from the **Projects** page.
+
+### Other ways to import
+
+- **The assistant.** Attach the file with the document button and ask the assistant to import it. It shows you the report and creates the study after you agree. The assistant is on plans with AI credits.
+- **Your own AI tool.** Connect Claude or another tool through [MCP](/mcp/tools). Its `import_study` tool gives you a link to a page where you upload the file.
+- **The API.** Send the file to [Import study](/api-reference/studies/import-study).
+
+## What each question becomes
+
+| In Qualtrics | In Versive |
+| --- | --- |
+| Multiple Choice, single or multiple answers | [Multiple Choice](/studies/question-types). A question with one option becomes a Message, and its option becomes the button. |
+| Text Entry, single line | Short Text |
+| Text Entry, multiple lines or essay | Open Text |
+| Text Entry with number, email, or date validation | Number, Email, or Date |
+| Text Entry, password | Short Text. The answer shows as it is typed. |
+| Text Entry form | One question for each box |
+| Calendar | Date |
+| Net Promoter Score | NPS |
+| Matrix Table, Likert, Profile, or Carousel | Matrix Selection |
+| Matrix Table, Constant Sum, with up to 8 columns | Matrix Allocation. A matrix with no total in Qualtrics has no total here either. |
+| Matrix Table, Rank Order | Matrix Ranking |
+| Slider or Number Scale, one statement, on a scale from 0 or more that ends at 20 or lower | Rating Scale. It keeps up to 3 of the scale's labels: the first, the middle one, and the last. |
+| Slider or Number Scale, one statement, on any other scale, such as 0 to 100 or -5 to 5 | Number with the same range |
+| Slider, several statements | Allocation with no total, and a typed value in the same range for each statement |
+| Slider, stars | One Star Rating for each statement |
+| Constant Sum | Allocation |
+| Rank Order | Ranking |
+| Pick, Group & Rank | Card Sort |
+| Descriptive Text or Graphic | Message |
+| File Upload | Media Upload, which takes images and videos |
+
+Option and column labels keep their text. Question text keeps bold, italic, underline, links, and lists.
+
+On Multiple Choice, options with a fixed position in a random order keep that position as [anchored options](/studies/question-types), and the other options shuffle. On other question types, a random order with fixed positions shows every option in its original order.
+
+## What the survey structure becomes
+
+| In Qualtrics | In Versive |
+| --- | --- |
+| Survey Flow | The order of the questions. The Trash block and blocks the flow never reaches are skipped. |
+| Block | Question group |
+| Randomizer that shows one element | [Randomizer](/studies/split-tests) with equal weights |
+| Randomizer that shows all elements | Randomized question group |
+| Display logic | [Display conditions](/studies/logic) |
+| Skip logic and Branch | [Logic rules](/studies/logic) and display conditions |
+| End of Survey | A logic rule that ends the interview, screens the person out, or redirects them. A redirect keeps a piped embedded data field, such as `${e://Field/PROLIFIC_PID}`, as `{PROLIFIC_PID}`, which Versive fills from the study link. A redirect that pipes anything else is left out, and those participants end the study. The report lists every redirect with its question and condition. |
+| Quota on one option | [Question quota](/studies/question-quotas) |
+| Piped answer from an earlier question | A reference to that question's answer, from Multiple Choice, Short Text, Open Text, Number, Allocation, Ranking, and Matrix Selection questions. A piped answer from another type, such as NPS, Rating Scale, Star Rating, Email, or Date, is removed, and the report names it. If the participant has not answered that question, the reference shows nothing. |
+| Translations | [Languages](/studies/languages), for the languages the survey offers in Qualtrics. The text from your file is kept when you translate the study again. |
+| Embedded data | [Hidden fields](/studies/launch-and-sharing). Add the names to your study link. |
+
+## What stays behind
+
+The report names everything below that your file holds, so you can decide what to rebuild.
+
+- **Question types with no match:** Side by Side, Drill Down, Hot Spot, Heat Map, Signature, Gap Analysis, and the Bipolar, MaxDiff, and text-entry forms of Matrix Table. A Profile matrix with separate answers per row has no match either, and neither has a Constant Sum matrix with more than 8 columns.
+- **Media and code:** images and media in question text or options, and custom JavaScript.
+- **Survey features:** Loop & Merge, scoring, recode values, survey access protection, the Back button setting, and the redirect at the end of the survey.
+- **Logic on embedded data.** Logic and piped text in questions cannot read a hidden field yet. A redirect can pass one on.
+- **Randomizers that show some of their elements,** such as 2 of 5. Every element shows, in random order.
+- **Random subsets of options** on a single question. Every option shows.
+
+Some things change on the way in:
+
+- **Request Response** becomes optional. To remind participants once before they skip, turn on [Request response](/studies/question-types#required-and-request-response) on the question after the import. Ranking, Open Text, and Message questions (a question with one option becomes a Message) don't have that setting.
+- **Carry forward** lists every option of the source question, not only the ones the participant chose.
+- **Page breaks** have no effect, because Versive shows one question per screen.
+
+Deleted questions and timing or meta records are skipped on purpose. The report counts them.
+
+Questions hidden with **Hide question** in Qualtrics are not imported, because no participant sees them. The report names each one.
+
+## Limits
+
+- Your plan's limit on questions per study applies. The report says so before anything is created, and **Continue** stays off until the file fits.
+- Versive does not keep your file after reading it. What it read waits 2 hours for you to create the study, and is deleted if you don't. Once the study exists, Versive keeps only the import report.

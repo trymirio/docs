@@ -1,0 +1,89 @@
+---
+title: "Slack"
+description: "Connect your Slack workspace and post study updates to a channel"
+---
+
+Connect your organization's Slack workspace once, then pick a channel on each study. Versive posts a message to that channel every time an interview is completed, with a button that opens the response in Versive. Test runs don't post a message, and neither do screened-out participants (a legacy pasted Slack webhook still posts them).
+
+## Connect your Slack workspace
+
+Only organization **owners** and **admins** can connect Slack. See [Organizations & roles](/platform/organizations-and-roles).
+
+<Steps>
+  <Step title="Open Connectors">
+    Go to **Organization → Connectors** and select **Slack** under **Available**.
+  </Step>
+  <Step title="Connect">
+    Click **Connect Slack**. Slack opens and asks you to allow the Versive app in your workspace.
+  </Step>
+  <Step title="Allow">
+    Choose the workspace and click **Allow**. You return to Connectors, where Slack shows as **Connected** with your workspace name.
+  </Step>
+</Steps>
+
+Versive asks Slack for the smallest set of permissions it needs: post messages, post to public channels, and list public and private channels so you can pick one. It can't read messages in your channels.
+
+## Choose a channel for a study
+
+Anyone who can edit a study and see its results can pick its channel. Survey-only editors can't, because the messages include results such as sentiment and review flags.
+
+1. Open the study and go to **Settings → Notifications**, then turn on **Enable notifications**.
+2. In the Slack section, click **Add Slack channel** and search for a channel.
+3. Click **Send test message** to check that Versive can post there.
+4. Save the study.
+
+Each study posts to one channel. Different studies can post to different channels in the same workspace. Duplicating a study keeps its channel; a study created from a template starts without one, so pick its channel after you create it.
+
+<Note>
+To post in a **private channel**, first run `/invite @Versive` in that channel in Slack. Until you do, the channel doesn't appear in the list, and a test message to it fails.
+</Note>
+
+## What the message includes
+
+When an interview is completed, the message shows:
+
+- The study name
+- One line of facts: the participant's sentiment, how many responses the study has (for example, **Study total: 12 of 50 responses** when the study has a response limit), the interview language, duration, and word count
+- A **Flagged for review** note when the AI rated the response as possible fraud or poor quality. Responses that look fine have no note.
+- The interview's metadata (for example, URL parameters such as source or segment), when it has any
+- **Open response**, which opens the interview, and **Study results**
+
+Sentiment and review flags come from the interview's AI summary, which is usually ready by the time the message is sent. When it isn't, the message goes out without them.
+
+### Include the AI summary
+
+To add each response's AI summary to the message, turn on **Include AI summary** under the study's Slack channel in **Settings → Notifications**, then save the study. It's off by default.
+
+<Warning>
+The AI summary repeats what the participant said. With it on, that content is copied into Slack, where your Slack workspace's own retention and access rules apply. Leave it off for studies with sensitive or confidential answers.
+</Warning>
+
+Messages never include transcripts or individual answers.
+
+## Reconnect
+
+If someone removes the Versive app in Slack or revokes its access, Versive notices the next time it tries to post. Slack then shows **Reconnect needed** in Connectors, and affected studies show a warning in **Settings → Notifications**.
+
+An owner or admin can fix it from **Connectors → Slack → Reauthorize**. Reconnecting the same workspace keeps every study's channel, and messages start again with the next completed interview.
+
+## Disconnect
+
+An owner or admin can disconnect Slack from **Connectors → Slack → Disconnect**. Before you confirm, the Slack panel lists the studies that post through the connection. Versive then deletes its access and removes its app from your Slack workspace, unless another Versive organization still uses that workspace.
+
+Studies keep their channel choice but stop posting, and their notification settings show a warning. To resume:
+
+- **Same workspace** — connect it again. Studies post to their channels again with no other changes.
+- **A different workspace** — connect it (this replaces the previous workspace connection), then in each study pick a channel from the new workspace in **Settings → Notifications** and save the study.
+
+## Slack webhooks
+
+Studies set up with a pasted Slack webhook URL before the Slack connection existed keep posting as before. In **Settings → Notifications**, click **Upgrade to Slack app** to pick a channel from your connected workspace instead. New studies use the Slack connection; webhook URLs can no longer be added.
+
+## Troubleshooting
+
+| What you see | What to do |
+| --- | --- |
+| "Versive isn't in #channel yet" | Run `/invite @Versive` in that channel, then send the test message again. |
+| "That channel no longer exists" or "is archived" | Pick another channel for the study. |
+| "Slack needs to be reconnected" | Ask an owner or admin to reconnect Slack in **Connectors**. |
+| Slack shows as **Coming soon** in Connectors | Slack isn't available in your Versive environment yet. Contact [support@getversive.com](mailto:support@getversive.com). |
