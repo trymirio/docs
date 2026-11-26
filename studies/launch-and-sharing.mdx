@@ -77,6 +77,24 @@ Each reminder counts against your monthly email allowance. If the reminders that
 
 Recruit from a global pool of 4 million+ consumers and professionals across 150 countries, powered by Respondent. See [Recruiting participants](/studies/recruiting-participants) for the full workflow — screeners, incentives, statuses, and payments.
 
+## Preview (test it yourself)
+
+The **Preview** button in the study editor opens your published study the way a participant sees it. Preview responses are not saved to your results and never count against your plan. Redirects set in question logic, participant sources or panel recruiting don't run in a preview: it ends on the screen-out or thank-you page instead.
+
+A bar at the top of the preview helps you test long studies:
+
+- **Jump to question** starts the preview at any question. Questions are listed in the order of the editor's sidebar, with the same numbers (Q1 is the first question). Questions with display conditions are marked *(conditional)*.
+- **Place bookmark** remembers the question you are on. After you edit and publish the study, **Go to bookmark** brings you back to it. If you deleted or re-created that question, the preview says so and opens the question now at the same number. Bookmarks are saved in your browser, one per study.
+- **Restart** starts the preview over from the welcome screen.
+
+To start the preview at a question from the editor, open the question's **⋮** menu and choose **Preview from here**. That opens a link like this one, which you can also send to a teammate:
+
+```
+https://getversive.com/s/{studyId}?mode=preview&q={questionId}
+```
+
+When you jump to a question, the questions before it count as unanswered. Piped answers from them show a placeholder such as *[Q2 answer]*, checks against earlier answers don't apply, and later questions whose display conditions use those answers stay hidden. If the question sits in a randomizer arm, the preview takes that arm. In a randomized group, the preview goes on in that preview's shuffled order, so the group's questions shuffled before it are skipped too. The `q` parameter only works on preview links: on your live link it is ignored, so participants always start at the beginning.
+
 ## Simulate (AI test participants)
 
 Before launching to real people, run **simulated interviews** with [AI personas](/ai-tests/personas) to shake out confusing questions, broken logic, and awkward AI-interviewer behavior.
@@ -87,7 +105,7 @@ Before launching to real people, run **simulated interviews** with [AI personas]
 - Simulations consume AI credits like real completions (two per simulation on a Realtime study; survey studies use survey credits), so they are available on plans with AI credits. The Simulate tab counts the credits a run needs before you start it.
 
 <Callout icon="info-circle" color="#71717a">
-Some question types are skipped during simulation: Prototype Task, Website Task, Tree Test, Conjoint, Media Upload, Website Link, and Calendar.
+Some question types are skipped during simulation: Prototype Task, Website Task, Image Click, Tree Test, Conjoint, MaxDiff, Media Upload, Website Link, Calendar, and Text Highlight.
 </Callout>
 
 ## Embed

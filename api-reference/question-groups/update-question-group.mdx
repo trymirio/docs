@@ -1,0 +1,56 @@
+---
+title: "Update question group"
+api: "PUT /question-groups/{group_id}"
+description: "Rename a group, toggle randomization, or turn it into a page"
+---
+
+Send at least one of `title`, `is_randomize` or `kind`.
+
+Turning a group into a page returns `400` when its content can't sit on a page: subgroups, randomizers, question types a page doesn't allow, a Figma prototype or embedded website, an AI follow-up, logic that jumps straight to one of its questions, or a display condition, earlier-answer check or `{{Q:...}}` reference between two of its questions. Fix those first.
+
+A page (`kind: "page"`) holds only questions — no subgroups or randomizers — of these types: `multipleChoice`, `ratingScale`, `matrixRatingScale`, `matrixSelection`, `nps`, `starRating`, `ranking`, `rankingWithMatrix`, `allocation`, `allocationWithMatrix`, `number`, `dateInput`, `email`, `shortText`, `textInput`, `message`. Its questions can't show a Figma prototype or an embedded website, or have an AI follow-up (`ai_probe`) turned on. Logic can jump to a page (`move_to_question_group`) but not to a question inside it, and display conditions, checks against earlier answers and `{{Q:...}}` references can't use a source on the same page. See [Several questions on one page](/studies/question-types#several-questions-on-one-page).
+
+<ParamField path="group_id" type="string" required>The group ID.</ParamField>
+<ParamField body="study_id" type="string" required>The study ID.</ParamField>
+<ParamField body="title" type="string">New title.</ParamField>
+<ParamField body="is_randomize" type="boolean">Shuffle the group's direct children for each participant.</ParamField>
+<ParamField body="kind" type="string">`group` or `page`.</ParamField>
+
+### Response
+
+Returns the updated group.
+
+<ResponseField name="id" type="string">The group ID.</ResponseField>
+<ResponseField name="study_id" type="string">The study the group belongs to.</ResponseField>
+<ResponseField name="parent_question_group_id" type="string | null">The group it sits in, or `null` at the top level. Groups nest at most two levels.</ResponseField>
+<ResponseField name="title" type="string">Internal title. A page shows it as its heading.</ResponseField>
+<ResponseField name="display_order" type="integer">Position among its siblings (questions and groups share one order).</ResponseField>
+<ResponseField name="is_randomize" type="boolean">Whether the group shuffles its direct children for each participant.</ResponseField>
+<ResponseField name="is_pinned" type="boolean">Whether the group keeps its position when its parent is randomized.</ResponseField>
+<ResponseField name="kind" type="string">`group` (questions asked one at a time) or `page` (the web interviewer shows all of its questions on one screen; voice interviews still ask them one at a time).</ResponseField>
+<ResponseField name="routing_branch_id" type="string | null">The randomizer arm that owns this group, if any.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://api.getversive.com/api/v1/question-groups/d4e5f6a7-0000-4000-8000-000000000002" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b", "kind": "page"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "id": "d4e5f6a7-0000-4000-8000-000000000002",
+  "study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b",
+  "parent_question_group_id": null,
+  "title": "About you",
+  "display_order": 1,
+  "is_randomize": false,
+  "is_pinned": false,
+  "kind": "page",
+  "routing_branch_id": null
+}
+```
+</ResponseExample>

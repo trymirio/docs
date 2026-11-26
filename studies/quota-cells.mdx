@@ -1,0 +1,85 @@
+---
+title: "Quota cells"
+description: "Cap completes for groups of participants across answers, link values and randomizer arms"
+---
+
+A quota with cells caps completes for groups of participants, for example *50 women aged 18 to 34*. You split participants by up to three things, and every combination is a cell with its own limit. Use it for interlocked quotas (age × gender), for one cap across several options (Instagram, WhatsApp or Facebook together), or for an even mix in each arm of a split test.
+
+Quota cells work alongside the [study quota](/studies/settings#quotas) and [question quotas](/studies/question-quotas). Each one is enforced on its own.
+
+## What you can split by
+
+| Variable | Reads | Levels hold |
+| --- | --- | --- |
+| **Answer** | A Multiple Choice question | One or more options. Options in one level count together. |
+| **Number** | A Number, Rating Scale, NPS or Star Rating question | A range, for example 18 to 34. Both ends count, and one end can stay open (35 and over). |
+| **Link parameter** | A [hidden field](/studies/launch-and-sharing#hidden-fields--participant-tracking) on the participant's link | One or more values, matched exactly and case-sensitively. |
+| **Randomizer** | The arm a participant was assigned to | One or more arms. |
+
+## Setting up a quota
+
+<Steps>
+  <Step title="Open Sharing settings">
+    Open the study settings, then **Sharing**. **Quota cells** sits below the study quota. Click **Add quota** and give it a name.
+  </Step>
+  <Step title="Choose what to split by">
+    Use **Split by** to add up to three variables. A Multiple Choice question starts with one level per option, and a randomizer with one level per arm. To count several options as one level, put them in the same level in **Options in each level**. An option set to **Not in a cell** is never capped. Ranges and link values start with one empty level to fill in.
+  </Step>
+  <Step title="Enter the limits">
+    Every combination of levels is a cell. Type a number of completes in each cell you want to cap. A blank cell has no cap, and 0 closes the cell. To work in percentages, set **Limits as** to **Percent of a total** and enter the total: each cell shows the number of completes its percent gives. A percent above 0 always allows at least 1 complete. A quota can have up to 50 cells, and a study up to 20 quotas.
+  </Step>
+  <Step title="Choose what happens when a cell is full">
+    **Screen out** ends the interview with your screen-out message and redirect. **Quota full** ends it as quota full and sends the participant straight to the source's quota URL, else your custom pause URL, so panels can pay a quota-full fee. With neither URL, the participant sees the quota's own message (or your screen-out message when you leave it empty).
+  </Step>
+  <Step title="Save the study">
+    Quota cells save with the study's Save button.
+  </Step>
+</Steps>
+
+## Examples
+
+- **Age × gender**: split by *What is your gender?* and *How old are you?* with ranges 18-34 and 35+. Six cells, each with its own share of the total.
+- **One cap across several options**: split by *Which platforms do you use?* with one level holding Instagram, WhatsApp and Facebook, and a limit of 50. On a multi-select question, choose **Picked any option of a level** so a participant who picks two of them still counts once.
+- **The same mix in every arm**: split by gender and by the randomizer, and give each arm the same limits, so each ad reaches the same number of women and men.
+
+## When a participant is checked
+
+Versive checks a participant after each answer to a question one of the study's quotas reads, once it knows every variable of a cell. A quota on gender and age is first checked after the second of the two answers; answers to questions no quota reads, such as open text, are not checked. When a quota includes a randomizer, every closed-question answer is checked, since the arm can be assigned at any point. A quota made only of link parameters is also checked when the participant opens the study link, like the study quota; a full cell there ends with the quota's action, as below. A participant who goes back and changes an answer is checked again with the new answer. A logic rule that ends the interview keeps the final word: that participant completes the study.
+
+## What participants see
+
+When a participant lands in a full cell, the interview ends right after that answer and is marked screened out:
+
+- **Screen out**: the study's [screen-out destination](/studies/settings#sharing--participants): the screen-out message, your custom URL, or the [source redirect](/studies/launch-and-sharing#participant-sources).
+- **Quota full**: the participant goes straight to the **quota** redirect of their source when it has one, else to your custom pause URL. With neither URL, they see your screen-out title with the quota's message under it, or your whole screen-out message when the quota has none. In Results the response carries a **Quota full** label, and the CSV marks it `quota_full`.
+
+When a participant lands in full cells of more than one quota, the first of those quotas in the list in **Sharing** decides.
+
+## What counts toward a cell
+
+- Only **completed** interviews count. Screened-out and in-progress interviews don't hold a place.
+- Mock interviews, previews and AI simulations never count, and are never stopped by a cell.
+- Archived interviews don't count.
+
+The quota editor shows each cell's completes next to its limit, in red once the cell is full. When a quota splits only by answers and randomizers, puts every option and every arm in a cell, gives every cell a limit, and those limits add up to less than the study's total completes, the editor warns that the study can't reach its target.
+
+<Note>
+Limits are approximate. A cell is checked when a participant answers, and everyone already past that point can finish, so participants answering at the same moment can push a cell slightly past its limit.
+</Note>
+
+## In Results and exports
+
+- Filter Results by **Quota cell** to see the responses in one cell.
+- The CSV export adds a **Quota cell** column per quota, naming the participant's cell, and a `quota_outcome` column that reads `quota_full` for responses a Quota full action ended. With **Picked any option of a level**, a participant whose answer matches two levels is in both cells, and the column names both. Studies without quota cells keep their usual columns.
+
+## Good to know
+
+- Levels match on option text. Renaming an option carries the new text into the levels, and answers given before the rename keep counting in their cell. Removing an option takes it out of its level. When it was the level's only option, the editor marks the level as removed and **Save** is blocked until you remove that level or give it a current option. If you rename another option to the removed option's text instead, that level is deleted with its cells, and the renamed option keeps its own level.
+- Adding or removing a variable changes every cell, so it clears the quota's limits. When the quota has limits, the editor asks first.
+- Deleting a question a quota reads blocks **Save** too, until you change or remove that variable in **Sharing**. The API, the MCP server and the Assistant refuse the same changes: deleting a question a quota reads, changing its type, removing a level's only option, or removing a randomizer or an arm a quota reads returns an error that names the quota.
+- A link value counts only when it is in the study link the participant opened. A value added to the link during the interview is ignored.
+- On a [personal link](/studies/launch-and-sharing#send-email-outreach) (`…?vid=<token>`), the participant's custom metadata counts as link values too, and wins over the same name in the link. A quota made only of link parameters checks it when the participant opens the link, and a full cell ends with the quota's action.
+- Translated answers count toward the same cell as the original option.
+- Duplicating a study copies its quota cells. A quota with a level that still holds a removed option is left out of the copy; the others are copied.
+- Quota cells are checked in every conversation mode, including voice.
+- Manage quota cells with the [API](/api-reference/quotas/update-quota-groups), the MCP server's [`get_quota_groups` and `set_quota_groups`](/mcp/tools) tools, or by asking the Assistant in the study editor.

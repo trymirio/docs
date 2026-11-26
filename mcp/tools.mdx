@@ -24,6 +24,8 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 
 ## Tools
 
+Each MCP request can contain up to 2 MiB of JSON. A tool call can include up to 10,000 array entries and object keys in total, including nested fields. If a batch of participants or questions exceeds either limit, send it in smaller groups.
+
 ### Studies
 
 | Tool | Description | Scope |
@@ -42,14 +44,16 @@ Scopes are an upper bound, not a bypass: every request is also checked against y
 
 | Tool | Description | Scope |
 | --- | --- | --- |
-| `list_questions` | List questions in display order with type, group, notes, and logic flags | `studies:read` |
+| `list_questions` | List questions in the order the study editor shows them, with type, group, notes, and logic flags | `studies:read` |
 | `get_question_details` | One question's full configuration, media download links, logic rules, quotas, and the earlier answers its text pipes in | `studies:read` |
-| `add_questions` | Add questions at a position or append them to a group. Text can pipe in an earlier answer with a `{{Q:<question_id>}}` reference to a question that comes before it (not when appending to a group: add the question, then set the reference with `edit_question`) | `studies:write` |
+| `add_questions` | Add questions at the start or end of the study or a group, or right after a question, group or randomizer. Text can pipe in an earlier answer with a `{{Q:<question_id>}}` reference to a question that comes before it. A question added earlier in the same call is `{{Q:new:N}}`, its place in `questions` from 1, and a check against its answer uses `earlier_question_id: 'new:N'` | `studies:write` |
 | `edit_question` | Edit a question's text, type, and settings. Renaming an option keeps its question quota; the result lists quotas dropped with removed options and logic rules left pointing at old option text | `studies:write` |
 | `set_question_quotas` | Cap completes per option on a multiple choice question (`equals` or `includes` match, 0 closes an option); pass the full list, an empty list clears it | `studies:write` |
+| `get_quota_groups` | A study's [quota cells](/studies/quota-cells) with the completes in each cell | `studies:read` |
+| `set_quota_groups` | Set quota cells across answers, number ranges, link values or randomizer arms (for example age × gender), with a Screen out or Quota full action; pass the full list, an empty list removes them | `studies:write` |
 | `validate_question_mentions` | Find earlier-answer references that broke after questions were removed, reordered, or edited | `studies:read` |
 | `remove_questions` | Remove questions (soft delete); reports logic rules left dangling | `studies:write` |
-| `reorder_questions` | Reorder all questions in an ungrouped study | `studies:write` |
+| `reorder_questions` | Reorder all questions in a study without groups or Randomizers | `studies:write` |
 
 ### Assets
 
@@ -67,8 +71,8 @@ For an Image Choice question, pass `choice_format: 'imageGrid'` and `option_imag
 | Tool | Description | Scope |
 | --- | --- | --- |
 | `list_question_groups` | Group hierarchy, order, and randomization settings | `studies:read` |
-| `add_question_group` | Create a top-level group or a subgroup (groups nest at most two levels) | `studies:write` |
-| `edit_question_group` | Rename a group or toggle child randomization | `studies:write` |
+| `add_question_group` | Create a top-level group, a subgroup (groups nest at most two levels) or a [page](/studies/question-types#several-questions-on-one-page), at the start or end or right after a given question, group or randomizer | `studies:write` |
+| `edit_question_group` | Rename a group, toggle child randomization, or turn it into a page or back | `studies:write` |
 | `move_questions_to_group` | Move questions into a group or back to the top level | `studies:write` |
 | `remove_question_group` | Ungroup or delete a group (delete cascades to its questions) | `studies:write` |
 
@@ -125,7 +129,7 @@ For a study with screen-out logic, a Prolific panel must pay screened-out partic
 
 ### AI simulations
 
-AI personas take your study the way a participant would, and their answers show up as simulated interviews next to real ones (the same as **Simulate** on the Launch tab). Each completed simulation uses credits like a real interview: one credit, or two on a Realtime study; survey studies use survey credits when your plan has them. Versive tells your assistant to show you the cost and wait for your yes before it runs anything. Versive can't see that conversation, so it also checks every request itself: it refuses a run your credits can't cover. Personas skip Prototype Task, Website Task, Tree Test, Conjoint, Media Upload, Website Link, and Calendar questions, so those aren't tested. Up to 20 simulations per request; you need the Owner or Full access role on the study and a plan with AI credits. Archived and paused studies are refused.
+AI personas take your study the way a participant would, and their answers show up as simulated interviews next to real ones (the same as **Simulate** on the Launch tab). Each completed simulation uses credits like a real interview: one credit, or two on a Realtime study; survey studies use survey credits when your plan has them. Versive tells your assistant to show you the cost and wait for your yes before it runs anything. Versive can't see that conversation, so it also checks every request itself: it refuses a run your credits can't cover. Personas skip Prototype Task, Website Task, Image Click, Tree Test, Conjoint, MaxDiff, Media Upload, Website Link, Calendar, and Text Highlight questions, so those aren't tested. Up to 20 simulations per request; you need the Owner or Full access role on the study and a plan with AI credits. Archived and paused studies are refused.
 
 | Tool | Description | Scope |
 | --- | --- | --- |
@@ -191,4 +195,4 @@ Your agent handles fetching and pagination on its own — there's nothing to con
 - **Response metadata lets your agent split results and follow up.** Each interview's metadata comes back with it and as `metadata:<name>` columns in the CSV export: the [hidden fields](/studies/launch-and-sharing#hidden-fields--participant-tracking) on the participant's link (for example `source`, `segment`, or a market code) and fields from uploaded contact lists or the API, such as email. The participant's session token (the `vid` on invite links) is always left out. Sharing is off until an owner or admin turns on **Share participant metadata** in [organization settings](/platform/organizations-and-roles#ai-apps); until then, your agent receives no metadata.
 
 - **Numbers can differ from a casual dashboard glance.** Mock and archived interviews are never exposed over MCP, and simulated interviews are always reported separately from real ones — so MCP counts reflect real research activity only.
-- **A few things still happen in the dashboard.** Tree tests and conjoint questions are configured there (their text stays editable via MCP), as are Figma goal frames and heatmaps, per-language media variants, and embedded websites for `websiteTest` questions. Sending email invites is always your own click on the Send tab. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.
+- **A few things still happen in the dashboard.** Tree tests, conjoint and MaxDiff questions are configured there (their text stays editable via MCP), as are Image Click regions, as are Figma goal frames and heatmaps, per-language media variants, and embedded websites for `websiteTest` questions. Sending email invites is always your own click on the Send tab. Agents check the `get_capabilities` tool for the full list of unsupported features, each with a workaround, so they'll route around these on their own.

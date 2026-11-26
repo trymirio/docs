@@ -15,6 +15,15 @@ When a participant reaches the randomizer, they're assigned to one arm at random
 
 Publishing validates the setup: empty arms, missing labels, or weights that don't add up are flagged in the builder before the study goes live.
 
+## Showing each participant some of a set of questions
+
+To show each participant, say, 6 of 12 questions, put a set of questions in each arm of a randomizer with equal weights, each set as a question group with randomized order. Versive doesn't draw a random 6 from all 12, so you choose how to make the sets:
+
+- **Fixed sets:** split the 12 questions into two groups of 6. Each question appears once in the study, but questions in the same group always show together.
+- **Mixed sets:** make more groups that overlap, using copies of the questions, with each question in the same number of groups. Four groups of 6 (questions 1–6, 4–9, 7–12, and 10–12 with 1–3) put each question in two groups. Participants see more combinations, but each copy's answers show as a separate question, and every copy counts toward your plan's question limit.
+
+The AI study creator can build either one. Tell it which you want, or it will suggest one.
+
 ## Reading split-test results
 
 Every response records which arm the participant entered:

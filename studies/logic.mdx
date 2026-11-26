@@ -13,12 +13,29 @@ The conditions available depend on the question type:
 | --- | --- |
 | Multiple Choice | Always · Equals · Is not (single-select) · Includes, Does not include, Fewer than N selections (multi-select) |
 | Rating Scale, NPS, Star Rating, Number | Always · `=` · `≠` · `>` · `>=` · `<` · `<=` · Is N/A, Is not N/A (a slider Rating Scale or a Number with **N/A option** on) |
+| Text Highlight | Always · Highlighted as, Didn't highlight as (a category) |
 | AI Question, Exploratory, Open Text, Short Text | Always · **AI rule** |
+| Ranking | Always · an option *is ranked #*, *is ranked # or higher*, *is ranked # or lower* |
+| Card Sort | Always · a card *is in* / *is not in* a category |
+| Matrix Rating Scale | Always · a row `=` `≠` `>` `>=` `<` `<=` a number · Is N/A, Is not N/A (with **N/A option** on) |
+| Matrix Selection | Always · a row *Is* / *Is not* an answer (single-select) · a row *Includes* / *Does not include* an answer (multi-select) |
+| Allocation | Always · an option's points, or the total, `=` `≠` `>` `>=` `<` `<=` a number · Is N/A, Is not N/A |
+| Matrix Allocation | Always · one cell (row and column) `=` `≠` `>` `>=` `<` `<=` a number · Is N/A, Is not N/A |
+| Date | Always · *is before*, *is after*, *is between* two dates |
+| Media Upload | Always · *is answered*, *is not answered* |
 | All other types | Always |
 
-**Is not** and **Does not include** need an answer to compare: a question the participant skipped matches neither, so the next rule (or the next question in order) applies.
+A Text Highlight rule checks whether the participant highlighted anything with a category. It works in translated interviews, because answers are saved against the original category labels.
+
+Any rule can also read the interview instead of the answer: switch the rule from **Answer** to **URL parameter** or **Quota** (see [Conditions on URL parameters and quotas](#conditions-on-url-parameters-and-quotas)).
+
+**Is not**, **Does not include** and **Didn't highlight as** need an answer to compare: a question the participant skipped matches neither, so the next rule (or the next question in order) applies.
 
 A slider Rating Scale or a Number answered N/A matches **Is N/A**, and `≠` (N/A is not that number); it never matches `=`, `>`, `>=`, `<` or `<=`. If you turn **N/A option** off on a question that has **Is N/A** or **Is not N/A** rules, the logic panel warns and the study can't be saved until you change those rules.
+
+For Ranking, Card Sort, the matrices and Allocation, pick the item first (the option, card, row or cell), then the condition. An item the participant left without a value matches no condition, not even *is not* or `≠`: an option outside a **Rank top N** selection, a card left in *Uncategorized*, a row left blank. N/A behaves as on a Rating Scale: it matches **Is N/A** and `≠`, never `=` `>` `>=` `<` `<=`. In a translated interview, conditions still match: answers are saved against the original labels.
+
+A Date question answered by month or year is compared at that precision: for *is before March 15, 2026*, the answer *March 2026* is not before (it is the same month). *Is between* includes both dates.
 
 ### AI rules (smart conditions)
 
@@ -42,10 +59,15 @@ When a condition matches, one of five actions runs:
 
 ### Where jumps can land
 
-Jumps are **forward-only**: a rule can only target a question or group that comes after the question it belongs to, so the last question of a study has no jump targets. When your study uses question groups, two more rules apply:
+Jumps are **forward-only**: a rule can only target a question or group that comes after the question it belongs to, so the last question of a study has no jump targets. When your study uses question groups, three more rules apply:
 
 - **Randomized groups** — questions inside a group with randomized order can't be targeted directly, since their position differs per participant. Target the group itself instead: each participant enters at whichever question their shuffled order puts first, so randomization is preserved.
 - **Empty groups** can't be targeted — there's no question to jump to.
+- **Pages** — questions on a [page](/studies/question-types#several-questions-on-one-page) can't be targeted directly; target the page. A page is entered as a whole.
+
+### Logic on a page
+
+Participants answer a page as one form, so its logic runs once they select **Next**: each answer's branching rules are checked in the page's order. If any answer ends the interview, redirects, or screens out, the first such answer wins, even when an earlier answer jumps. Otherwise the first answer that jumps decides where the participant goes. Every answer on the page is saved either way. Display conditions, earlier-answer checks, and piping on a page can only read questions from earlier in the study, not from the same page.
 
 The target pickers only offer valid destinations, so you don't need to memorize these rules. If a later edit invalidates a saved rule — say, deleting the target or enabling randomized order on its group — the logic editor flags the rule with a warning.
 
@@ -60,11 +82,23 @@ With two or more display conditions, choose **Show this question when all / any 
 
 If the conditions can never all be met under **all** — two different **Equals** values on the same single-select question, or number conditions (`=` `>` `>=` `<` `<=`) whose ranges don't overlap, such as `> 8` and `< 3` — the editor warns that the question is never shown and offers **Switch to any**. **Any** applies to every condition of the question, so when some conditions read another question, the warning says that switching makes them optional too. The warning doesn't block saving.
 
-- **Sources** come from earlier in the study and use the same conditions as branching: Multiple Choice (Equals; Is not for single-select; Includes, Does not include and Fewer than N selections for multi-select), Rating Scale, NPS, Star Rating and Number (`=` `≠` `>` `>=` `<` `<=`), an open-ended question with an AI rule, or one row of a Matrix Selection (pick the row, then **Is** or **Is not** an answer — for example *Pricing* is *Falls short*; not available while the matrix has Multi selection on). In a translated interview, a matrix row condition still matches the participant's answer, because answers are saved against the original row and answer labels. The picker only offers eligible questions.
+- **Sources** are a URL parameter, a quota, or an earlier question, with the same conditions as branching (see [Conditions](#conditions)): Multiple Choice, Rating Scale, NPS, Star Rating, Number, an open-ended question with an AI rule, a Text Highlight category (**Highlighted as** or **Didn't highlight as**), Ranking, Card Sort, Matrix Rating Scale, Matrix Selection (pick the row, then **Is** or **Is not** an answer — for example *Pricing* is *Falls short*; **Includes** or **Does not include** with Multi selection on), Allocation, Matrix Allocation, Date and Media Upload. In a translated interview, these conditions still match the participant's answer, because answers are saved against the original labels. The picker only offers eligible questions.
 - A source can't be one the participant might not see before the question — for example a question inside a randomized group that could shuffle it after, or one inside a randomizer arm the participant may skip. The editor flags saved conditions that no longer hold (a renamed or removed option or matrix row, a source moved after the question), and the study can't be saved until they're fixed.
-- If the participant never answered the source — a branch skipped it, or the source was itself hidden — that condition isn't met. Under **all** the question is hidden; under **any** another condition can still show it. This holds for **Is not** and **Does not include** too: they need an answer to compare — and for a matrix row the participant left blank.
+- If the participant never answered the source — a branch skipped it, or the source was itself hidden — that condition isn't met, except a Media Upload's **is not answered**, which is. Under **all** the question is hidden; under **any** another condition can still show it. This holds for **Is not** and **Does not include** too: they need an answer to compare — and for a matrix row the participant left blank.
 - AI rules on display conditions are evaluated as soon as the participant leaves the source question, so later questions don't wait on them. If an evaluation fails, that condition counts as met rather than silently hiding the question: under **any** the question is shown, under **all** the other conditions still decide.
+- A display condition on a page question is decided when the participant reaches the page: a hidden question is left off the page, and the page skips straight to its first shown question.
 - Branching and display conditions work together: branching picks the next question, then display conditions decide whether it and the questions after it are shown. When every remaining question is hidden, the interview ends with the thank-you message.
+
+## Conditions on URL parameters and quotas
+
+A rule or a display condition can read the interview itself:
+
+- **URL parameter**: a value the study link carries, such as `source` in `…?source=panelA` (the [hidden fields](/studies/launch-and-sharing#hidden-fields--participant-tracking) of the link, which [link quotas](/studies/settings#quotas) also read). Conditions: *equals*, *is not*, *contains*, *is set*. Matching is exact and case-sensitive. *Is not* is met when the link doesn't carry the parameter at all. Conditions read the link values the interview started with: changing or adding a parameter in the URL later doesn't change them.
+- **Quota**: whether a quota is *full* or *open* — the study quota, one link bucket, or one option's [question quota](/studies/question-quotas). Use it to route people to another path instead of screening them out. Only completed interviews count toward a quota, as for quota enforcement: interviews in progress, previews and simulations don't. If you remove the quota a condition reads, the condition is ignored: a display condition on it no longer hides its question, and a rule on it never matches.
+
+These conditions work on every question type, including AI questions, where they sit next to **AI rules** and **Always**. As display conditions they have no source question, so they can be the first condition of any question.
+
+To test a URL parameter path, add the parameter to the preview link (`…&source=panelA`). Previews read the study's real quota state. Simulated participants open the study without URL parameters, so in simulations *equals*, *contains* and *is set* don't match, while *is not* does (a missing parameter is "not" any value).
 
 ## Screening participants
 
@@ -74,7 +108,7 @@ To build a screener, put your qualifying questions first and add **Screen out** 
 
 To pipe an earlier answer into a later question, use **mentions**: type `@` in the question editor and pick a previous question to insert a reference to its answer — or to a specific option or property of it. Each participant sees their own earlier answer woven into the question text ("Why did you choose the *Pro* plan?").
 
-Answers from these types can be referenced: Open Text, Short Text, Number, Multiple Choice, Matrix Rating Scale, Matrix Selection, Card Sort, Ranking, and Allocation.
+Answers from these types can be referenced: Open Text, Short Text, Number, Multiple Choice, Matrix Rating Scale, Matrix Selection, Text Highlight, Card Sort, Ranking, and Allocation. For Text Highlight you can reference the whole answer or the phrases highlighted with one category ("You marked "$9 a week" as not believable"). A participant who highlighted nothing with that category would see "No answer" in its place, so show that question only to people who did: add a display condition **Highlighted as** that category on the Text Highlight question.
 
 ## Good to know
 

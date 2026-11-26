@@ -16,7 +16,7 @@ Each interview shows the transcript, recordings (audio, video, and screen record
 
 If a voice answer was transcribed poorly, you can **re-run transcription** — for a single message or the whole interview — directly from the transcript view.
 
-Interviews move through statuses — *open, in progress, paused, processing, closed (complete), screened out,* and *canceled* — and can be archived. Simulated interviews are labeled with their persona and run number.
+Interviews move through statuses — *open, in progress, paused, processing, closed (complete), screened out,* and *canceled* — and can be archived. A screened-out interview that a [quota cell](/studies/quota-cells)'s **Quota full** action ended is labeled **Quota full**. Simulated interviews are labeled with their persona and run number.
 
 ### Per-interview AI analysis
 
@@ -50,11 +50,12 @@ Every insight is backed by evidence: quotes link to the exact interview, positio
 
 Filter both Results and Insights by:
 
-- Question answers (equals, includes, greater/less than) on quantitative types
+- Question answers (equals, includes, greater/less than) on quantitative types, and the categories used on a Text Highlight question (highlighted, not highlighted)
 - Metadata fields (including [hidden fields](/studies/launch-and-sharing#hidden-fields--participant-tracking) from your links)
 - Interview status — completed, archived, screened out
 - Simulated vs. real interviews
 - [Split-test arm](/studies/split-tests) — compare variants in studies with a randomizer
+- [Quota cell](/studies/quota-cells) — the responses in one cell of a quota, such as Women × 18-34
 
 Filters support multiple values and can be saved for reuse.
 
@@ -65,7 +66,7 @@ Build cross-study **reports** (documents or presentations) with an AI chat assis
 ## Exports
 
 - **PDF** — formatted reports with a cover page, executive summary, custom insights, and per-question pages with charts and data tables. Optimized for large studies (1,000+ responses).
-- **CSV** — raw response data, sanitized for Excel compatibility. Multi-select multiple choice answers export as one column per option (cell filled when selected, blank when not, plus an *Other* column when free-text entries are enabled) — the same fan-out matrix, ranking, and allocation questions use — so per-option pivots work directly in Excel. An allocation question with **custom options** turned on adds two last columns: *Custom options (total)*, the sum of the values a participant gave to their own options, and *Custom options*, their names and values as text. The two columns are exported only while the setting is on.
+- **CSV** — raw response data, sanitized for Excel compatibility. Multi-select multiple choice answers export as one column per option (cell filled when selected, blank when not, plus an *Other* column when free-text entries are enabled) — the same fan-out matrix, ranking, and allocation questions use — so per-option pivots work directly in Excel. An allocation question with **custom options** turned on adds two last columns: *Custom options (total)*, the sum of the values a participant gave to their own options, and *Custom options*, their names and values as text. The two columns are exported only while the setting is on. A study with [quota cells](/studies/quota-cells) adds a `Quota cell: <quota name>` column per quota, naming the participant's cell, and a `quota_outcome` column that reads `quota_full` for responses a **Quota full** action ended.
 
 ### Telling repeated questions apart
 

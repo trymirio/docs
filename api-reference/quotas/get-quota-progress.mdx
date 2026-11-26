@@ -18,6 +18,9 @@ Returns the study's quota configuration together with the current number of comp
 <ResponseField name="question_buckets" type="array">
   One `{ question_id, kind, match, value, limit, complete }` per [question quota](/studies/question-quotas), included in every mode.
 </ResponseField>
+<ResponseField name="cells" type="array">
+  One `{ group_id, levels, limit, complete }` per capped cell of the study's [quotas with cells](/studies/quota-cells), included in every mode. `group_id` is the quota's ID from [Get quota cells](/api-reference/quotas/get-quota-groups).
+</ResponseField>
 
 `complete` can exceed `limit` by a small amount when several participants finish at the same time.
 
@@ -45,6 +48,9 @@ curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5
       "limit": 25,
       "complete": 19
     }
+  ],
+  "cells": [
+    { "group_id": "6a1e4c2b-7f3d-4b8a-9c5e-2d1f0a9b8c7d", "levels": [0, 0], "limit": 50, "complete": 31 }
   ]
 }
 ```

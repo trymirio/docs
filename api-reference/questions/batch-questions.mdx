@@ -4,7 +4,7 @@ api: "POST /questions/batch"
 description: "Create and update questions in one call"
 ---
 
-Creates and/or updates questions in a single study in one request. Items **with** an `id` are updated; items **without** an `id` are created (appended after the existing questions in the order given). Returns `201`.
+Creates and/or updates questions in a single study in one request. Items **with** an `id` are updated; items **without** an `id` are created (appended after the existing questions in the order given, or placed with `after_position`). Returns `201`.
 
 <ParamField header="Idempotency-Key" type="string">
   Optional, up to 255 characters. Makes the request safe to retry; see [Retries](#retries).
@@ -18,7 +18,7 @@ Creates and/or updates questions in a single study in one request. Items **with*
   - `content` — question text; may include `{{Q:...}}` references.
   - `type` — question type (see [List questions](/api-reference/questions/list-questions) for values).
   - `props` — type-specific settings object. On updates it is merged with the existing props, with the same handling of multiple-choice `exclusiveOptions` and `anchoredOptions` as [Update question](/api-reference/questions/update-question#editing-multiple-choice-options) and the same validation of `earlierAnswerChecks` ([checks against earlier answers](/api-reference/questions/update-question#checks-against-earlier-answers)).
-  - `props.aiProbe` — the AI follow-up on Multiple Choice, Rating Scale, NPS, Star Rating, Ranking and Matrix questions: `{ enabled, maxFollowups, instructions, trigger, triggerValues }`. `maxFollowups` is 1 to 3, or `null` for no limit. `trigger` is `always` or `onValues`. Not available on surveys.
+  - `props.aiProbe` — the AI follow-up on Multiple Choice, Rating Scale, NPS, Star Rating, Ranking, Matrix and Text Highlight questions: `{ enabled, maxFollowups, instructions, trigger, triggerValues }`. `maxFollowups` is 1 to 3, or `null` for no limit. `trigger` is `always` or `onValues`. Not available on surveys.
   - `interviewer_notes` — private AI guidance.
   - `display_condition_match` — `all` or `any`, as in [Update question](/api-reference/questions/update-question); any other value returns `400`.
   - `assets` — media assets array.
@@ -28,6 +28,10 @@ Creates and/or updates questions in a single study in one request. Items **with*
   - `embedded_website_url` — an `https://` page framed beside the question; not on `websiteTest`, `prototypeTask`, or `calendar`. Figma links are refused (pass them as `figma_prototype_url`), as are v0 share links.
   - `figma_prototype_url` — a public Figma prototype link, stored embed-only under `https://www.figma.com/proto/…`: required on `prototypeTask` (the task's prototype), and on any other type except `websiteTest` and `calendar` it attaches the prototype as the question's asset. On a `prototypeTask`, replacing the link clears an existing `props.goalNode`, and a non-empty `goalNode` in the same item is refused.
   - `display_order` — position (new questions are auto-ordered if omitted).
+</ParamField>
+
+<ParamField body="after_position" type="string">
+  Optional. Places the new questions together, in the order given: `start` or `end` of their level (their `question_group_id`, or the study top level), or right after a question, group, or randomizer, named by its ID. Later questions, groups, and randomizers on that level move down to make room. Without `question_group_id`, the questions join the group of the question they follow. With `after_position` the batch may hold only new questions that share one `question_group_id` and have no `display_order`; anything else, or an ID that matches nothing in the study, returns `400`. Batches placed in the same study at the same time are saved one after another, each right after its anchor as the study stands then. If the anchor or the group is moved or deleted while the batch is saved, the request returns `409` and nothing is written; send it again.
 </ParamField>
 
 ### Question references (mentions)
@@ -45,10 +49,13 @@ Property indices are zero-based. Do not construct property tokens with a generic
 
 Call [List available references](/api-reference/studies/available-references) for the destination question's position and copy the returned `template` verbatim. References are validated on write, and invalid property names, indices, missing questions, or forward references fail with `422` and an `errors` array.
 
+A new question can also reference a new question earlier in the same batch, which has no ID yet: use `new:N`, where N is that question's place among the batch's new questions (items without an `id`), counting from 1. For example, `{{Q:new:1}}` or `{{Q:new:1.rankOfOption[0]}}` in `content` (or an exploratory question's `props.goal`), and `"questionId": "new:1"` in the `source` of a check in `props.earlierAnswerChecks`. The API replaces each `new:N` with that question's new ID before saving. A `new:N` that names the question itself or a later one fails with `400` before anything is written.
+
 ### Response
 
 <ResponseField name="created_question_ids" type="string[]">IDs of newly created questions, in request order: `created_question_ids[i]` is the ID of the i-th item **without** an `id`. Items with an `id` are skipped, and `display_order` or `question_group_id` on an item does not change its position in this list.</ResponseField>
 <ResponseField name="updated_question_ids" type="string[]">IDs of updated questions, in request order.</ResponseField>
+<ResponseField name="placement" type="object">Only when you sent `after_position`: `question_group_id`, the group the new questions are in (`null` for the study top level), and `position`, the first new question's sidebar number (its Q-number, counting every randomizer arm).</ResponseField>
 
 To map each ID back to the question you sent, walk your `questions` array and take the next ID from `created_question_ids` for each item without an `id`, and the next ID from `updated_question_ids` for each item with one.
 
@@ -56,7 +63,7 @@ To map each ID back to the question you sent, walk your `questions` array and ta
 
 The batch is validated before anything is written. When one item is invalid, the request fails with `400`, `403`, or `404` and a `detail` that names the item by its zero-based position, for example `"questions[2]: Unknown question type 'notAType'. ..."`. Fix that item and resend the whole batch.
 
-Two checks run after the rows are written: `{{Q:...}}` references on every item, and checks against earlier answers on new questions. A `422` from either one leaves the batch written and does not return the new IDs. Retrying the same request with the same `Idempotency-Key` returns the same `422` without creating the questions again; fix the batch and send it with a new key.
+Two checks run after the rows are written: `{{Q:...}}` references on every item, and checks against earlier answers on new questions. A `422` from either one leaves the batch written and does not return the new IDs. Retrying the same request with the same `Idempotency-Key` returns the same `422` without creating the questions again; fix the batch and send it with a new key. With `after_position`, both checks run before anything is written: that `422` has `"written": false` in its `detail`, and no questions were created.
 
 ### Retries
 
@@ -64,7 +71,7 @@ Send an `Idempotency-Key` header (a UUID you generate per batch works well) and 
 
 The key only covers that exact body: the same key with a different body is treated as a new batch. Without the header, every request creates new questions.
 
-The example below creates one new question and updates an existing one (`8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d`), piping that existing question's answer into the new question's text. References must point at questions that already exist in the study — use [List available references](/api-reference/studies/available-references) to discover valid templates.
+The example below creates one new question and updates an existing one (`8d3b6a2f-1c4e-4f7a-b5d9-2e6c8a0f4b1d`), piping that existing question's answer into the new question's text. For a question already in the study, use [List available references](/api-reference/studies/available-references) to find a valid template. For a new question earlier in the same batch, use `new:N` as described above.
 
 <RequestExample>
 ```bash cURL

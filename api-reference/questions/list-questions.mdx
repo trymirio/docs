@@ -4,7 +4,7 @@ api: "GET /questions"
 description: "List a study's questions with logic and mentions"
 ---
 
-Returns all questions in a study, ordered by `display_order`, each with its logic rules and resolved mentions.
+Returns all questions in a study in the order the study editor shows them (Q1, Q2, ...), each with its logic rules and resolved mentions. A group's questions come together where the group sits, and every Randomizer arm is included in arm order.
 
 <ParamField query="study_id" type="string" required>
   The study whose questions to list.
@@ -17,13 +17,13 @@ An array of question objects:
 <ResponseField name="id" type="string">Question ID.</ResponseField>
 <ResponseField name="content" type="string">The question text (may include `{{Q:...}}` reference placeholders).</ResponseField>
 <ResponseField name="type" type="string">
-  Question type — e.g. `question` (AI Question), `textInput`, `shortText`, `message`, `email`, `multipleChoice`, `ratingScale`, `matrixRatingScale`, `matrixSelection`, `starRating`, `nps`, `number`, `dateInput`, `ranking`, `rankingWithMatrix`, `cardSort`, `allocation`, `allocationWithMatrix`, `conjoint`, `treeTest`, `prototypeTask`, `websiteTest`, `externalLink`, `calendar`, `mediaUpload`, `exploratory`. Write endpoints accept only these values (case-sensitive); any other `type` is refused.
+  Question type — e.g. `question` (AI Question), `textInput`, `shortText`, `message`, `email`, `multipleChoice`, `ratingScale`, `matrixRatingScale`, `matrixSelection`, `starRating`, `nps`, `number`, `dateInput`, `ranking`, `rankingWithMatrix`, `cardSort`, `allocation`, `allocationWithMatrix`, `conjoint`, `maxDiff`, `treeTest`, `prototypeTask`, `websiteTest`, `imageClick`, `externalLink`, `calendar`, `mediaUpload`, `exploratory`, `textHighlight`. Write endpoints accept only these values (case-sensitive); any other `type` is refused.
 </ResponseField>
 <ResponseField name="interviewer_notes" type="string | null">Private notes guiding the AI interviewer.</ResponseField>
 <ResponseField name="display_condition_match" type="string">
   How the question's display conditions combine: `all` (every condition must be met) or `any` (one is enough).
 </ResponseField>
-<ResponseField name="display_order" type="integer">Position in the study.</ResponseField>
+<ResponseField name="display_order" type="integer">Position among the items that share its parent (its group, its Randomizer arm, or the top level). It restarts in every group and arm, so use the list order, not this field, for the question's place in the study.</ResponseField>
 <ResponseField name="props" type="object">
   Type-specific settings (options, scales, limits, and so on). On an Image Choice question, each picture in
   `props.optionImages[].images[]` has the same `url`, `download_url` and `download_url_expires_at` fields as an asset.

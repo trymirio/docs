@@ -55,11 +55,13 @@ If you change your mind later, delete the study from the **Projects** page.
 | Slider, stars | One Star Rating for each statement |
 | Constant Sum | Allocation |
 | Rank Order | Ranking |
-| Pick, Group & Rank | Card Sort |
+| Pick, Group & Rank | Ranking of its top N options when it has one group (N is its maximum, or every card; exactly N when its minimum is the same), Card Sort otherwise |
 | Descriptive Text or Graphic | Message |
 | File Upload | Media Upload, which takes images and videos |
 
 Option and column labels keep their text. Question text keeps bold, italic, underline, links, and lists.
+
+A slider's N/A choice carries over with its text: a Rating Scale with one uses the slider format, which offers N/A, and Number and Allocation offer it too. Star Rating has no N/A.
 
 On Multiple Choice, options with a fixed position in a random order keep that position as [anchored options](/studies/question-types), and the other options shuffle. On other question types, a random order with fixed positions shows every option in its original order.
 
@@ -83,7 +85,8 @@ On Multiple Choice, options with a fixed position in a random order keep that po
 
 The report names everything below that your file holds, so you can decide what to rebuild.
 
-- **Question types with no match:** Side by Side, Drill Down, Hot Spot, Heat Map, Signature, Gap Analysis, and the Bipolar, MaxDiff, and text-entry forms of Matrix Table. A Profile matrix with separate answers per row has no match either, and neither has a Constant Sum matrix with more than 8 columns.
+- **Question types with no match:** Side by Side, Drill Down, Hot Spot, Heat Map, Signature, Gap Analysis, and the Bipolar and text-entry forms of Matrix Table. A Profile matrix with separate answers per row has no match either, and neither has a Constant Sum matrix with more than 8 columns.
+- **MaxDiff matrices** are not imported: rebuild them as a [MaxDiff question](/studies/question-types#maxdiff).
 - **Media and code:** images and media in question text or options, and custom JavaScript.
 - **Survey features:** Loop & Merge, scoring, recode values, survey access protection, the Back button setting, and the redirect at the end of the survey.
 - **Logic on embedded data.** Logic and piped text in questions cannot read a hidden field yet. A redirect can pass one on.
@@ -93,8 +96,9 @@ The report names everything below that your file holds, so you can decide what t
 Some things change on the way in:
 
 - **Request Response** becomes optional. To remind participants once before they skip, turn on [Request response](/studies/question-types#required-and-request-response) on the question after the import. Ranking, Open Text, and Message questions (a question with one option becomes a Message) don't have that setting.
+- **Text boxes on options.** Multiple Choice has one text box, on its Other option. The first option with a text box whose text starts with "Other" or "Something else", such as "Other (please specify)", becomes that Other option. The same words in other common survey languages count too, such as "Otro" or "Anders". Any other option with a text box, such as "No, because", stays an option with its text, without the box. A question whose only option has a text box is not imported, and the report names it.
 - **Carry forward** lists every option of the source question, not only the ones the participant chose.
-- **Page breaks** have no effect, because Versive shows one question per screen.
+- **Page breaks** aren't carried over: each imported question shows on its own screen. To show several questions together, put them on a [page](/studies/question-types#several-questions-on-one-page) after the import.
 
 Deleted questions and timing or meta records are skipped on purpose. The report counts them.
 

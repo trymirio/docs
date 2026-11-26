@@ -1,0 +1,33 @@
+---
+title: "Remove question group"
+api: "POST /question-groups/{group_id}/remove"
+description: "Ungroup a group (keep its questions) or delete it with its questions"
+---
+
+<ParamField path="group_id" type="string" required>The group ID.</ParamField>
+<ParamField body="study_id" type="string" required>The study ID.</ParamField>
+<ParamField body="mode" type="string" default="ungroup">`ungroup` lifts the group's questions and subgroups to its parent; `delete` removes the group and everything in it.</ParamField>
+
+### Response
+
+<ResponseField name="mode" type="string">The mode applied.</ResponseField>
+<ResponseField name="deleted_logic_rules" type="integer">Logic rules removed because they pointed at removed content.</ResponseField>
+<ResponseField name="lifted_questions" type="integer">With `ungroup`: questions moved to the parent.</ResponseField>
+<ResponseField name="lifted_groups" type="integer">With `ungroup`: subgroups moved to the parent.</ResponseField>
+<ResponseField name="deleted_groups" type="integer">With `delete`: groups removed.</ResponseField>
+<ResponseField name="deleted_questions" type="integer">With `delete`: questions removed.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.getversive.com/api/v1/question-groups/d4e5f6a7-0000-4000-8000-000000000002/remove" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b", "mode": "ungroup"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{ "mode": "ungroup", "deleted_logic_rules": 0, "lifted_questions": 3, "lifted_groups": 0 }
+```
+</ResponseExample>

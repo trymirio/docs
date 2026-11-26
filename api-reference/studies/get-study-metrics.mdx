@@ -14,7 +14,7 @@ Returns response counts and quota progress for a study. Counts exclude archived,
 
 <ResponseField name="complete" type="integer">Completed interviews.</ResponseField>
 <ResponseField name="in_progress" type="integer">Interviews a participant has started but not finished.</ResponseField>
-<ResponseField name="screened_out" type="integer">Participants screened out by logic rules or question quotas.</ResponseField>
+<ResponseField name="screened_out" type="integer">Participants screened out by logic rules, question quotas, or [quota cells](/studies/quota-cells) (both the Screen out and the Quota full actions).</ResponseField>
 <ResponseField name="quota" type="integer | null">
   The total-completes cap when the study uses one, otherwise `null`. Kept for compatibility; use `quotas` for the full picture.
 </ResponseField>

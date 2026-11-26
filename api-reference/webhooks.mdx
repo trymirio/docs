@@ -1,11 +1,11 @@
 ---
 title: "Webhooks"
 sidebarTitle: "Webhooks"
-description: "Receive signed notifications when a Versive interview is completed or screened out"
+description: "Receive signed notifications when an interview is completed or screened out, or a study's quota fills"
 ---
 
-Versive can send an HTTPS webhook when an interview is completed or a participant is screened out. Webhooks are an
-organization-level integration, and organization owners and admins set them up themselves.
+Versive can send an HTTPS webhook when an interview is completed, a participant is screened out, or a study's quota
+fills. Webhooks are an organization-level integration, and organization owners and admins set them up themselves.
 
 ## Set up webhooks
 
@@ -25,11 +25,13 @@ API.
 | --- | --- |
 | `interview.completed` | A participant completes an interview. |
 | `interview.screened_out` | A participant is screened out of an interview. |
+| `study.quota_filled` | A study's [quota](/studies/settings#quotas) is full. |
 
-If the Versive team set up your webhooks before self-serve setup, you receive `interview.screened_out` only after an
-owner or admin turns webhooks off and back on in **Organization → Connectors → Webhooks**. Until then you receive
-`interview.completed` only. An endpoint with no event filter receives every event type, so if your receiver doesn't
-check `event_type`, subscribe that endpoint to `interview.completed` only in the portal before you turn webhooks back on.
+If the Versive team set up your webhooks before self-serve setup, you receive `interview.screened_out` and
+`study.quota_filled` only after an owner or admin turns webhooks off and back on in
+**Organization → Connectors → Webhooks**. Until then you receive `interview.completed` only. An endpoint with no event
+filter receives every event type, so if your receiver doesn't check `event_type`, subscribe that endpoint to
+`interview.completed` only in the portal before you turn webhooks back on.
 
 ### `interview.completed`
 
@@ -86,6 +88,36 @@ conversation or recording.
 }
 ```
 
+### `study.quota_filled`
+
+Sent once when a study reaches its quota: its total cap, or, with a cap per link parameter value, when every value is
+full. It arrives after the `interview.completed` events of the interviews it counts. Archived interviews and
+interviews that finish after the quota filled don't send it again. If you raise the quota and the study fills again,
+you get a new event for the new limit. Only a completed interview triggers the event: lowering a quota to the number
+of completes the study already has doesn't send it.
+
+`quota.mode` is `fixed` for a total cap or `url_param` for caps per link parameter value; with `url_param`, `limit` and
+`complete` are totals across all values. `complete` can exceed `limit` when several participants finish at the same
+time. [Question quotas](/studies/question-quotas) and [quota cells](/studies/quota-cells) don't send this event. To read the counts at any time, use
+[Get quota progress](/api-reference/quotas/get-quota-progress).
+
+```json
+{
+  "event_type": "study.quota_filled",
+  "version": 1,
+  "study": {
+    "id": "study-uuid",
+    "title": "Onboarding research"
+  },
+  "quota": {
+    "mode": "fixed",
+    "limit": 100,
+    "complete": 100
+  },
+  "filled_at": "2026-12-01T10:05:00.000000+00:00"
+}
+```
+
 ## Verify every request
 
 Deliveries are signed by Svix. Verify the `svix-id`, `svix-timestamp`, and `svix-signature` headers against your endpoint
@@ -98,7 +130,7 @@ See the [Svix verification guide](https://docs.svix.com/receiving/verifying-payl
 
 Return a `2xx` response only after your service has accepted the event. Use the `svix-id` header as an idempotency key
 because a delivery may be retried. Queue slow work and respond promptly rather than performing long-running processing
-in the request handler.
+in the request handler. If Svix is unreachable, Versive retries handing an event to Svix for about 10 hours.
 
 For changes to available events or webhook management, follow the
 [versioning policy](/api-reference/versioning).
