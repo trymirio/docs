@@ -1,0 +1,30 @@
+---
+title: "List question groups"
+api: "GET /question-groups"
+description: "A study's question groups and pages"
+---
+
+Returns every question group in a study, including pages.
+
+<ParamField query="study_id" type="string" required>The study ID.</ParamField>
+
+### Response
+
+An array of groups.
+
+<ResponseField name="id" type="string">The group ID.</ResponseField>
+<ResponseField name="study_id" type="string">The study the group belongs to.</ResponseField>
+<ResponseField name="parent_question_group_id" type="string | null">The group it sits in, or `null` at the top level. Groups nest at most two levels.</ResponseField>
+<ResponseField name="title" type="string">Internal title. A page shows it as its heading.</ResponseField>
+<ResponseField name="display_order" type="integer">Position among its siblings (questions and groups share one order).</ResponseField>
+<ResponseField name="is_randomize" type="boolean">Whether the group shuffles its direct children for each participant.</ResponseField>
+<ResponseField name="is_pinned" type="boolean">Whether the group keeps its position when its parent is randomized.</ResponseField>
+<ResponseField name="kind" type="string">`group` (questions asked one at a time) or `page` (the web interviewer shows all of its questions on one screen; voice interviews still ask them one at a time).</ResponseField>
+<ResponseField name="routing_branch_id" type="string | null">The randomizer arm that owns this group, if any.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.getversive.com/api/v1/question-groups?study_id=9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>

@@ -52,6 +52,7 @@
               "studies/prototype-testing",
               "studies/logic",
               "studies/question-quotas",
+              "studies/quota-cells",
               "studies/split-tests",
               "studies/tutorial-page",
               "studies/ai-interviewer",
@@ -129,7 +130,19 @@
               "api-reference/quotas/update-study-quotas",
               "api-reference/quotas/get-quota-progress",
               "api-reference/quotas/list-question-quotas",
-              "api-reference/quotas/update-question-quotas"
+              "api-reference/quotas/update-question-quotas",
+              "api-reference/quotas/get-quota-groups",
+              "api-reference/quotas/update-quota-groups"
+            ]
+          },
+          {
+            "group": "Question groups",
+            "pages": [
+              "api-reference/question-groups/list-question-groups",
+              "api-reference/question-groups/create-question-group",
+              "api-reference/question-groups/update-question-group",
+              "api-reference/question-groups/move-questions",
+              "api-reference/question-groups/remove-question-group"
             ]
           },
           {

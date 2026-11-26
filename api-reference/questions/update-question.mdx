@@ -18,7 +18,7 @@ Updates a question. Only the fields you send change, and `props` is **merged** w
   How the question's display conditions combine: `all` shows it only when every condition is met, `any` when one is. Any other value, or `null`, returns `422`.
 </ParamField>
 <ParamField body="display_order" type="integer">New position.</ParamField>
-<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive and anchored options are kept in sync, [Matrix Allocation not-applicable cells](#matrix-allocation-not-applicable-cells) for `allocationWithMatrix`, and [Checks against earlier answers](#checks-against-earlier-answers) for `number` and `allocation` validation against an earlier answer.</ParamField>
+<ParamField body="props" type="object">Settings to merge into the existing props. See [Editing multiple-choice options](#editing-multiple-choice-options) for how exclusive and anchored options are kept in sync, [Matrix Allocation not-applicable cells](#matrix-allocation-not-applicable-cells) for `allocationWithMatrix`, [Text Highlight](#text-highlight) for `textHighlight`, and [Checks against earlier answers](#checks-against-earlier-answers) for `number` and `allocation` validation against an earlier answer.</ParamField>
 <ParamField body="assets" type="object[]">
   Replaces the media assets array. Keep each asset's stable `url` from [List questions](/api-reference/questions/list-questions).
   `download_url` and `download_url_expires_at` are read-only and are discarded if sent back, here and on the pictures in `props.optionImages`.
@@ -76,6 +76,8 @@ To change which options are exclusive, send the new `exclusiveOptions` list expl
 `multipleChoice` questions, single- or multi-select, can also **anchor** options in `props.anchoredOptions`. With `randomizeOrder` on, an anchored option keeps its position in `props.options` and only the other options shuffle, so "None of these" listed last stays last for every participant. Entries are the option *text* and must exactly match an entry in `props.options` (case-sensitive), otherwise the request is rejected with `400`. Anchors stay stored while `randomizeOrder` is off, where they have no effect. Like `exclusiveOptions`, renaming one option keeps its anchor and removing an option drops it when you omit `anchoredOptions` or send it unchanged; send an empty list to remove all anchors.
 
 [Question quotas](/studies/question-quotas) on the options follow the same rule: renaming one option moves its quota to the new text, and removing an option drops its quota. Rename options one at a time, without adding or removing others in the same request, so a quota is never mistaken for a removed option's.
+
+[Quota cells](/studies/quota-cells) follow a rename the same way. An edit that removes the only option of a quota cell level, or changes the type of a question a quota cell reads, writes nothing and returns `409` naming the quota; change or remove that level or variable first.
 
 ```json
 {
@@ -162,6 +164,26 @@ Like `exclusiveOptions`, you don't need to resend `naCells` when you edit `optio
 }
 ```
 
+### Text Highlight
+
+`textHighlight` questions need `props.passage`, the text participants highlight (at most 5,000 characters, counted in UTF-16 code units as in JavaScript, so an emoji counts as 2), and `props.options`, the highlight categories (1 to 8, unique and not blank). `props.maxHighlights` caps the highlights per participant: a whole number from 1 to 100, or `null` for no limit. Anything else is rejected with `400`.
+
+```json
+{
+  "props": {
+    "passage": "Free shipping on every order. Cancel anytime.",
+    "options": ["Believable", "Not believable"],
+    "maxHighlights": 3
+  }
+}
+```
+
+### MaxDiff design
+
+A `maxDiff` question stores its design in its props: `items` (6 to 30 `{"id", "label"}` objects with different labels), `itemsPerSet` (3, 4 or 5), `setsPerRespondent` (1 to 30, and enough to show every item once) and `sets`, a list of `{"id", "itemIds"}` objects. The study editor generates `sets`; the API only checks them. Every set needs its own `id` and exactly `itemsPerSet` different item ids from `items`, there must be `setsPerRespondent` sets, and every item must appear in at least one set, otherwise the request is rejected with `400`. Optional: `bestLabel` and `worstLabel` (strings; empty shows "Most important" and "Least important" in the participant's language) and `randomizeSetOrder` (a boolean).
+
+Props merge into the existing ones, so a change to `items` or `itemsPerSet` must send matching `sets` too. Answers store set and item ids, so answers given to sets that no longer exist drop out of Insights and exports. A set that keeps an existing `id` must keep the same items (their order may change): give a changed set a new `id`, otherwise the request is rejected with `400`.
+
 ### Answer format and request response
 
 `shortText` questions can require a format in `props.format` and a minimum length in `props.minLength` (a positive integer, at most `maxLength` when both are set). `format.type` is one of `phone`, `postalCode`, `digits`, `letters`, `email`, `url` or `regex`:
@@ -180,6 +202,20 @@ Any question type with `required` can also set `props.requestResponse` to `true`
     "requestResponse": true,
     "minLength": 5,
     "format": { "type": "postalCode", "country": "MX", "example": "06600" }
+  }
+}
+```
+
+### Image Click
+
+`imageClick` questions are answered on the question's one image (`assets`). `props.maxClicks` is the most clicks per participant, a whole number from 1 to 20. `props.tags` are optional labels participants give each click (at most 8, unique and not blank). `props.regions` are report-only areas of the image (at most 20), each `{id, label, x, y, w, h}` with a unique `id` and a label. `x` and `y` are the top-left corner and `w` and `h` the size, as fractions of the image: `x` and `y` at least 0, `w` and `h` above 0, and the region must fit on the image (`x + w` and `y + h` at most 1). The question also needs exactly one image and no other media. Anything else is rejected with `400`.
+
+```json
+{
+  "props": {
+    "maxClicks": 1,
+    "tags": ["Like", "Dislike"],
+    "regions": [{ "id": "logo", "label": "Logo", "x": 0.02, "y": 0.04, "w": 0.25, "h": 0.15 }]
   }
 }
 ```

@@ -9,6 +9,19 @@ Versive offers 20+ question types organized into four groups: **Open response**,
 **Surveys** (the no-AI engine) hide the conversational types (AI Question and Exploratory) and use structured types only.
 </Callout>
 
+## Several questions on one page
+
+By default participants see one question at a time. To show several together, choose **Add page** in the study builder's add menu, or turn on **Show on one page** in a group's settings. Participants then see all the page's questions stacked on one screen and answer them with a single **Next**. The page's name, if you give it one, shows as its heading, translated like the rest of the study. Pages work in every study mode except voice-to-voice, where the interviewer still asks them one at a time.
+
+- **Question types** — a page can hold Multiple Choice, Rating Scale, Matrix Rating Scale, Matrix Selection, NPS, Star Rating, Number, Date, Email, Short Text, Open Text, Ranking, Matrix Ranking, Allocation, Matrix Allocation, and Message. It can't hold groups or randomizers, and a question on a page can't have a Figma prototype, an embedded website or HTML file, or an AI follow-up. Open Text answers on a page are typed, not recorded.
+- **Required questions** — when the participant selects **Next** with a required question unanswered, the page points to each one and scrolls to the first. The footer shows how many required questions are left; optional questions are marked **Optional**.
+- **Media** — a question's image, video, or PDF shows inline under it, whatever its layout setting.
+- **Going back** — participants can go back to a page, where their answers are kept, and change them. As with a single question, a change that affects branching or which questions show later sends them on from the page again; any other change keeps the answers they gave after it.
+- **Logic** — branching runs once the whole page is submitted. See [Logic on a page](/studies/logic#logic-on-a-page).
+- **Progress** — the progress bar counts a page as one step.
+
+Answers are saved per question, so results, exports, and transcripts look the same as for questions shown one at a time.
+
 ## Open response
 
 ### AI Question
@@ -112,11 +125,13 @@ Participants pick **one answer for each row**, or several with **Multi selection
 | Required | Every row needs an answer (at least one with Multi selection). Optional questions can be skipped untouched, or answered for some rows only. |
 | Randomize order | Shuffle the rows per participant. Answers keep their order. |
 
-Results show the answer distribution for each row. With Multi selection, each row's percentages are over the participants who answered that row, so they can add up to more than 100%. The CSV export has one column per row holding the chosen answer; with Multi selection it has one column per row and answer (the answer when picked, blank when not), plus an "Unmatched" column per row for answers renamed or deleted after they were picked. A later question can reference the answer for one row with `selectionForItem[index]`; several answers are joined with ", " (see [Referencing earlier answers](#referencing-earlier-answers)). A question with Multi selection on can't be a display logic source.
+Results show the answer distribution for each row. With Multi selection, each row's percentages are over the participants who answered that row, so they can add up to more than 100%. The CSV export has one column per row holding the chosen answer; with Multi selection it has one column per row and answer (the answer when picked, blank when not), plus an "Unmatched" column per row for answers renamed or deleted after they were picked. A later question can reference the answer for one row with `selectionForItem[index]`; several answers are joined with ", " (see [Referencing earlier answers](#referencing-earlier-answers)). With Multi selection on, logic on a row uses **Includes** and **Does not include** (see [Logic & branching](/studies/logic#conditions)).
 
 ### Card Sort
 
-Participants sort cards into categories — ideal for information architecture research. Settings: cards, categories, randomize order, **allow new categories** (open sort), and **allow new cards**.
+Participants sort cards into categories, which suits information architecture research. Settings: cards, categories, randomize order, **Custom categories** (open or hybrid sort), and **Custom cards**. Paste a list into a card or category field to add one entry per line.
+
+For a closed sort, list your categories and leave **Custom categories** off. For a hybrid sort, list your categories and turn **Custom categories** on. For an open sort, remove every category and turn **Custom categories** on, so participants create and name all of them.
 
 ### Ranking
 
@@ -170,6 +185,24 @@ Choice-based conjoint analysis (CBC): participants repeatedly choose between pro
 
 Results include **attribute importance**, **level utilities**, **choice shares**, and design diagnostics — all computed automatically in Insights.
 
+### MaxDiff
+
+Best-worst scaling: you list 6 to 30 items (claims, features, messages), and participants see them in small sets, one set per screen. In each set they pick the item that matters most and the item that matters least. One item can't be both.
+
+| Setting | Description |
+| --- | --- |
+| Items | The claims, features or messages to compare, 6 to 30. Each label must be different. |
+| Items per set | How many items each screen shows (3, 4 or 5). |
+| Sets per participant | How many screens each participant answers (1 to 30). The card shows how many times each item appears and recommends enough sets for each item to appear about 3 times. It must be at least enough to show every item once. |
+| Best label / Worst label | The column titles, for example "Most important" and "Least important". Empty shows those defaults in the participant's language. |
+| Randomize set order | Shuffle the order of the sets for each participant. |
+
+Versive builds the sets for you: each item appears about equally often, and pairs of items appear together about equally often. Any change to the items, the set size or the number of sets builds new sets; editing a label keeps them. **Regenerate sets** builds new sets on demand. New sets have new ids, so answers collected on the earlier sets no longer count in Insights or the CSV export: settle the design before you launch. Translations change only the labels, never the sets.
+
+Results show each item's **preference share** (the chance it is picked best if every item were shown at once; all shares add up to 100%), how often it was picked best and worst, and a **best-minus-worst score** (-100 to 100), as a ranked chart and table in Insights. With fewer than 50 complete participants, Insights mark the scores as directional; with too few answers for the model, they rank by the best-minus-worst score. On the Results page, a response's transcript shows every set the participant answered, with their best and worst pick marked, and their own score per item. An answer given on sets that were later replaced, and a translated copy of a transcript, keep the plain answer text instead. The CSV export has the best and worst item of each set and each participant's score per item (times picked best minus times picked worst).
+
+MaxDiff questions are created and set up in the study editor: the AI assistant and MCP can't add one or change its items or sets, but they can edit the question text. AI personas skip them in simulations. Participants can't go back into a MaxDiff question once they leave it, but they can step back between its sets.
+
 ### Tree Test
 
 Findability testing on a navigation tree. Participants complete tasks by locating the right node in your hierarchy.
@@ -210,11 +243,41 @@ A configurable icon rating — **stars, hearts, or paws** — with an adjustable
 
 Standard Net Promoter Score (default 0–10) with customizable end labels ("Not at all likely" / "Extremely likely").
 
+### Image Click
+
+Participants click spots on an image. One click makes a first-click test ("Where would you click to start a return?"). Several clicks make a heat map of what draws attention. Add the image with **Add image**; each language can use its own version of it.
+
+| Setting | Description |
+| --- | --- |
+| Maximum clicks | The most clicks one participant leaves, 1 to 20. Default: 1. Past the limit, a new click replaces the oldest. |
+| Tags | Optional labels participants pick for each click, such as **Like** and **Dislike**, up to 8. |
+| Regions | Areas you drag on the image, such as a logo or a price, up to 20. Participants never see them; results show how many participants clicked each one. |
+| Required | The participant must click the image at least once. |
+
+Participants tap or click the image to place a mark, then pick a tag if the question has tags. Tapping a mark removes it, or with tags lets them change its tag or remove it. With a keyboard, Enter places a mark in the middle of the image, the arrow keys move it, and Delete removes it.
+
+Insights show a heat map of the clicks (one tag at a time, or all), the share of participants who clicked each region, and the median time to first click, counted from when the image appeared. When a new click replaces an earlier one, the click that stays is the one that counts. Region results use the regions as they are now, so you can draw or move regions after responses come in; click **Update insights** to recount them. The PDF export has the region table and the median time; the heat map stays in Versive. The CSV export has a Clicks column (each click's tag, position and time) and one column per region with 1 (clicked) or 0. Participants never receive the regions: results work out each click's region from its position. Clicks are saved as positions on the image, so phones and computers line up. Insights draw every language's clicks on the default image and count them against its regions, so a translated image must keep the same layout and shape. Image Click can't be a logic source or have quotas, the AI assistant and MCP can create and edit it with its image, click limit and tags (draw regions in the study builder), AI personas skip it in simulations, and voice-only studies don't offer it.
+
 ### Matrix Rating Scale
 
 Rate multiple items on the same scale. Supports randomized row order and an optional **N/A** column.
 
 An optional **one selection per column** constraint makes each scale value usable by at most one row — once a row picks a value, it's greyed out for the others (N/A stays shared). Useful for forced-ranking grids. The toggle is only available when every row can still receive a value: at least as many scale points as rows, or the N/A column enabled.
+
+### Text Highlight
+
+Participants highlight words or phrases in a passage and label each highlight with a category, such as **Like** or **Dislike**. Use it to test message, ad, or packaging copy: for example, "Looking at this message, what about it is not believable?"
+
+| Setting | Description |
+| --- | --- |
+| Text to highlight | The text participants highlight, up to 5,000 characters. Plain text; line breaks are kept. |
+| Categories | The labels for a highlight, 1 to 8, each unique. Each category has its own color. Default: Like and Dislike. |
+| Maximum highlights | The most highlights one participant can make, from 1 to 100. Leave it empty for no limit. |
+| Required | The participant must make at least one highlight. |
+
+Highlights always start and end on whole words. On a computer, participants drag across the words; on a phone, they tap the first word and then the last. Then they pick a category. Tapping a highlight lets them change its category or remove it, and a new highlight replaces any it overlaps.
+
+Insights show the passage shaded by how many participants highlighted each word, one category at a time, and the 10 phrases highlighted most in each category. The transcript lists each category with its quoted highlights, and the CSV export has one column per category with the quoted phrases. The shading uses the default-language passage. If you edit the passage after responses come in, a highlight is shaded wherever its exact words still appear. Words no longer in the passage, and most highlights from translated interviews, appear in the phrase list but not in the shading; a translated highlight is shaded only when its exact words also appear in the default-language passage, such as a number or a brand name. Text Highlight can be a logic source and a results filter ("highlighted as" a category), and its answers can be piped into later questions. It can't have quotas, and AI personas skip it in simulations.
 
 ## Other
 
@@ -273,13 +336,13 @@ External Calendly booking — share a scheduling link (e.g. for a follow-up sess
 
 ## AI follow-ups on closed questions
 
-After a participant answers a closed question, the AI interviewer can ask why, so the reasons sit next to the number. Turn on **AI follow-up** on Multiple Choice, Rating Scale, Star Rating, NPS, Ranking, Matrix Rating Scale, Matrix Selection, Matrix Ranking or Matrix Allocation.
+After a participant answers a closed question, the AI interviewer can ask why, so the reasons sit next to the number. Turn on **AI follow-up** on Multiple Choice, Rating Scale, Star Rating, NPS, Ranking, Matrix Rating Scale, Matrix Selection, Matrix Ranking, Matrix Allocation or Text Highlight.
 
 | Setting | Description |
 |---|---|
 | Instructions | What the interviewer should find out. |
 | Limit follow-up questions | Cap the follow-ups for this question at 1, 2 or 3. Leave off and the interviewer decides when it has enough. |
-| Only for some answers | Ask only for the answers you choose, such as NPS detractors. Ranking and Matrix Ranking use positions, such as first and last. Matrix Allocation asks about the rows with the most and the fewest points in each column. |
+| Only for some answers | Ask only for the answers you choose, such as NPS detractors. Ranking and Matrix Ranking use positions, such as first and last. Matrix Allocation asks about the rows with the most and the fewest points in each column. Text Highlight uses categories, and the interviewer asks about the phrases highlighted with them. |
 
 The follow-up replaces the question on screen, and participants answer in the study's response mode. If the answer sends the participant out of the study through logic or a full quota, or an optional question is skipped, there is no follow-up. Logic and quotas always use the closed answer, so a follow-up never changes where the participant goes next.
 

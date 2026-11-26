@@ -1,0 +1,32 @@
+---
+title: "Move questions to a group"
+api: "POST /question-groups/move-questions"
+description: "Move questions into a group or page, or out to the top level"
+---
+
+Appends the questions, in the order given, to the end of the target group. Moving onto a page returns `400` for a question type a page doesn't allow, a question with a Figma prototype, an embedded website or an AI follow-up, a question that logic jumps to directly, or a question that would read an answer from the same page (display condition, earlier-answer check or `{{Q:...}}` reference).
+
+<ParamField body="study_id" type="string" required>The study ID.</ParamField>
+<ParamField body="question_ids" type="string[]" required>The questions to move, without duplicates.</ParamField>
+<ParamField body="question_group_id" type="string | null" required>The target group or page, or `null` for the top level.</ParamField>
+
+### Response
+
+<ResponseField name="moved" type="integer">How many questions moved.</ResponseField>
+<ResponseField name="question_ids" type="string[]">The moved question IDs.</ResponseField>
+<ResponseField name="skipped" type="string[]">IDs left as they were: not found in the study, or already in the target. Only present when some were skipped.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.getversive.com/api/v1/question-groups/move-questions" \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"study_id": "9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b", "question_ids": ["c1d2e3f4-0000-4000-8000-000000000001"], "question_group_id": "d4e5f6a7-0000-4000-8000-000000000002"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{ "moved": 1, "question_ids": ["c1d2e3f4-0000-4000-8000-000000000001"] }
+```
+</ResponseExample>

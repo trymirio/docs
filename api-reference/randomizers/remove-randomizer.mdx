@@ -11,6 +11,8 @@ Removes a randomizer in one of two modes:
 
 Once participants have been assigned to a randomizer's arms, its arms can't be removed or retargeted, so both modes return `409 Conflict`. The same applies to removing or retargeting an assigned arm with [Update randomizer](/api-reference/randomizers/update-randomizer).
 
+When a [quota cell](/studies/quota-cells) reads the randomizer, nothing is removed and the request returns `409` naming the quota. Change or remove that variable with [Update quota groups](/api-reference/quotas/update-quota-groups) first.
+
 <ParamField path="id" type="string" required>The randomizer ID.</ParamField>
 <ParamField body="study_id" type="string" required>The study ID.</ParamField>
 <ParamField body="mode" type="string" default="ungroup">`ungroup` or `delete`.</ParamField>

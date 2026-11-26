@@ -6,6 +6,8 @@ description: "Remove a question from its study"
 
 Deletes a question (soft delete) and recalculates the study's estimated length. Returns `204 No Content`.
 
+When a [quota cell](/studies/quota-cells) reads the question, nothing is deleted and the request returns `409` naming the quota. Change or remove that variable with [Update quota groups](/api-reference/quotas/update-quota-groups) first.
+
 <ParamField path="question_id" type="string" required>
   The question ID.
 </ParamField>

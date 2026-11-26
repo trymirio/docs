@@ -6,30 +6,45 @@ description: "Add a branching or display rule to a question"
 
 Creates a logic rule. Returns `201`.
 
-- **Branching** rules (the default) change the path after `question_id` is answered. Rules on a question are evaluated top to bottom; the first match wins. On a matrix selection question a branching rule must use `ALWAYS`; to act on one row's answer, use a display rule.
+- **Branching** rules (the default) change the path after `question_id` is answered. Rules on a question are evaluated top to bottom; the first match wins. A branching rule takes the same conditions as a display rule on that question's type (table below), plus `ALWAYS`.
 - **Display** rules (`logic_type: "display"`) show `question_id` only when an earlier answer matches. They test `source_question_id`'s answer, so the operation and value follow the source question's type, and they take no action fields. A question with several display rules is shown when all of them pass, or when any one passes, per the question's `display_condition_match` (see [Update question](/api-reference/questions/update-question)).
 
 | Display source type | `operation` | `comparison_value` | `comparison_value_type` |
 | --- | --- | --- | --- |
 | Single-select multiple choice | `==`, `!=` | Exact option text | `string` |
 | Multi-select multiple choice | `==`, `INCLUDES`, `NOT_INCLUDES`, `COUNT_LT` | Exact option text (an integer for `COUNT_LT`) | `string` (`int` for `COUNT_LT`) |
-| Matrix selection (one row) | `==`, `!=` | `{"row": "<row label>", "value": "<answer label>"}` as a JSON string | `string` |
+| Single-select matrix selection (one row) | `==`, `!=` | `{"row": "<row label>", "value": "<answer label>"}` as a JSON string | `string` |
+| Multi-select matrix selection (one row, `isMultiSelect` on) | `INCLUDES`, `NOT_INCLUDES` | `{"row": "<row label>", "value": "<answer label>"}` as a JSON string | `string` |
+| Text highlight | `INCLUDES` (highlighted something as the category), `NOT_INCLUDES` (highlighted nothing as it) | Exact category text | `string` |
+| Ranking (an option's position) | `==`, `<=`, `>=` | `{"row": "<option>", "value": "<position>"}`, a position from 1 to the rank limit | `int` |
+| Card sort (a card's category) | `==`, `!=` | `{"row": "<card>", "value": "<category>"}` | `string` |
+| Matrix rating scale, allocation | `==`, `!=`, `<`, `<=`, `>`, `>=` | `{"row": "<row or option>", "value": "<number>"}` (allocation row `__total__` is the total) | `int` (`string` for a `"N/A"` value, with `==` / `!=`) |
+| Matrix allocation (one cell) | `==`, `!=`, `<`, `<=`, `>`, `>=` | `{"row": "<row>", "column": "<column>", "value": "<number>"}` | `int` (`string` for `"N/A"`) |
+| Date | `<`, `>`, `BETWEEN` | `"YYYY-MM-DD"`; for `BETWEEN`, `{"from": "YYYY-MM-DD", "to": "YYYY-MM-DD"}` | `string` |
+| Media upload (answered or not) | `IS_SET`, `IS_NOT_SET` | None | `string` |
 | Rating scale, NPS, star rating, number | `==`, `!=`, `<`, `<=`, `>`, `>=` | An integer | `int` |
 | Text, short text, AI, exploratory | `SMART_CONDITION` | A natural-language condition | `smart_condition` |
 
-For a matrix selection source, `row` and `value` must be the exact labels in the study's default language. Translated labels don't match. A matrix selection with `isMultiSelect` on can't be a display source.
+For these sources, `row`, `column` and `value` must be the exact labels in the study's default language, and so must a text highlight category. Translated labels don't match.
+
+Two conditions read the interview instead of an answer. They take no `source_question_id`, and any question can branch on them:
+
+| Condition | `operation` | `comparison_value` | `comparison_value_type` |
+| --- | --- | --- | --- |
+| URL parameter | `==`, `!=`, `INCLUDES`, `IS_SET` | `{"param": "<name>", "value": "<text>"}` (no `value` for `IS_SET`) | `url_param` |
+| Quota state | `==` | `{"scope": "study", "value": "full"}`, `{"scope": "url_param", "bucket": "<param value>", "value": "open"}` or `{"scope": "question_option", "question_id": "<question id>", "bucket": "<option>", "value": "full"}` | `quota` |
 
 The source must come before the target, outside any randomized group or Randomizer arm that could reverse that order or skip it. Rules that break these constraints are rejected with a `400` that says why.
 
 <ParamField body="study_id" type="string" required>The study.</ParamField>
 <ParamField body="question_id" type="string" required>The question the rule attaches to (must belong to the study): the answered question for a branching rule, the question to show or hide for a display rule.</ParamField>
 <ParamField body="logic_type" type="string" default="branching">`branching` or `display`.</ParamField>
-<ParamField body="source_question_id" type="string">Required for display rules, not allowed on branching rules: the earlier question whose answer is tested.</ParamField>
+<ParamField body="source_question_id" type="string">Required for display rules, except on `url_param` and `quota` conditions; not allowed on branching rules. The earlier question whose answer is tested.</ParamField>
 <ParamField body="operation" type="string" required>
-  `==`, `!=`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `NOT_INCLUDES`, `ALWAYS`, or `SMART_CONDITION`. (`INCLUDE_RESPONSE_IN_NEXT_QUESTION` is accepted for backwards compatibility but is legacy — use question mentions instead.) Values are case-sensitive and must be sent exactly as listed: `includes`, `Always`, or `=` is rejected with a `422`.
+  `==`, `!=`, `<`, `<=`, `>`, `>=`, `COUNT_LT`, `INCLUDES`, `NOT_INCLUDES`, `BETWEEN`, `IS_SET`, `IS_NOT_SET`, `ALWAYS`, or `SMART_CONDITION`. (`INCLUDE_RESPONSE_IN_NEXT_QUESTION` is accepted for backwards compatibility but is legacy — use question mentions instead.) Values are case-sensitive and must be sent exactly as listed: `includes`, `Always`, or `=` is rejected with a `422`.
 </ParamField>
 <ParamField body="comparison_value_type" type="string" required>
-  `string`, `int`, or `smart_condition`.
+  `string`, `int`, `smart_condition`, `url_param`, or `quota`.
 </ParamField>
 <ParamField body="action_type" type="string">
   Required for branching rules: `next_question_id`, `move_to_question_group`, `end_interview`, `redirect_url`, or `screen_out`. Display rules can't have an action (nor `next_question_id`, `next_question_group_id`, `redirect_url`, or `end_interview`).

@@ -1,0 +1,78 @@
+---
+title: "Get quota cells"
+api: "GET /studies/{id}/quota-groups"
+description: "List a study's quotas with cells"
+---
+
+Returns every [quota with cells](/studies/quota-cells) of the study, in the order they were last saved. Each cell's completes so far are in the `cells` list of [Get quota progress](/api-reference/quotas/get-quota-progress).
+
+<ParamField path="id" type="string" required>The study ID.</ParamField>
+
+### Response
+
+<ResponseField name="groups" type="object[]">
+  One entry per quota:
+
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">The quota ID. Send it back to keep the quota when you update the list.</ResponseField>
+    <ResponseField name="name" type="string">The quota name.</ResponseField>
+    <ResponseField name="action" type="string">`screen_out` or `quota_full`: what happens when a participant lands in a full cell.</ResponseField>
+    <ResponseField name="message" type="string | null">`quota_full` only: what the participant sees when there is no source quota URL or pause URL to send them to.</ResponseField>
+    <ResponseField name="limit_mode" type="string">`count`, or `percent` when cell limits come from a percent of `total`.</ResponseField>
+    <ResponseField name="total" type="integer | null">`percent` mode only.</ResponseField>
+    <ResponseField name="variables" type="object[]">
+      One to three variables. `kind` is `choice` (a Multiple Choice question, with `question_id` and `match`), `range` (a Number, Rating Scale, NPS or Star Rating question, with `question_id`), `param` (a link parameter, with `param_name`) or `arm` (a randomizer, with `routing_node_id`). `levels` lists `{ label, values, min, max }`: option texts, link values or arm IDs in `values`, or a range in `min` and `max` (both included). A `choice` variable whose options were renamed also has `earlier_option_texts`, `{ earlier text: current text }`, so answers given before the rename still count in their cell. It is read-only: Versive writes it when it carries a rename into the levels, and ignores it in an update.
+    </ResponseField>
+    <ResponseField name="cells" type="object[]">
+      The cells that have a limit: `{ levels, limit, percent }`, with one 0-based level index per variable. A cell that is not listed has no cap.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/quota-groups \
+  -H "Authorization: Bearer $VERSIVE_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "groups": [
+    {
+      "id": "6a1e4c2b-7f3d-4b8a-9c5e-2d1f0a9b8c7d",
+      "name": "Age × Gender",
+      "action": "quota_full",
+      "message": "Thanks! We already have enough people like you.",
+      "limit_mode": "count",
+      "variables": [
+        {
+          "kind": "choice",
+          "question_id": "3f1c2a9e-8d4b-4c7a-9e21-5b6d7c8e9f01",
+          "match": "equals",
+          "levels": [
+            { "label": "Women", "values": ["Woman"] },
+            { "label": "Men", "values": ["Man"] }
+          ]
+        },
+        {
+          "kind": "range",
+          "question_id": "7c2d4e6f-1a3b-4c5d-8e9f-0a1b2c3d4e5f",
+          "levels": [
+            { "label": "18-34", "values": [], "min": 18, "max": 34 },
+            { "label": "35+", "values": [], "min": 35 }
+          ]
+        }
+      ],
+      "cells": [
+        { "levels": [0, 0], "limit": 50 },
+        { "levels": [0, 1], "limit": 50 },
+        { "levels": [1, 0], "limit": 50 },
+        { "levels": [1, 1], "limit": 40 }
+      ]
+    }
+  ]
+}
+```
+</ResponseExample>

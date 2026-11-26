@@ -25,6 +25,7 @@ The following source question types can be mentioned:
 - `textInput`, `shortText`, `number`, and `multipleChoice` — full answer only.
 - `matrixRatingScale` — full answer or `ratingForItem[index]`, which returns the rating for one item.
 - `matrixSelection` — full answer or `selectionForItem[index]`, which returns the answer chosen for one row. In a translated interview, `selectionForItem` returns the answer label in the study's default language.
+- `textHighlight` — full answer or `highlightsForCategory[index]`, which returns the phrases highlighted with one category, quoted and separated by commas. In a translated interview the phrases are in the participant's language.
 - `ranking` — full answer, `rankOfOption[index]`, or `optionAtRank[index]`. When the question ranks only the top N (`props.rankLimit`), `optionAtRank` covers places 1 to N only.
 - `allocation` — full answer or `allocationForItem[index]`.
 - `cardSort` — full answer, `categoryForCard[index]`, or `cardsInCategory[index]`.

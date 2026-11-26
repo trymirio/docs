@@ -1,0 +1,59 @@
+---
+title: "Update quota cells"
+api: "PUT /studies/{id}/quota-groups"
+description: "Replace a study's quotas with cells"
+---
+
+Replaces every [quota with cells](/studies/quota-cells) of the study. Send the full list you want to keep, with the `id` of each quota you keep; an empty list removes them all. The study quota and question quotas are not affected.
+
+<ParamField path="id" type="string" required>The study ID.</ParamField>
+
+<ParamField body="groups" type="object[]" required>
+  Up to 20 quotas, with unique names. Each takes the fields of [Get quota cells](/api-reference/quotas/get-quota-groups):
+
+  <Expandable title="properties">
+    <ParamField body="id" type="string">An existing quota's ID, to keep it (and the Results filters that point at it). Omit for a new quota.</ParamField>
+    <ParamField body="name" type="string" required>The quota name.</ParamField>
+    <ParamField body="action" type="string" default="screen_out">`screen_out` or `quota_full`.</ParamField>
+    <ParamField body="message" type="string">`quota_full` only: what the participant sees when there is no source quota URL or pause URL to send them to (with one, they go straight there). Empty means the screen-out message.</ParamField>
+    <ParamField body="limit_mode" type="string" default="count">`count` or `percent`.</ParamField>
+    <ParamField body="total" type="integer">Required in `percent` mode.</ParamField>
+    <ParamField body="variables" type="object[]" required>
+      One to three variables, each read once per quota. Level names must be different within a variable, a value can only be in one level, and ranges must not overlap. Option texts must be current options of the question, in the study's default language.
+    </ParamField>
+    <ParamField body="cells" type="object[]">
+      `{ levels, limit, percent }` per capped cell; up to 50 cells per quota. In `count` mode every listed cell needs a `limit`, and `limit` 0 closes the cell. In `percent` mode every listed cell needs a `percent` and no `limit`: the server computes the counts.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### Response
+
+The saved quotas, same shape as [Get quota cells](/api-reference/quotas/get-quota-groups).
+
+Returns `422` when a quota names a question, option, randomizer or arm the study does not have, or breaks a shape rule.
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.getversive.com/api/v1/studies/9b2f7c1e-4a4b-4f6e-9a1d-1c2d3e4f5a6b/quota-groups \
+  -H "Authorization: Bearer $VERSIVE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "groups": [
+      {
+        "name": "Social media",
+        "action": "screen_out",
+        "variables": [
+          {
+            "kind": "choice",
+            "question_id": "3f1c2a9e-8d4b-4c7a-9e21-5b6d7c8e9f01",
+            "match": "includes",
+            "levels": [{ "label": "Social", "values": ["Instagram", "WhatsApp", "Facebook"] }]
+          }
+        ],
+        "cells": [{ "levels": [0], "limit": 50 }]
+      }
+    ]
+  }'
+```
+</RequestExample>
